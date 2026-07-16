@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= t("admin.title") %> | <%= t("app.name") %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "custom", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+  </head>
+
+  <body class="bg-slate-950 text-slate-950">
+    <div class="min-h-screen flex">
+      <aside class="hidden lg:flex w-72 bg-slate-950 text-white flex-col border-r border-white/10">
+        <div class="p-6">
+          <%= link_to admin_root_path, class: "flex items-center gap-3" do %>
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-orange-400 flex items-center justify-center font-black text-xl shadow-lg shadow-pink-900/40">
+              W
+            </div>
+
+            <div>
+              <p class="font-black text-xl leading-none"><%= t("app.name") %></p>
+              <p class="text-xs text-slate-400"><%= t("admin.title") %></p>
+            </div>
+          <% end %>
+        </div>
+
+        <nav class="px-4 space-y-2 text-sm font-bold">
+          <%= link_to admin_root_path, class: "flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10 #{controller_name == 'dashboard' ? 'bg-white text-slate-950' : 'text-slate-300'}" do %>
+            <span>📊</span>
+            <span><%= t("admin.nav.dashboard") %></span>
+          <% end %>
+
+          <%= link_to admin_users_path, class: "flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10 #{controller_name == 'users' ? 'bg-white text-slate-950' : 'text-slate-300'}" do %>
+            <span>👥</span>
+            <span><%= t("admin.nav.users") %></span>
+          <% end %>
+
+          <%= link_to admin_products_path, class: "flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10 #{controller_name == 'products' ? 'bg-white text-slate-950' : 'text-slate-300'}" do %>
+            <span>👗</span>
+            <span><%= t("admin.nav.products") %></span>
+          <% end %>
+
+          <%= link_to admin_bookings_path, class: "flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10 #{controller_name == 'bookings' ? 'bg-white text-slate-950' : 'text-slate-300'}" do %>
+            <span>🧾</span>
+            <span><%= t("admin.nav.bookings") %></span>
+          <% end %>
+        </nav>
+
+        <div class="mt-auto p-4 space-y-3">
+          <div class="flex items-center gap-2 bg-white/10 rounded-full p-1 text-xs font-black">
+            <%= link_to "EN", url_for(locale: :en), class: "flex-1 text-center px-3 py-2 rounded-full #{I18n.locale == :en ? 'bg-white text-slate-950' : 'text-slate-300'}" %>
+            <%= link_to "VI", url_for(locale: :vi), class: "flex-1 text-center px-3 py-2 rounded-full #{I18n.locale == :vi ? 'bg-white text-slate-950' : 'text-slate-300'}" %>
+          </div>
+
+          <%= link_to t("admin.nav.back_to_site"), root_path, class: "block text-center px-4 py-3 rounded-2xl bg-white/10 text-white font-black" %>
+
+          <%= button_to t("nav.sign_out"), destroy_user_session_path, method: :delete, class: "w-full px-4 py-3 rounded-2xl bg-red-500 text-white font-black" %>
+        </div>
+      </aside>
+
+      <main class="flex-1 bg-[#faf7f2] min-h-screen">
+        <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-orange-100">
+          <div class="px-5 lg:px-8 py-4 flex items-center justify-between">
+            <div>
+              <p class="text-xs font-black uppercase tracking-widest text-pink-500"><%= t("admin.title") %></p>
+              <h1 class="text-2xl font-black"><%= t("admin.nav.#{controller_name}", default: t("admin.title")) %></h1>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <div class="hidden sm:block text-right">
+                <p class="font-black"><%= current_user.full_name.presence || current_user.email %></p>
+                <p class="text-xs text-slate-500"><%= current_user.role %></p>
+              </div>
+
+              <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center font-black">
+                <%= current_user.full_name.to_s.first.presence || "A" %>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <% if notice %>
+          <div class="px-5 lg:px-8 mt-5">
+            <div class="rounded-2xl bg-green-50 text-green-700 px-5 py-4 font-semibold">
+              <%= notice %>
+            </div>
+          </div>
+        <% end %>
+
+        <% if alert %>
+          <div class="px-5 lg:px-8 mt-5">
+            <div class="rounded-2xl bg-red-50 text-red-700 px-5 py-4 font-semibold">
+              <%= alert %>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="px-5 lg:px-8 py-8">
+          <%= yield %>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

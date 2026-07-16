@@ -59,3 +59,30 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+# Authentication
+gem "devise"
+
+# State machine for booking status
+gem "aasm"
+
+# Search products
+gem "pg_search"
+
+# Pagination
+gem "pagy"
+
+# Image processing for ActiveStorage variants
+gem "image_processing", "~> 1.2"
+
+# S3 storage for production uploads
+gem "aws-sdk-s3", require: false
+
+# Rails I18n translations
+gem "rails-i18n"
+
+# Security
+gem "rack-attack"
+
+# Friendly URLs for products later
+gem "friendly_id"

@@ -1,0 +1,106 @@
+<section class="max-w-7xl mx-auto px-5 py-10">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+    <div>
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-100 text-pink-700 text-sm font-black">
+        🧾 <%= t("bookings.my_bookings") %>
+      </div>
+
+      <h1 class="mt-4 text-4xl md:text-5xl font-black tracking-tight">
+        <%= t("bookings.index_title") %>
+      </h1>
+
+      <p class="mt-2 text-slate-500">
+        <%= t("bookings.index_subtitle") %>
+      </p>
+    </div>
+
+    <%= link_to t("nav.explore"), products_path, class: "px-6 py-3 rounded-full bg-slate-950 text-white font-black shadow-lg shadow-slate-200" %>
+  </div>
+
+  <% if @bookings.any? %>
+    <div class="grid gap-5">
+      <% @bookings.each do |booking| %>
+        <% product = booking.product %>
+
+        <div class="bg-white rounded-[2rem] p-4 md:p-5 shadow-sm border border-orange-100 hover:shadow-xl transition">
+          <div class="grid md:grid-cols-[140px_1fr_auto] gap-5 items-center">
+            <%= link_to booking_path(booking), class: "block" do %>
+              <div class="aspect-[4/5] rounded-[1.5rem] bg-slate-100 overflow-hidden">
+                <% if product.photos.attached? %>
+                  <%= image_tag product.photos.first, class: "w-full h-full object-cover" %>
+                <% else %>
+                  <div class="w-full h-full flex items-center justify-center text-5xl bg-gradient-to-br from-pink-100 to-orange-100">
+                    ✨
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="px-3 py-1 rounded-full bg-pink-50 text-pink-600 text-xs font-black uppercase">
+                  <%= booking.status %>
+                </span>
+
+                <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-black">
+                  <%= pluralize(booking.rental_days.to_i, "day") %>
+                </span>
+              </div>
+
+              <%= link_to booking_path(booking), class: "block mt-3" do %>
+                <h2 class="text-2xl font-black hover:text-pink-600">
+                  <%= product.title %>
+                </h2>
+              <% end %>
+
+              <p class="mt-1 text-slate-500">
+                <%= product.city.presence || "Wearly" %>
+                <% if product.district.present? %>
+                  • <%= product.district %>
+                <% end %>
+              </p>
+
+              <div class="mt-4 grid sm:grid-cols-2 gap-3 text-sm">
+                <div class="rounded-2xl bg-slate-50 p-4">
+                  <p class="text-slate-500 font-bold"><%= t("bookings.start_time") %></p>
+                  <p class="font-black mt-1"><%= booking.start_time&.strftime("%d %b %Y, %H:%M") || "-" %></p>
+                </div>
+
+                <div class="rounded-2xl bg-slate-50 p-4">
+                  <p class="text-slate-500 font-bold"><%= t("bookings.end_time") %></p>
+                  <p class="font-black mt-1"><%= booking.end_time&.strftime("%d %b %Y, %H:%M") || "-" %></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="md:text-right">
+              <p class="text-sm text-slate-500 font-bold"><%= t("admin.bookings.total") %></p>
+              <p class="mt-1 text-2xl font-black text-pink-600">
+                <%= number_to_currency(booking.total_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %>
+              </p>
+
+              <div class="mt-5 flex md:flex-col gap-2">
+                <%= link_to t("admin.actions.view"), booking_path(booking), class: "px-5 py-3 rounded-full bg-slate-950 text-white font-black text-center" %>
+
+                <% if %w[pending accepted].include?(booking.status) %>
+                  <%= button_to t("bookings.cancel"), cancel_booking_path(booking), method: :patch, class: "w-full px-5 py-3 rounded-full bg-red-50 text-red-600 font-black" %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="bg-white rounded-[2.5rem] p-10 text-center shadow-sm border border-orange-100">
+      <div class="mx-auto w-20 h-20 rounded-[2rem] bg-gradient-to-br from-pink-100 to-orange-100 flex items-center justify-center text-4xl">
+        🛍️
+      </div>
+
+      <h2 class="mt-5 text-3xl font-black"><%= t("bookings.empty_title") %></h2>
+      <p class="mt-2 text-slate-500"><%= t("bookings.empty_subtitle") %></p>
+
+      <%= link_to t("home.explore_now"), products_path, class: "inline-flex mt-6 px-6 py-3 rounded-full bg-slate-950 text-white font-black" %>
+    </div>
+  <% end %>
+</section>

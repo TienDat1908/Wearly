@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  booking: one
+  product: one
+  user: one
+  report_type: MyString
+  status: MyString
+  note: MyText
+
+two:
+  booking: two
+  product: two
+  user: two
+  report_type: MyString
+  status: MyString
+  note: MyText

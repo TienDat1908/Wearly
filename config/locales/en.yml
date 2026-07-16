@@ -1,31 +1,244 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  app:
+    name: "Wearly"
+    tagline: "Rent the look. Own the moment."
+
+  nav:
+    explore: "Explore"
+    my_rentals: "My rentals"
+    list_item: "List an item"
+    sign_in: "Sign in"
+    sign_up: "Sign up"
+    sign_out: "Sign out"
+
+  auth:
+    login: "Email or phone"
+    login_placeholder: "Email or phone number"
+    full_name: "Full name"
+    full_name_placeholder: "Your full name"
+    phone: "Phone"
+    phone_placeholder: "Your phone number"
+    password: "Password"
+    password_placeholder: "Enter your password"
+    password_confirmation: "Confirm password"
+    password_confirmation_placeholder: "Re-enter your password"
+    password_hint: "At least 8 characters, including uppercase, number, and special character."
+    account_type: "Account type"
+    renter: "Rent items"
+    owner: "List items"
+    language: "Language"
+    remember_me: "Remember me"
+    sign_in: "Sign in"
+    sign_up: "Sign up"
+    sign_in_title: "Welcome back"
+    sign_in_subtitle: "Sign in to manage rentals, listings, and bookings."
+    sign_in_hero_title: "Your next perfect look is waiting."
+    sign_in_hero_subtitle: "Rent stylish outfits, cameras, and accessories for events, travel, and everyday moments."
+    sign_up_title: "Create your Wearly account"
+    sign_up_subtitle: "Start renting or listing items in minutes."
+    forgot_password: "Forgot password?"
+    forgot_password_title: "Reset your password"
+    forgot_password_subtitle: "Enter your email and we will send reset instructions."
+    send_reset_instructions: "Send reset instructions"
+    back_to_sign_in: "Back to sign in"
+    no_account: "New to Wearly?"
+    create_account: "Create account"
+    already_have_account: "Already have an account?"
+    feature_outfits: "Outfits"
+    feature_cameras: "Cameras"
+    feature_events: "Events"
+
+  home:
+    hero_title: "Rent stylish outfits and gear for every moment."
+    hero_subtitle: "Discover dresses, outfits, cameras, lenses, and accessories from people near you."
+    explore_now: "Explore now"
+    list_your_item: "List your item"
+    latest_products: "Latest listings"
+    view_all: "View all"
+
+  products:
+    index_title: "Explore rentals"
+    index_subtitle: "Find outfits, cameras, and accessories for your next event."
+    search: "Search"
+    search_placeholder: "Search dresses, outfits, cameras..."
+    all_types: "All types"
+    price_per_day: "%{price} / day"
+    size: "Size"
+    color: "Color"
+    deposit: "Deposit"
+    cleaning_fee: "Cleaning fee"
+    rental_price: "Rental price"
+    rent_now: "Rent now"
+    sign_in_to_rent: "Sign in to rent"
+    form:
+      title: "Title"
+      type: "Type"
+      size: "Size"
+      color: "Color"
+      description: "Description"
+      price_per_day: "Price per day"
+      deposit_amount: "Deposit amount"
+      cleaning_fee: "Cleaning fee"
+      photos: "Photos"
+      save: "Save item"
+      basic_info: "Basic information"
+      basic_info_hint: "Make your listing clear, stylish, and easy to understand."
+      pricing: "Pricing"
+      pricing_hint: "Set your rental price, deposit, and cleaning fee."
+      photos_hint: "Upload clear photos. The first photo will be used as the cover."
+
+  owner:
+    products:
+      title: "My listings"
+      subtitle: "Manage the items you are renting out."
+      new_title: "List a new item"
+      edit_title: "Edit item"
+
+  bookings:
+    my_bookings: "My bookings"
+    index_title: "My rental bookings"
+    index_subtitle: "Track your rental requests, schedules, and payment details."
+    empty_title: "No bookings yet"
+    empty_subtitle: "Explore stylish outfits and gear, then send your first rental request."
+    new_title: "Book this item"
+    start_time: "Start time"
+    end_time: "Return time"
+    pickup_method: "Pickup method"
+    self_pickup: "Self pickup"
+    delivery: "Delivery"
+    pickup_address: "Pickup address"
+    return_address: "Return address"
+    submit: "Send booking request"
+    cancel: "Cancel booking"
+    back_to_bookings: "Back to bookings"
+    booking_reference: "Booking reference"
+    schedule: "Schedule"
+
+  actions:
+    edit: "Edit"
+    delete: "Delete"
+
+  admin:
+    title: "Admin Panel"
+    nav:
+      dashboard: "Dashboard"
+      users: "Users"
+      products: "Products"
+      bookings: "Bookings"
+      back_to_site: "Back to site"
+    actions:
+      actions: "Actions"
+      search: "Search"
+      view: "View"
+      view_all: "View all"
+      edit: "Edit"
+      save: "Save changes"
+    filters:
+      all_roles: "All roles"
+      all_statuses: "All statuses"
+    dashboard:
+      total_users: "Total users"
+      total_products: "Total products"
+      total_bookings: "Total bookings"
+      pending_bookings: "Pending bookings"
+      latest_users: "Latest users"
+      latest_products: "Latest products"
+      latest_bookings: "Latest bookings"
+      community: "Community growth"
+      marketplace: "Marketplace supply"
+      transactions: "Rental activity"
+      needs_review: "Need review"
+      owners: "owners"
+      renters: "renters"
+      gmv: "GMV"
+      total_transaction_value: "Total transaction value"
+      platform_revenue: "Platform revenue"
+      owner_fee: "Owner fee"
+      renter_fee: "Renter fee"
+      owner_payout: "Owner payout"
+      amount_for_owners: "Amount paid to owners"
+      deposit_held: "Deposit held"
+      not_platform_revenue: "Not platform revenue"
+      revenue_breakdown: "Revenue breakdown"
+      total_platform_revenue: "Total platform revenue"
+      deducted_from_owner: "deducted from owner earnings"
+      charged_to_renter: "charged to renters"
+      business_model: "Business model"
+      owner_side: "Owner side"
+      renter_side: "Renter side"
+      deposit_note: "Deposit"
+      platform_fee: "Platform fee"
+      owner_side_desc: "Wearly deducts %{rate}% from the rental amount before paying the owner."
+      renter_side_desc: "Wearly charges renters %{rate}% as a service fee."
+      deposit_note_desc: "Deposits are held for protection and should not be counted as platform revenue."
+      admin_revenue: "Admin revenue"
+      owner_payout: "Owner payout"
+      gmv: "GMV"
+      owner_fee_short: "Owner %{rate}%"
+      renter_fee_short: "Renter %{rate}%"
+      after_fee: "After platform fee"
+    users:
+      user: "User"
+      phone: "Phone"
+      role: "Role"
+      status: "Status"
+      profile: "Profile"
+      locale: "Language"
+      address: "Address"
+      edit_title: "Edit user"
+      search_placeholder: "Search name, email, phone..."
+    products:
+      status: "Status"
+      details: "Product details"
+      edit_title: "Edit product"
+      search_placeholder: "Search product..."
+    bookings:
+      product: "Product"
+      renter: "Renter"
+      owner: "Owner"
+      amount: "Amount"
+      status: "Status"
+      details: "Booking details"
+      edit_title: "Edit booking"
+      rental_days: "Rental days"
+      rental_amount: "Rental amount"
+      payment_summary: "Payment summary"
+      total: "Total"
+
+  flash:
+    auth:
+      owner_required: "You need an owner account to list items."
+      admin_required: "You need an admin account to access this page."
+
+    products:
+      created: "Your item has been listed."
+      updated: "Your item has been updated."
+      deleted: "Your item has been deleted."
+
+    bookings:
+      created: "Your booking request has been sent."
+      failed: "Could not create booking."
+      unavailable: "This item is not available for the selected time."
+      cancelled: "Your booking has been cancelled."
+
+    admin:
+      users:
+        updated: "User has been updated."
+      products:
+        updated: "Product has been updated."
+      bookings:
+        updated: "Booking has been updated."
+
+  errors:
+    messages:
+      not_saved:
+        one: "1 error prevented this %{resource} from being saved:"
+        other: "%{count} errors prevented this %{resource} from being saved:"
+
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            password:
+              complexity: "must be at least 8 characters and include an uppercase letter, a number, and a special character"

@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  owner_id: 
+  booking: one
+  amount: 1
+  status: MyString
+  payout_method: MyString
+  paid_at: 2026-07-16 17:30:10
+  admin_note: MyText
+
+two:
+  owner_id: 
+  booking: two
+  amount: 1
+  status: MyString
+  payout_method: MyString
+  paid_at: 2026-07-16 17:30:10
+  admin_note: MyText

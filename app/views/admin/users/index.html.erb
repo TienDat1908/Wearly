@@ -1,0 +1,42 @@
+<div class="bg-white rounded-[2rem] p-5 shadow-sm mb-6">
+  <%= form_with url: admin_users_path, method: :get, local: true, class: "grid md:grid-cols-4 gap-3" do %>
+    <%= text_field_tag :q, params[:q], placeholder: t("admin.users.search_placeholder"), class: "md:col-span-2 rounded-2xl border-slate-200" %>
+
+    <%= select_tag :role, options_for_select([[t("admin.filters.all_roles"), ""]] + User.roles.keys.map { |role| [role.humanize, role] }, params[:role]), class: "rounded-2xl border-slate-200" %>
+
+    <%= submit_tag t("admin.actions.search"), class: "rounded-2xl bg-slate-950 text-white font-black" %>
+  <% end %>
+</div>
+
+<div class="bg-white rounded-[2rem] shadow-sm overflow-hidden">
+  <table class="w-full text-left">
+    <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+      <tr>
+        <th class="p-4"><%= t("admin.users.user") %></th>
+        <th class="p-4"><%= t("admin.users.phone") %></th>
+        <th class="p-4"><%= t("admin.users.role") %></th>
+        <th class="p-4"><%= t("admin.users.status") %></th>
+        <th class="p-4 text-right"><%= t("admin.actions.actions") %></th>
+      </tr>
+    </thead>
+
+    <tbody class="divide-y divide-slate-100">
+      <% @users.each do |user| %>
+        <tr class="hover:bg-pink-50/50">
+          <td class="p-4">
+            <p class="font-black"><%= user.full_name.presence || "-" %></p>
+            <p class="text-sm text-slate-500"><%= user.email %></p>
+          </td>
+
+          <td class="p-4 text-slate-600"><%= user.phone.presence || "-" %></td>
+          <td class="p-4"><span class="px-3 py-1 rounded-full bg-slate-100 text-xs font-black"><%= user.role %></span></td>
+          <td class="p-4"><span class="px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-black"><%= user.status %></span></td>
+
+          <td class="p-4 text-right">
+            <%= link_to t("admin.actions.view"), admin_user_path(user), class: "font-black text-pink-600" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

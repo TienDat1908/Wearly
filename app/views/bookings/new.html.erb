@@ -1,0 +1,44 @@
+<section class="max-w-4xl mx-auto px-5 py-10">
+  <h1 class="text-4xl font-black mb-6"><%= t("bookings.new_title") %></h1>
+
+  <div class="bg-white rounded-[2rem] p-6 shadow-sm">
+    <h2 class="text-2xl font-black"><%= @product.title %></h2>
+
+    <p class="text-pink-600 font-black mt-2">
+      <%= number_to_currency(@product.price_per_day, unit: "₫", precision: 0, format: "%n %u") %>
+    </p>
+
+    <%= form_with model: @booking, url: bookings_path, local: true, class: "mt-6 space-y-5" do |f| %>
+      <%= f.hidden_field :product_id, value: @product.id %>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <%= f.label :start_time, t("bookings.start_time"), class: "font-black" %>
+          <%= f.datetime_local_field :start_time, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :end_time, t("bookings.end_time"), class: "font-black" %>
+          <%= f.datetime_local_field :end_time, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+      </div>
+
+      <div>
+        <%= f.label :pickup_method, t("bookings.pickup_method"), class: "font-black" %>
+        <%= f.select :pickup_method, [[t("bookings.self_pickup"), "self_pickup"], [t("bookings.delivery"), "delivery"]], {}, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+      </div>
+
+      <div>
+        <%= f.label :pickup_address, t("bookings.pickup_address"), class: "font-black" %>
+        <%= f.text_area :pickup_address, rows: 3, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+      </div>
+
+      <div>
+        <%= f.label :return_address, t("bookings.return_address"), class: "font-black" %>
+        <%= f.text_area :return_address, rows: 3, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+      </div>
+
+      <%= f.submit t("bookings.submit"), class: "w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-orange-400 text-white font-black shadow-lg shadow-pink-200" %>
+    <% end %>
+  </div>
+</section>

@@ -1,23 +1,75 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Wearly" %></title>
+    <title><%= t("app.name") %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= yield :head %>
-
-    <link rel="manifest" href="/manifest.json">
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "custom", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body>
+  <body class="bg-[#faf7f2] text-slate-950">
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-orange-100">
+      <div class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
+        <%= link_to root_path, class: "flex items-center gap-3" do %>
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center font-black text-xl shadow-lg shadow-pink-200">
+            W
+          </div>
+
+          <div>
+            <p class="font-black text-xl leading-none"><%= t("app.name") %></p>
+            <p class="text-xs text-slate-500"><%= t("app.tagline") %></p>
+          </div>
+        <% end %>
+
+        <div class="hidden md:flex items-center gap-6 text-sm font-bold">
+          <%= link_to t("nav.explore"), products_path, class: "hover:text-pink-600" %>
+
+          <% if user_signed_in? %>
+            <%= link_to t("nav.my_rentals"), bookings_path, class: "hover:text-pink-600" %>
+
+            <% if current_user.owner? || current_user.admin? %>
+              <%= link_to t("nav.list_item"), owner_products_path, class: "hover:text-pink-600" %>
+            <% end %>
+
+            <% if current_user.admin? %>
+              <%= link_to t("admin.title"), admin_root_path, class: "hover:text-pink-600" %>
+            <% end %>
+
+            <%= button_to t("nav.sign_out"), destroy_user_session_path, method: :delete, class: "px-5 py-2.5 rounded-full bg-slate-950 text-white" %>
+          <% else %>
+            <%= link_to t("nav.sign_in"), new_user_session_path, class: "hover:text-pink-600" %>
+            <%= link_to t("nav.sign_up"), new_user_registration_path, class: "px-5 py-2.5 rounded-full bg-slate-950 text-white" %>
+          <% end %>
+
+          <div class="flex items-center gap-2 bg-slate-100 rounded-full p-1">
+            <%= link_to "EN", url_for(locale: :en), class: "px-3 py-1 rounded-full #{I18n.locale == :en ? 'bg-white shadow font-black' : 'text-slate-500'}" %>
+            <%= link_to "VI", url_for(locale: :vi), class: "px-3 py-1 rounded-full #{I18n.locale == :vi ? 'bg-white shadow font-black' : 'text-slate-500'}" %>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <% if notice %>
+      <div class="max-w-7xl mx-auto px-5 mt-5">
+        <div class="rounded-2xl bg-green-50 text-green-700 px-5 py-4 font-semibold">
+          <%= notice %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if alert %>
+      <div class="max-w-7xl mx-auto px-5 mt-5">
+        <div class="rounded-2xl bg-red-50 text-red-700 px-5 py-4 font-semibold">
+          <%= alert %>
+        </div>
+      </div>
+    <% end %>
+
     <%= yield %>
   </body>
 </html>

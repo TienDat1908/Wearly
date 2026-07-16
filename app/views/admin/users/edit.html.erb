@@ -1,0 +1,46 @@
+<div class="max-w-3xl">
+  <h2 class="text-4xl font-black mb-6"><%= t("admin.users.edit_title") %></h2>
+
+  <%= form_with model: [:admin, @user], local: true, class: "bg-white rounded-[2rem] p-6 shadow-sm space-y-5" do |f| %>
+    <div>
+      <%= f.label :full_name, t("auth.full_name"), class: "font-black" %>
+      <%= f.text_field :full_name, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-4">
+      <div>
+        <%= f.label :email, "Email", class: "font-black" %>
+        <%= f.email_field :email, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+      </div>
+
+      <div>
+        <%= f.label :phone, t("auth.phone"), class: "font-black" %>
+        <%= f.telephone_field :phone, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-4">
+      <div>
+        <%= f.label :role, t("admin.users.role"), class: "font-black" %>
+        <%= f.select :role, User.roles.keys.map { |role| [role.humanize, role] }, {}, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+      </div>
+
+      <div>
+        <%= f.label :status, t("admin.users.status"), class: "font-black" %>
+        <%= f.select :status, User.statuses.keys.map { |status| [status.humanize, status] }, {}, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+      </div>
+
+      <div>
+        <%= f.label :preferred_locale, t("auth.language"), class: "font-black" %>
+        <%= f.select :preferred_locale, [["English", "en"], ["Tiếng Việt", "vi"]], {}, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+      </div>
+    </div>
+
+    <div>
+      <%= f.label :address, t("admin.users.address"), class: "font-black" %>
+      <%= f.text_area :address, rows: 3, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+    </div>
+
+    <%= f.submit t("admin.actions.save"), class: "w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-orange-400 text-white font-black shadow-lg shadow-pink-200" %>
+  <% end %>
+</div>

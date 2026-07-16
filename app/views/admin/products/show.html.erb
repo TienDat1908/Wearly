@@ -1,0 +1,52 @@
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <p class="text-pink-600 font-black uppercase tracking-wide"><%= @product.product_type %></p>
+    <h2 class="text-4xl font-black"><%= @product.title %></h2>
+    <p class="text-slate-500 mt-1"><%= @product.owner.full_name.presence || @product.owner.email %></p>
+  </div>
+
+  <%= link_to t("admin.actions.edit"), edit_admin_product_path(@product), class: "px-5 py-3 rounded-full bg-slate-950 text-white font-black" %>
+</div>
+
+<div class="grid lg:grid-cols-2 gap-6">
+  <div class="grid grid-cols-2 gap-4">
+    <% if @product.photos.attached? %>
+      <% @product.photos.each do |photo| %>
+        <%= image_tag photo, class: "rounded-[2rem] w-full aspect-[4/5] object-cover bg-white" %>
+      <% end %>
+    <% else %>
+      <div class="col-span-2 rounded-[2rem] aspect-[4/5] bg-gradient-to-br from-pink-100 to-orange-100 flex items-center justify-center text-8xl">✨</div>
+    <% end %>
+  </div>
+
+  <div class="bg-white rounded-[2rem] p-6 shadow-sm h-fit">
+    <h3 class="text-xl font-black mb-5"><%= t("admin.products.details") %></h3>
+
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="rounded-2xl bg-slate-50 p-4">
+        <p class="text-sm text-slate-500"><%= t("admin.products.status") %></p>
+        <p class="font-black"><%= @product.status %></p>
+      </div>
+
+      <div class="rounded-2xl bg-slate-50 p-4">
+        <p class="text-sm text-slate-500"><%= t("products.rental_price") %></p>
+        <p class="font-black"><%= number_to_currency(@product.price_per_day, unit: "₫", precision: 0, format: "%n %u") %></p>
+      </div>
+
+      <div class="rounded-2xl bg-slate-50 p-4">
+        <p class="text-sm text-slate-500"><%= t("products.deposit") %></p>
+        <p class="font-black"><%= number_to_currency(@product.deposit_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></p>
+      </div>
+
+      <div class="rounded-2xl bg-slate-50 p-4">
+        <p class="text-sm text-slate-500"><%= t("products.cleaning_fee") %></p>
+        <p class="font-black"><%= number_to_currency(@product.cleaning_fee.to_i, unit: "₫", precision: 0, format: "%n %u") %></p>
+      </div>
+    </div>
+
+    <div class="mt-5 rounded-2xl bg-slate-50 p-4">
+      <p class="text-sm text-slate-500"><%= t("products.form.description") %></p>
+      <p class="font-semibold mt-2"><%= @product.description.presence || "-" %></p>
+    </div>
+  </div>
+</div>

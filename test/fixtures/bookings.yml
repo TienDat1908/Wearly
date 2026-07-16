@@ -1,0 +1,59 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  product: one
+  owner_id: 
+  renter_id: 
+  status: MyString
+  start_time: 2026-07-16 17:30:08
+  end_time: 2026-07-16 17:30:08
+  rental_days: 1
+  rental_amount: 1
+  cleaning_fee: 1
+  delivery_fee: 1
+  deposit_amount: 1
+  discount_amount: 1
+  platform_fee_rate: 9.99
+  platform_fee_amount: 1
+  owner_earning_amount: 1
+  total_amount: 1
+  pickup_method: MyString
+  pickup_address: MyText
+  return_address: MyText
+  accepted_at: 2026-07-16 17:30:08
+  rejected_at: 2026-07-16 17:30:08
+  cancelled_at: 2026-07-16 17:30:08
+  picked_up_at: 2026-07-16 17:30:08
+  returned_at: 2026-07-16 17:30:08
+  completed_at: 2026-07-16 17:30:08
+  cancel_reason: MyText
+  reject_reason: MyText
+
+two:
+  product: two
+  owner_id: 
+  renter_id: 
+  status: MyString
+  start_time: 2026-07-16 17:30:08
+  end_time: 2026-07-16 17:30:08
+  rental_days: 1
+  rental_amount: 1
+  cleaning_fee: 1
+  delivery_fee: 1
+  deposit_amount: 1
+  discount_amount: 1
+  platform_fee_rate: 9.99
+  platform_fee_amount: 1
+  owner_earning_amount: 1
+  total_amount: 1
+  pickup_method: MyString
+  pickup_address: MyText
+  return_address: MyText
+  accepted_at: 2026-07-16 17:30:08
+  rejected_at: 2026-07-16 17:30:08
+  cancelled_at: 2026-07-16 17:30:08
+  picked_up_at: 2026-07-16 17:30:08
+  returned_at: 2026-07-16 17:30:08
+  completed_at: 2026-07-16 17:30:08
+  cancel_reason: MyText
+  reject_reason: MyText

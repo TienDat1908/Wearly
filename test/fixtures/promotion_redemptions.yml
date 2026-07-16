@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  promotion: one
+  user: one
+  booking: one
+  discount_amount: 1
+
+two:
+  promotion: two
+  user: two
+  booking: two
+  discount_amount: 1

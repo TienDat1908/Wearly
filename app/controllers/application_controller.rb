@@ -1,4 +1,61 @@
 class ApplicationController < ActionController::Base
-  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
-  allow_browser versions: :modern
+  before_action :set_locale
+  before_action :configure_permitted_parameters, if: :devise_controller?
+
+  private
+
+  def set_locale
+    I18n.locale = params[:locale].presence || current_user&.preferred_locale.presence || I18n.default_locale
+  end
+
+  def default_url_options
+    { locale: I18n.locale }
+  end
+
+  def require_admin!
+    return if current_user&.admin?
+
+    redirect_to root_path, alert: t("flash.auth.admin_required")
+  end
+
+  def require_owner!
+    return if current_user&.owner? || current_user&.admin?
+
+    redirect_to root_path, alert: t("flash.auth.owner_required")
+  end
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_in, keys: [:login])
+
+    devise_parameter_sanitizer.permit(:sign_up) do |user_params|
+      permitted = user_params.permit(
+        :full_name,
+        :phone,
+        :email,
+        :password,
+        :password_confirmation,
+        :role,
+        :preferred_locale
+      )
+
+      permitted[:role] = "renter" unless %w[renter owner].include?(permitted[:role])
+      permitted
+    end
+
+    devise_parameter_sanitizer.permit(:account_update) do |user_params|
+      permitted = user_params.permit(
+        :full_name,
+        :phone,
+        :email,
+        :password,
+        :password_confirmation,
+        :current_password,
+        :role,
+        :preferred_locale
+      )
+
+      permitted[:role] = "renter" unless %w[renter owner].include?(permitted[:role])
+      permitted
+    end
+  end
 end

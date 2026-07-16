@@ -1,0 +1,79 @@
+<%= form_with model: [:owner, product], local: true, class: "bg-white rounded-[2.5rem] p-6 md:p-8 shadow-2xl shadow-pink-100 border border-orange-100 space-y-8" do |f| %>
+  <% if product.errors.any? %>
+    <div class="rounded-2xl bg-red-50 text-red-700 p-4">
+      <p class="font-black mb-2"><%= pluralize(product.errors.count, "error") %> prevented this item from being saved:</p>
+      <ul class="list-disc pl-5 text-sm font-semibold">
+        <% product.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <h2 class="text-2xl font-black"><%= t("products.form.basic_info") %></h2>
+    <p class="mt-1 text-slate-500"><%= t("products.form.basic_info_hint") %></p>
+  </div>
+
+  <div class="grid gap-5">
+    <div>
+      <%= f.label :title, t("products.form.title"), class: "block font-black mb-2" %>
+      <%= f.text_field :title, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100", placeholder: "Pink satin party dress" %>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-5">
+      <div>
+        <%= f.label :product_type, t("products.form.type"), class: "block font-black mb-2" %>
+        <%= f.select :product_type, Product.product_types.keys.map { |type| [type.humanize, type] }, {}, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100" %>
+      </div>
+
+      <div>
+        <%= f.label :size, t("products.form.size"), class: "block font-black mb-2" %>
+        <%= f.text_field :size, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100", placeholder: "S / M / L" %>
+      </div>
+
+      <div>
+        <%= f.label :color, t("products.form.color"), class: "block font-black mb-2" %>
+        <%= f.text_field :color, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100", placeholder: "Pink, black, white..." %>
+      </div>
+    </div>
+
+    <div>
+      <%= f.label :description, t("products.form.description"), class: "block font-black mb-2" %>
+      <%= f.text_area :description, rows: 6, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100", placeholder: "Describe material, condition, fit, and best occasions..." %>
+    </div>
+  </div>
+
+  <div class="border-t border-slate-100 pt-8">
+    <h2 class="text-2xl font-black"><%= t("products.form.pricing") %></h2>
+    <p class="mt-1 text-slate-500"><%= t("products.form.pricing_hint") %></p>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-5">
+    <div>
+      <%= f.label :price_per_day, t("products.form.price_per_day"), class: "block font-black mb-2" %>
+      <%= f.number_field :price_per_day, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100", placeholder: "250000" %>
+    </div>
+
+    <div>
+      <%= f.label :deposit_amount, t("products.form.deposit_amount"), class: "block font-black mb-2" %>
+      <%= f.number_field :deposit_amount, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100", placeholder: "800000" %>
+    </div>
+
+    <div>
+      <%= f.label :cleaning_fee, t("products.form.cleaning_fee"), class: "block font-black mb-2" %>
+      <%= f.number_field :cleaning_fee, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100", placeholder: "80000" %>
+    </div>
+  </div>
+
+  <div class="border-t border-slate-100 pt-8">
+    <h2 class="text-2xl font-black"><%= t("products.form.photos") %></h2>
+    <p class="mt-1 text-slate-500"><%= t("products.form.photos_hint") %></p>
+  </div>
+
+  <div>
+    <%= f.file_field :photos, multiple: true, class: "block w-full rounded-2xl border border-dashed border-pink-300 bg-pink-50/50 px-4 py-5 font-bold text-slate-700 file:mr-4 file:rounded-full file:border-0 file:bg-slate-950 file:px-5 file:py-3 file:text-white file:font-black" %>
+  </div>
+
+  <%= f.submit t("products.form.save"), class: "w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-orange-400 text-white font-black shadow-xl shadow-pink-200 hover:-translate-y-0.5 transition" %>
+<% end %>

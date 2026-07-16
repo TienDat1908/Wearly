@@ -1,0 +1,30 @@
+<div class="bg-white rounded-[2rem] p-5 shadow-sm mb-6">
+  <%= form_with url: admin_products_path, method: :get, local: true, class: "grid md:grid-cols-4 gap-3" do %>
+    <%= text_field_tag :q, params[:q], placeholder: t("admin.products.search_placeholder"), class: "md:col-span-2 rounded-2xl border-slate-200" %>
+
+    <%= select_tag :status, options_for_select([[t("admin.filters.all_statuses"), ""]] + Product.statuses.keys.map { |status| [status.humanize, status] }, params[:status]), class: "rounded-2xl border-slate-200" %>
+
+    <%= submit_tag t("admin.actions.search"), class: "rounded-2xl bg-slate-950 text-white font-black" %>
+  <% end %>
+</div>
+
+<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+  <% @products.each do |product| %>
+    <%= link_to admin_product_path(product), class: "group bg-white rounded-[2rem] p-4 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition duration-300" do %>
+      <div class="aspect-[4/5] rounded-[1.5rem] bg-slate-100 overflow-hidden">
+        <% if product.photos.attached? %>
+          <%= image_tag product.photos.first, class: "w-full h-full object-cover group-hover:scale-105 transition duration-500" %>
+        <% else %>
+          <div class="w-full h-full flex items-center justify-center text-6xl bg-gradient-to-br from-pink-100 to-orange-100">✨</div>
+        <% end %>
+      </div>
+
+      <div class="mt-4">
+        <p class="text-xs font-black uppercase tracking-wide text-pink-500"><%= product.product_type %></p>
+        <h3 class="mt-1 font-black text-lg line-clamp-2"><%= product.title %></h3>
+        <p class="mt-1 text-sm text-slate-500"><%= product.owner.full_name.presence || product.owner.email %></p>
+        <p class="mt-3 font-black text-pink-600"><%= number_to_currency(product.price_per_day, unit: "₫", precision: 0, format: "%n %u") %></p>
+      </div>
+    <% end %>
+  <% end %>
+</div>

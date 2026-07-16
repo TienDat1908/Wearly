@@ -1,0 +1,34 @@
+<div class="max-w-4xl">
+  <h2 class="text-4xl font-black mb-6"><%= t("admin.products.edit_title") %></h2>
+
+  <%= form_with model: [:admin, @product], local: true, class: "bg-white rounded-[2rem] p-6 shadow-sm space-y-5" do |f| %>
+    <div>
+      <%= f.label :title, t("products.form.title"), class: "font-black" %>
+      <%= f.text_field :title, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-4">
+      <div>
+        <%= f.label :product_type, t("products.form.type"), class: "font-black" %>
+        <%= f.select :product_type, Product.product_types.keys.map { |type| [type.humanize, type] }, {}, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+      </div>
+
+      <div>
+        <%= f.label :status, t("admin.products.status"), class: "font-black" %>
+        <%= f.select :status, Product.statuses.keys.map { |status| [status.humanize, status] }, {}, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+      </div>
+
+      <div>
+        <%= f.label :price_per_day, t("products.form.price_per_day"), class: "font-black" %>
+        <%= f.number_field :price_per_day, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+      </div>
+    </div>
+
+    <div>
+      <%= f.label :description, t("products.form.description"), class: "font-black" %>
+      <%= f.text_area :description, rows: 5, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+    </div>
+
+    <%= f.submit t("admin.actions.save"), class: "w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-orange-400 text-white font-black shadow-lg shadow-pink-200" %>
+  <% end %>
+</div>

@@ -1,0 +1,244 @@
+vi:
+  app:
+    name: "Wearly"
+    tagline: "Thuê outfit đẹp. Tỏa sáng đúng lúc."
+
+  nav:
+    explore: "Khám phá"
+    my_rentals: "Đơn thuê"
+    list_item: "Đăng đồ"
+    sign_in: "Đăng nhập"
+    sign_up: "Đăng ký"
+    sign_out: "Đăng xuất"
+
+  auth:
+    login: "Email hoặc số điện thoại"
+    login_placeholder: "Nhập email hoặc số điện thoại"
+    full_name: "Họ và tên"
+    full_name_placeholder: "Nhập họ và tên"
+    phone: "Số điện thoại"
+    phone_placeholder: "Nhập số điện thoại"
+    password: "Mật khẩu"
+    password_placeholder: "Nhập mật khẩu"
+    password_confirmation: "Xác nhận mật khẩu"
+    password_confirmation_placeholder: "Nhập lại mật khẩu"
+    password_hint: "Tối thiểu 8 ký tự, gồm chữ hoa, số và ký tự đặc biệt."
+    account_type: "Loại tài khoản"
+    renter: "Tôi muốn thuê đồ"
+    owner: "Tôi muốn đăng đồ cho thuê"
+    language: "Ngôn ngữ"
+    remember_me: "Ghi nhớ đăng nhập"
+    sign_in: "Đăng nhập"
+    sign_up: "Đăng ký"
+    sign_in_title: "Chào mừng trở lại"
+    sign_in_subtitle: "Đăng nhập để quản lý đơn thuê, sản phẩm và lịch đặt."
+    sign_in_hero_title: "Outfit hoàn hảo đang chờ bạn."
+    sign_in_hero_subtitle: "Thuê outfit, máy ảnh và phụ kiện sành điệu cho sự kiện, du lịch và những khoảnh khắc đặc biệt."
+    sign_up_title: "Tạo tài khoản Wearly"
+    sign_up_subtitle: "Bắt đầu thuê hoặc đăng đồ cho thuê chỉ trong vài phút."
+    forgot_password: "Quên mật khẩu?"
+    forgot_password_title: "Đặt lại mật khẩu"
+    forgot_password_subtitle: "Nhập email để nhận hướng dẫn đặt lại mật khẩu."
+    send_reset_instructions: "Gửi hướng dẫn"
+    back_to_sign_in: "Quay lại đăng nhập"
+    no_account: "Bạn mới dùng Wearly?"
+    create_account: "Tạo tài khoản"
+    already_have_account: "Bạn đã có tài khoản?"
+    feature_outfits: "Outfit"
+    feature_cameras: "Máy ảnh"
+    feature_events: "Sự kiện"
+
+  home:
+    hero_title: "Thuê outfit và phụ kiện sành điệu cho mọi khoảnh khắc."
+    hero_subtitle: "Khám phá váy, bộ đồ, máy ảnh, lens và phụ kiện từ những người xung quanh bạn."
+    explore_now: "Khám phá ngay"
+    list_your_item: "Đăng đồ cho thuê"
+    latest_products: "Đồ mới lên sàn"
+    view_all: "Xem tất cả"
+
+  products:
+    index_title: "Khám phá đồ cho thuê"
+    index_subtitle: "Tìm outfit, máy ảnh và phụ kiện cho sự kiện tiếp theo của bạn."
+    search: "Tìm kiếm"
+    search_placeholder: "Tìm váy, bộ đồ, máy ảnh..."
+    all_types: "Tất cả"
+    price_per_day: "%{price} / ngày"
+    size: "Size"
+    color: "Màu"
+    deposit: "Tiền cọc"
+    cleaning_fee: "Phí vệ sinh"
+    rental_price: "Giá thuê"
+    rent_now: "Thuê ngay"
+    sign_in_to_rent: "Đăng nhập để thuê"
+    form:
+      title: "Tên món đồ"
+      type: "Loại đồ"
+      size: "Size"
+      color: "Màu sắc"
+      description: "Mô tả"
+      price_per_day: "Giá thuê / ngày"
+      deposit_amount: "Tiền cọc"
+      cleaning_fee: "Phí vệ sinh"
+      photos: "Hình ảnh"
+      save: "Lưu món đồ"
+      basic_info: "Thông tin cơ bản"
+      basic_info_hint: "Giúp món đồ của bạn rõ ràng, đẹp mắt và dễ hiểu hơn."
+      pricing: "Giá thuê"
+      pricing_hint: "Thiết lập giá thuê, tiền cọc và phí vệ sinh."
+      photos_hint: "Tải ảnh rõ nét. Ảnh đầu tiên sẽ được dùng làm ảnh đại diện."
+
+  owner:
+    products:
+      title: "Đồ của tôi"
+      subtitle: "Quản lý những món đồ bạn đang cho thuê."
+      new_title: "Đăng món đồ mới"
+      edit_title: "Chỉnh sửa món đồ"
+
+  bookings:
+    my_bookings: "Đơn thuê của tôi"
+    index_title: "Danh sách đơn thuê"
+    index_subtitle: "Theo dõi yêu cầu thuê, lịch thuê và thông tin thanh toán."
+    empty_title: "Bạn chưa có đơn thuê nào"
+    empty_subtitle: "Khám phá outfit, máy ảnh và phụ kiện để gửi yêu cầu thuê đầu tiên."
+    new_title: "Thuê món đồ này"
+    start_time: "Ngày bắt đầu"
+    end_time: "Ngày trả"
+    pickup_method: "Cách nhận đồ"
+    self_pickup: "Tự đến lấy"
+    delivery: "Giao hàng"
+    pickup_address: "Địa chỉ nhận đồ"
+    return_address: "Địa chỉ trả đồ"
+    submit: "Gửi yêu cầu thuê"
+    cancel: "Hủy đơn thuê"
+    back_to_bookings: "Quay lại danh sách đơn thuê"
+    booking_reference: "Mã đơn thuê"
+    schedule: "Lịch thuê"
+
+  actions:
+    edit: "Sửa"
+    delete: "Xóa"
+
+  admin:
+    title: "Trang quản trị"
+    nav:
+      dashboard: "Tổng quan"
+      users: "Người dùng"
+      products: "Sản phẩm"
+      bookings: "Đơn thuê"
+      back_to_site: "Về trang chính"
+    actions:
+      actions: "Thao tác"
+      search: "Tìm kiếm"
+      view: "Xem"
+      view_all: "Xem tất cả"
+      edit: "Sửa"
+      save: "Lưu thay đổi"
+    filters:
+      all_roles: "Tất cả vai trò"
+      all_statuses: "Tất cả trạng thái"
+    dashboard:
+      total_users: "Tổng người dùng"
+      total_products: "Tổng sản phẩm"
+      total_bookings: "Tổng đơn thuê"
+      pending_bookings: "Đơn đang chờ"
+      latest_users: "Người dùng mới"
+      latest_products: "Sản phẩm mới"
+      latest_bookings: "Đơn thuê mới"
+      community: "Tăng trưởng cộng đồng"
+      marketplace: "Nguồn cung sản phẩm"
+      transactions: "Hoạt động thuê đồ"
+      needs_review: "Cần xử lý"
+    users:
+      user: "Người dùng"
+      phone: "Số điện thoại"
+      role: "Vai trò"
+      status: "Trạng thái"
+      profile: "Hồ sơ"
+      locale: "Ngôn ngữ"
+      address: "Địa chỉ"
+      edit_title: "Sửa người dùng"
+      search_placeholder: "Tìm tên, email, số điện thoại..."
+    products:
+      status: "Trạng thái"
+      details: "Chi tiết sản phẩm"
+      edit_title: "Sửa sản phẩm"
+      search_placeholder: "Tìm sản phẩm..."
+    bookings:
+      product: "Sản phẩm"
+      renter: "Người thuê"
+      owner: "Người đăng"
+      amount: "Số tiền"
+      status: "Trạng thái"
+      details: "Chi tiết đơn thuê"
+      edit_title: "Sửa đơn thuê"
+      rental_days: "Số ngày thuê"
+      rental_amount: "Tiền thuê"
+      payment_summary: "Tóm tắt thanh toán"
+      total: "Tổng cộng"
+      owners: "người đăng"
+      renters: "người thuê"
+      gmv: "GMV"
+      total_transaction_value: "Tổng giá trị giao dịch"
+      platform_revenue: "Doanh thu phí sàn"
+      owner_fee: "Phí từ người đăng"
+      renter_fee: "Phí từ người thuê"
+      owner_payout: "Tiền trả người đăng"
+      amount_for_owners: "Số tiền trả cho người đăng"
+      deposit_held: "Tiền cọc đang giữ"
+      not_platform_revenue: "Không tính là doanh thu phí sàn"
+      revenue_breakdown: "Cơ cấu doanh thu"
+      total_platform_revenue: "Tổng doanh thu phí sàn"
+      deducted_from_owner: "trừ từ thu nhập của người đăng"
+      charged_to_renter: "thu từ người thuê"
+      business_model: "Mô hình doanh thu"
+      owner_side: "Phía người đăng"
+      renter_side: "Phía người thuê"
+      deposit_note: "Tiền cọc"
+      platform_fee: "Phí sàn"
+      owner_side_desc: "Wearly trừ %{rate}% từ tiền thuê trước khi trả cho người đăng."
+      renter_side_desc: "Wearly thu thêm %{rate}% phí dịch vụ từ người thuê."
+      deposit_note_desc: "Tiền cọc dùng để bảo vệ giao dịch và không nên tính là doanh thu phí sàn."
+      admin_revenue: "Admin nhận"
+      owner_payout: "Trả người đăng"
+      gmv: "Tổng giao dịch"
+      owner_fee_short: "Người đăng %{rate}%"
+      renter_fee_short: "Người thuê %{rate}%"
+      after_fee: "Sau phí sàn"
+
+  flash:
+    auth:
+      owner_required: "Bạn cần tài khoản người đăng đồ để sử dụng chức năng này."
+      admin_required: "Bạn cần tài khoản admin để truy cập trang này."
+
+    products:
+      created: "Đã đăng món đồ cho thuê."
+      updated: "Đã cập nhật món đồ."
+      deleted: "Đã xóa món đồ."
+
+    bookings:
+      created: "Đã gửi yêu cầu thuê."
+      failed: "Không thể tạo đơn thuê."
+      unavailable: "Món đồ này không còn trống trong thời gian bạn chọn."
+      cancelled: "Đã hủy đơn thuê."
+
+    admin:
+      users:
+        updated: "Đã cập nhật người dùng."
+      products:
+        updated: "Đã cập nhật sản phẩm."
+      bookings:
+        updated: "Đã cập nhật đơn thuê."
+
+  errors:
+    messages:
+      not_saved:
+        one: "Có 1 lỗi khiến %{resource} không thể được lưu:"
+        other: "Có %{count} lỗi khiến %{resource} không thể được lưu:"
+
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            password:
+              complexity: "phải có ít nhất 8 ký tự, gồm chữ hoa, số và ký tự đặc biệt"

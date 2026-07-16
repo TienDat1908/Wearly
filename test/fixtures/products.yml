@@ -1,0 +1,49 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  owner_id: 
+  title: MyString
+  product_type: MyString
+  description: MyText
+  status: MyString
+  condition_status: MyString
+  size: MyString
+  color: MyString
+  gender: MyString
+  age_group: MyString
+  brand: MyString
+  price_per_day: 1
+  deposit_amount: 1
+  cleaning_fee: 1
+  replacement_value: 1
+  address: MyText
+  city: MyString
+  district: MyString
+  ward: MyString
+  pickup_available: false
+  delivery_available: false
+  details: 
+
+two:
+  owner_id: 
+  title: MyString
+  product_type: MyString
+  description: MyText
+  status: MyString
+  condition_status: MyString
+  size: MyString
+  color: MyString
+  gender: MyString
+  age_group: MyString
+  brand: MyString
+  price_per_day: 1
+  deposit_amount: 1
+  cleaning_fee: 1
+  replacement_value: 1
+  address: MyText
+  city: MyString
+  district: MyString
+  ward: MyString
+  pickup_available: false
+  delivery_available: false
+  details: 

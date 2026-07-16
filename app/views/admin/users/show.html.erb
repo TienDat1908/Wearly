@@ -1,0 +1,45 @@
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h2 class="text-4xl font-black"><%= @user.full_name.presence || @user.email %></h2>
+    <p class="text-slate-500 mt-1"><%= @user.email %></p>
+  </div>
+
+  <%= link_to t("admin.actions.edit"), edit_admin_user_path(@user), class: "px-5 py-3 rounded-full bg-slate-950 text-white font-black" %>
+</div>
+
+<div class="grid lg:grid-cols-3 gap-6">
+  <div class="bg-white rounded-[2rem] p-6 shadow-sm">
+    <div class="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center text-4xl font-black">
+      <%= @user.full_name.to_s.first.presence || "U" %>
+    </div>
+
+    <h3 class="mt-5 text-2xl font-black"><%= @user.full_name.presence || "-" %></h3>
+    <p class="text-slate-500"><%= @user.email %></p>
+
+    <div class="mt-5 flex gap-2">
+      <span class="px-3 py-1 rounded-full bg-slate-100 text-xs font-black"><%= @user.role %></span>
+      <span class="px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-black"><%= @user.status %></span>
+    </div>
+  </div>
+
+  <div class="lg:col-span-2 bg-white rounded-[2rem] p-6 shadow-sm">
+    <h3 class="text-xl font-black mb-5"><%= t("admin.users.profile") %></h3>
+
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="rounded-2xl bg-slate-50 p-4">
+        <p class="text-sm text-slate-500"><%= t("admin.users.phone") %></p>
+        <p class="font-black"><%= @user.phone.presence || "-" %></p>
+      </div>
+
+      <div class="rounded-2xl bg-slate-50 p-4">
+        <p class="text-sm text-slate-500"><%= t("admin.users.locale") %></p>
+        <p class="font-black"><%= @user.preferred_locale.presence || "-" %></p>
+      </div>
+
+      <div class="rounded-2xl bg-slate-50 p-4 md:col-span-2">
+        <p class="text-sm text-slate-500"><%= t("admin.users.address") %></p>
+        <p class="font-black"><%= [@user.address, @user.ward, @user.district, @user.city].compact_blank.join(", ").presence || "-" %></p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  booking: one
+  opened_by_id: 
+  reason: MyString
+  description: MyText
+  status: MyString
+  resolution_note: MyText
+  resolved_by_id: 
+  resolved_at: 2026-07-16 17:30:13
+
+two:
+  booking: two
+  opened_by_id: 
+  reason: MyString
+  description: MyText
+  status: MyString
+  resolution_note: MyText
+  resolved_by_id: 
+  resolved_at: 2026-07-16 17:30:13

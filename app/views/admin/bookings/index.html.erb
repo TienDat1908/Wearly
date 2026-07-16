@@ -1,0 +1,106 @@
+<div class="bg-white rounded-[2rem] p-5 shadow-sm mb-6 border border-orange-100">
+  <%= form_with url: admin_bookings_path, method: :get, local: true, class: "grid md:grid-cols-3 gap-3" do %>
+    <%= select_tag :status,
+      options_for_select(
+        [
+          [t("admin.filters.all_statuses"), ""],
+          ["Pending", "pending"],
+          ["Accepted", "accepted"],
+          ["Rejected", "rejected"],
+          ["Cancelled", "cancelled"],
+          ["Completed", "completed"]
+        ],
+        params[:status]
+      ),
+      class: "rounded-2xl border-slate-200" %>
+
+    <%= submit_tag t("admin.actions.search"), class: "rounded-2xl bg-slate-950 text-white font-black" %>
+  <% end %>
+</div>
+
+<div class="bg-white rounded-[2rem] shadow-sm overflow-hidden border border-orange-100">
+  <table class="w-full text-left">
+    <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+      <tr>
+        <th class="p-4"><%= t("admin.bookings.product") %></th>
+        <th class="p-4"><%= t("admin.bookings.renter") %></th>
+        <th class="p-4"><%= t("admin.bookings.owner") %></th>
+        <th class="p-4"><%= t("admin.bookings.amount") %></th>
+        <th class="p-4"><%= t("admin.bookings.admin_revenue") %></th>
+        <th class="p-4"><%= t("admin.bookings.owner_payout") %></th>
+        <th class="p-4"><%= t("admin.bookings.status") %></th>
+        <th class="p-4 text-right"><%= t("admin.actions.actions") %></th>
+      </tr>
+    </thead>
+
+    <tbody class="divide-y divide-slate-100">
+      <% @bookings.each do |booking| %>
+        <% owner_fee_amount = booking.platform_fee_amount.to_i %>
+        <% renter_fee_amount = booking.respond_to?(:renter_service_fee_amount) ? booking.renter_service_fee_amount.to_i : 0 %>
+        <% admin_revenue_amount = owner_fee_amount + renter_fee_amount %>
+        <% owner_fee_rate = booking.platform_fee_rate.to_f %>
+        <% renter_fee_rate = booking.respond_to?(:renter_service_fee_rate) ? booking.renter_service_fee_rate.to_f : 0 %>
+
+        <tr class="hover:bg-pink-50/50">
+          <td class="p-4">
+            <p class="font-black"><%= booking.product.title %></p>
+            <p class="text-xs text-slate-400 font-bold">
+              <%= booking.product.product_type %>
+            </p>
+          </td>
+
+          <td class="p-4 text-slate-600">
+            <%= booking.renter.full_name.presence || booking.renter.email %>
+          </td>
+
+          <td class="p-4 text-slate-600">
+            <%= booking.owner.full_name.presence || booking.owner.email %>
+          </td>
+
+          <td class="p-4">
+            <p class="font-black text-pink-600">
+              <%= number_to_currency(booking.total_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %>
+            </p>
+            <p class="text-xs text-slate-400 font-bold">
+              <%= t("admin.bookings.gmv") %>
+            </p>
+          </td>
+
+          <td class="p-4">
+            <p class="font-black text-emerald-600">
+              <%= number_to_currency(admin_revenue_amount, unit: "₫", precision: 0, format: "%n %u") %>
+            </p>
+
+            <p class="text-xs text-slate-500 font-bold">
+              <%= t("admin.bookings.owner_fee_short", rate: owner_fee_rate.to_i) %>
+              <% if renter_fee_rate.positive? %>
+                +
+                <%= t("admin.bookings.renter_fee_short", rate: renter_fee_rate.to_i) %>
+              <% end %>
+            </p>
+          </td>
+
+          <td class="p-4">
+            <p class="font-black text-slate-900">
+              <%= number_to_currency(booking.owner_earning_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %>
+            </p>
+
+            <p class="text-xs text-slate-400 font-bold">
+              <%= t("admin.bookings.after_fee") %>
+            </p>
+          </td>
+
+          <td class="p-4">
+            <span class="px-3 py-1 rounded-full bg-slate-100 text-xs font-black">
+              <%= booking.status %>
+            </span>
+          </td>
+
+          <td class="p-4 text-right">
+            <%= link_to t("admin.actions.view"), admin_booking_path(booking), class: "font-black text-pink-600" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

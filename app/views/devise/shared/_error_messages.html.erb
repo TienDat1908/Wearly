@@ -1,0 +1,13 @@
+<% if resource.errors.any? %>
+  <div class="rounded-2xl bg-red-50 text-red-700 p-4 mb-5">
+    <p class="font-black mb-2">
+      <%= t("errors.messages.not_saved", count: resource.errors.count, resource: resource.class.model_name.human.downcase) %>
+    </p>
+
+    <ul class="list-disc pl-5 text-sm font-semibold space-y-1">
+      <% resource.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

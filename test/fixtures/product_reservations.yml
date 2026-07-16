@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  product: one
+  booking: one
+  renter_id: 
+  start_time: 2026-07-16 17:30:08
+  end_time: 2026-07-16 17:30:08
+  status: MyString
+  reason: MyString
+
+two:
+  product: two
+  booking: two
+  renter_id: 
+  start_time: 2026-07-16 17:30:08
+  end_time: 2026-07-16 17:30:08
+  status: MyString
+  reason: MyString

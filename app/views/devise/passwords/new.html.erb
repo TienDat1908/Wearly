@@ -1,0 +1,27 @@
+<section class="min-h-[calc(100vh-92px)] flex items-center justify-center px-5 py-12">
+  <div class="w-full max-w-lg bg-white rounded-[2.5rem] p-6 md:p-8 shadow-2xl shadow-pink-100 border border-orange-100">
+    <div class="text-center mb-8">
+      <div class="mx-auto w-16 h-16 rounded-3xl bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center font-black text-2xl shadow-lg shadow-pink-200">
+        W
+      </div>
+
+      <h2 class="mt-5 text-3xl font-black"><%= t("auth.forgot_password_title") %></h2>
+      <p class="mt-2 text-slate-500"><%= t("auth.forgot_password_subtitle") %></p>
+    </div>
+
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "space-y-5" }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+
+      <div>
+        <%= f.label :email, "Email", class: "block font-black mb-2" %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400", placeholder: "you@example.com" %>
+      </div>
+
+      <%= f.submit t("auth.send_reset_instructions"), class: "w-full py-4 rounded-2xl bg-slate-950 text-white font-black shadow-xl shadow-slate-200 hover:-translate-y-0.5 transition" %>
+    <% end %>
+
+    <div class="mt-6 text-center">
+      <%= link_to t("auth.back_to_sign_in"), new_session_path(resource_name), class: "font-black text-pink-600 hover:text-pink-700" %>
+    </div>
+  </div>
+</section>
