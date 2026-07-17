@@ -1,29 +1,21 @@
 <section class="max-w-7xl mx-auto px-5 py-10">
-  <div class="mb-8">
-    <%= link_to "← #{t("bookings.back_to_bookings")}", bookings_path, class: "font-black text-pink-600" %>
+  <%= link_to "← #{t("bookings.back_to_bookings")}", bookings_path, class: "font-black text-pink-600" %>
 
-    <div class="mt-5 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-      <div>
-        <span class="px-4 py-2 rounded-full bg-pink-50 text-pink-600 text-xs font-black uppercase">
-          <%= @booking.status %>
-        </span>
-
-        <h1 class="mt-4 text-4xl md:text-5xl font-black tracking-tight">
-          <%= @booking.product.title %>
-        </h1>
-
-        <p class="mt-2 text-slate-500">
-          <%= t("bookings.booking_reference") %> #<%= @booking.id %>
-        </p>
-      </div>
-
-      <% if %w[pending accepted].include?(@booking.status) %>
-        <%= button_to t("bookings.cancel"), cancel_booking_path(@booking), method: :patch, class: "px-6 py-3 rounded-full bg-red-50 text-red-600 font-black" %>
-      <% end %>
+  <div class="mt-6 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div>
+      <span class="inline-flex px-4 py-2 rounded-full bg-pink-50 text-pink-600 text-xs font-black uppercase">
+        <%= booking_status_label(@booking) %>
+      </span>
+      <h1 class="mt-4 text-4xl md:text-5xl font-black tracking-tight"><%= @booking.product.title %></h1>
+      <p class="mt-2 text-slate-500"><%= t("bookings.booking_reference") %> #<%= @booking.id %></p>
     </div>
+
+    <% if @booking.pending? || @booking.accepted? %>
+      <%= button_to t("bookings.cancel"), cancel_booking_path(@booking), method: :patch, class: "px-6 py-3 rounded-full bg-red-50 text-red-600 font-black" %>
+    <% end %>
   </div>
 
-  <div class="grid lg:grid-cols-3 gap-6">
+  <div class="mt-8 grid lg:grid-cols-3 gap-6 items-start">
     <div class="lg:col-span-2 space-y-6">
       <div class="bg-white rounded-[2rem] p-5 shadow-sm border border-orange-100">
         <div class="grid md:grid-cols-[180px_1fr] gap-5">
@@ -31,17 +23,12 @@
             <% if @booking.product.photos.attached? %>
               <%= image_tag @booking.product.photos.first, class: "w-full h-full object-cover" %>
             <% else %>
-              <div class="w-full h-full flex items-center justify-center text-6xl bg-gradient-to-br from-pink-100 to-orange-100">
-                ✨
-              </div>
+              <div class="w-full h-full flex items-center justify-center text-6xl bg-gradient-to-br from-pink-100 to-orange-100">✨</div>
             <% end %>
           </div>
 
           <div>
-            <p class="text-pink-600 font-black uppercase text-xs tracking-wide">
-              <%= @booking.product.product_type %>
-            </p>
-
+            <p class="text-pink-600 font-black uppercase text-xs tracking-wide"><%= @booking.product.product_type %></p>
             <h2 class="mt-2 text-2xl font-black"><%= @booking.product.title %></h2>
             <p class="mt-3 text-slate-600"><%= @booking.product.description %></p>
 
@@ -50,15 +37,13 @@
                 <p class="text-sm text-slate-500 font-bold"><%= t("products.size") %></p>
                 <p class="font-black"><%= @booking.product.size.presence || "-" %></p>
               </div>
-
               <div class="rounded-2xl bg-slate-50 p-4">
                 <p class="text-sm text-slate-500 font-bold"><%= t("products.color") %></p>
                 <p class="font-black"><%= @booking.product.color.presence || "-" %></p>
               </div>
-
               <div class="rounded-2xl bg-slate-50 p-4">
                 <p class="text-sm text-slate-500 font-bold"><%= t("bookings.pickup_method") %></p>
-                <p class="font-black"><%= @booking.pickup_method.presence || "-" %></p>
+                <p class="font-black"><%= pickup_method_label(@booking) %></p>
               </div>
             </div>
           </div>
@@ -66,35 +51,27 @@
       </div>
 
       <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-orange-100">
-        <h3 class="text-xl font-black mb-5"><%= t("bookings.schedule") %></h3>
+        <h3 class="text-xl font-black mb-5"><%= t("bookings.schedule_and_delivery") %></h3>
 
         <div class="grid md:grid-cols-2 gap-4">
           <div class="rounded-2xl bg-slate-50 p-5">
             <p class="text-slate-500 font-bold"><%= t("bookings.start_time") %></p>
-            <p class="mt-2 text-lg font-black"><%= @booking.start_time&.strftime("%d %b %Y, %H:%M") || "-" %></p>
+            <p class="mt-2 text-lg font-black"><%= l(@booking.start_time, format: :long) %></p>
           </div>
-
           <div class="rounded-2xl bg-slate-50 p-5">
             <p class="text-slate-500 font-bold"><%= t("bookings.end_time") %></p>
-            <p class="mt-2 text-lg font-black"><%= @booking.end_time&.strftime("%d %b %Y, %H:%M") || "-" %></p>
+            <p class="mt-2 text-lg font-black"><%= l(@booking.end_time, format: :long) %></p>
           </div>
-        </div>
-
-        <div class="mt-4 grid md:grid-cols-2 gap-4">
-          <div class="rounded-2xl bg-slate-50 p-5">
-            <p class="text-slate-500 font-bold"><%= t("bookings.pickup_address") %></p>
-            <p class="mt-2 font-black"><%= @booking.pickup_address.presence || "-" %></p>
-          </div>
-
-          <div class="rounded-2xl bg-slate-50 p-5">
-            <p class="text-slate-500 font-bold"><%= t("bookings.return_address") %></p>
-            <p class="mt-2 font-black"><%= @booking.return_address.presence || "-" %></p>
+          <div class="rounded-2xl bg-pink-50 p-5 md:col-span-2">
+            <p class="text-pink-600 font-bold"><%= booking_location_label(@booking) %></p>
+            <p class="mt-2 text-lg font-black"><%= @booking.pickup_address %></p>
+            <p class="mt-2 text-sm text-slate-500"><%= t("bookings.location_snapshot_hint") %></p>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="bg-slate-950 text-white rounded-[2rem] p-6 shadow-sm h-fit">
+    <aside class="bg-slate-950 text-white rounded-[2rem] p-6 shadow-sm lg:sticky lg:top-28">
       <h3 class="text-xl font-black mb-5"><%= t("admin.bookings.payment_summary") %></h3>
 
       <div class="space-y-4">
@@ -102,52 +79,49 @@
           <span class="text-slate-300"><%= t("admin.bookings.rental_days") %></span>
           <span class="font-black"><%= @booking.rental_days.to_i %></span>
         </div>
-
         <div class="flex justify-between gap-4">
           <span class="text-slate-300"><%= t("admin.bookings.rental_amount") %></span>
           <span class="font-black"><%= number_to_currency(@booking.rental_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
         </div>
-
         <div class="flex justify-between gap-4">
           <span class="text-slate-300"><%= t("products.cleaning_fee") %></span>
           <span class="font-black"><%= number_to_currency(@booking.cleaning_fee.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
         </div>
-
+        <div class="flex justify-between gap-4">
+          <span class="text-slate-300"><%= t("bookings.renter_service_fee") %> (<%= @booking.renter_service_fee_rate.to_i %>%)</span>
+          <span class="font-black"><%= number_to_currency(@booking.renter_service_fee_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
+        </div>
         <div class="flex justify-between gap-4">
           <span class="text-slate-300"><%= t("products.deposit") %></span>
           <span class="font-black"><%= number_to_currency(@booking.deposit_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
         </div>
+        <p class="text-xs text-slate-400"><%= t("bookings.deposit_refundable_hint") %></p>
 
         <div class="pt-5 border-t border-white/10 flex justify-between gap-4">
           <span class="text-slate-300"><%= t("admin.bookings.total") %></span>
           <span class="text-2xl font-black text-pink-300"><%= number_to_currency(@booking.total_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
         </div>
 
-        <div class="mt-6">
-          <% if @booking.status == "accepted" %>
-            <%= button_to t("bookings.pay_now"),
-              pay_booking_path(@booking),
-              method: :patch,
-              class: "w-full py-4 rounded-2xl bg-pink-500 text-white font-black" %>
-          <% elsif %w[paid completed].include?(@booking.status) %>
-            <div class="w-full py-4 rounded-2xl bg-green-500/10 text-green-300 text-center font-black border border-green-400/20">
-              <%= t("bookings.payment_completed") %>
-            </div>
-          <% elsif @booking.status == "pending" %>
-            <div class="w-full py-4 rounded-2xl bg-white/10 text-slate-300 text-center font-black">
-              <%= t("bookings.waiting_owner_approval") %>
-            </div>
-          <% elsif @booking.status == "rejected" %>
-            <div class="w-full py-4 rounded-2xl bg-red-500/10 text-red-300 text-center font-black border border-red-400/20">
-              <%= t("bookings.rejected") %>
-            </div>
-          <% elsif @booking.status == "cancelled" %>
-            <div class="w-full py-4 rounded-2xl bg-white/10 text-slate-300 text-center font-black">
-              <%= t("bookings.cancelled") %>
-            </div>
+        <div class="pt-2">
+          <% if @booking.accepted? %>
+            <%= button_to t("bookings.pay_now"), pay_booking_path(@booking), method: :patch, class: "w-full py-4 rounded-2xl bg-pink-500 text-white font-black" %>
+            <p class="mt-3 text-center text-xs text-slate-400"><%= t("bookings.pay_to_confirm_hint") %></p>
+          <% elsif @booking.paid? %>
+            <%= button_to t("bookings.confirm_received"), confirm_received_booking_path(@booking), method: :patch, class: "w-full py-4 rounded-2xl bg-green-500 text-white font-black" %>
+            <p class="mt-3 text-center text-xs text-slate-400"><%= t("bookings.confirm_received_hint") %></p>
+          <% elsif @booking.picked_up? %>
+            <div class="w-full py-4 rounded-2xl bg-blue-500/10 text-blue-300 text-center font-black"><%= t("bookings.rental_in_progress") %></div>
+          <% elsif @booking.completed? %>
+            <div class="w-full py-4 rounded-2xl bg-green-500/10 text-green-300 text-center font-black border border-green-400/20"><%= t("bookings.payment_completed") %></div>
+          <% elsif @booking.pending? %>
+            <div class="w-full py-4 rounded-2xl bg-white/10 text-slate-300 text-center font-black"><%= t("bookings.waiting_owner_approval") %></div>
+          <% elsif @booking.rejected? %>
+            <div class="w-full py-4 rounded-2xl bg-red-500/10 text-red-300 text-center font-black"><%= t("bookings.rejected") %></div>
+          <% elsif @booking.cancelled? %>
+            <div class="w-full py-4 rounded-2xl bg-white/10 text-slate-300 text-center font-black"><%= t("bookings.cancelled") %></div>
           <% end %>
         </div>
       </div>
-    </div>
+    </aside>
   </div>
 </section>

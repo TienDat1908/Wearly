@@ -22,6 +22,7 @@ module Owner
 
       ActiveRecord::Base.transaction do
         @booking.accept!
+        @booking.update!(accepted_at: Time.current)
         @booking.product_reservation&.update!(status: "confirmed")
       end
 
@@ -36,6 +37,7 @@ module Owner
 
       ActiveRecord::Base.transaction do
         @booking.reject!
+        @booking.update!(rejected_at: Time.current)
         @booking.product_reservation&.update!(status: "cancelled")
       end
 
@@ -43,13 +45,15 @@ module Owner
     end
 
     def complete
-      unless @booking.paid?
-        redirect_to owner_booking_path(@booking), alert: t("flash.bookings.must_be_paid_first")
+      unless @booking.completable?
+        redirect_to owner_booking_path(@booking), alert: t("flash.bookings.cannot_complete_yet")
         return
       end
 
       ActiveRecord::Base.transaction do
         @booking.complete!
+        @booking.update!(returned_at: Time.current, completed_at: Time.current)
+        @booking.product_reservation&.update!(status: "cancelled")
 
         Payout.find_or_create_by!(booking: @booking) do |payout|
           payout.owner_id = @booking.owner_id

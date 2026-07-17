@@ -9,7 +9,14 @@ module Owner
     end
 
     def new
-      @product = current_user.products.new
+      @product = current_user.products.new(
+        address: current_user.address,
+        city: current_user.city,
+        district: current_user.district,
+        ward: current_user.ward,
+        pickup_available: true,
+        delivery_available: true
+      )
     end
 
     def create
@@ -35,8 +42,8 @@ module Owner
     end
 
     def destroy
-      @product.destroy
-      redirect_to owner_products_path, notice: t("flash.products.deleted")
+      @product.update_columns(status: "inactive", updated_at: Time.current)
+      redirect_to owner_products_path, notice: t("flash.products.archived")
     end
 
     private

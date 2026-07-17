@@ -18,6 +18,17 @@
 
       <p class="mt-4 text-slate-600"><%= @product.description %></p>
 
+      <div class="mt-5 rounded-2xl bg-pink-50 p-4">
+        <p class="text-sm text-pink-600 font-bold"><%= t("products.fulfillment_options") %></p>
+        <p class="mt-1 font-black">
+          <%= @product.available_pickup_methods.map { |method| t("bookings.#{method}") }.join(" · ") %>
+        </p>
+
+        <% if @product.available_pickup_methods.include?("self_pickup") %>
+          <p class="mt-2 text-sm text-slate-600"><%= @product.pickup_location %></p>
+        <% end %>
+      </div>
+
       <div class="grid grid-cols-2 gap-4 mt-6">
         <div class="rounded-2xl bg-slate-50 p-4">
           <p class="text-sm text-slate-500"><%= t("products.size") %></p>

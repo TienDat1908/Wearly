@@ -1,0 +1,71 @@
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  <div>
+    <h2 class="text-2xl font-black"><%= t("admin.payouts.title") %></h2>
+    <p class="mt-1 text-slate-500 font-bold"><%= t("admin.payouts.subtitle") %></p>
+  </div>
+
+  <%= form_with url: admin_payouts_path, method: :get, local: true, class: "flex gap-3" do %>
+    <%= select_tag :status,
+      options_for_select(
+        [[t("admin.filters.all_statuses"), ""]] +
+          Payout.statuses.keys.map { |status| [t("admin.payouts.statuses.#{status}"), status] },
+        params[:status]
+      ),
+      class: "rounded-2xl border-slate-200 font-bold",
+      onchange: "this.form.submit()" %>
+  <% end %>
+</div>
+
+<div class="bg-white rounded-[2rem] shadow-sm border border-orange-100 overflow-hidden">
+  <table class="w-full text-left">
+    <thead class="bg-slate-50 text-slate-500 text-sm">
+      <tr>
+        <th class="p-4"><%= t("admin.payouts.booking") %></th>
+        <th class="p-4"><%= t("admin.payouts.owner") %></th>
+        <th class="p-4"><%= t("admin.payouts.amount") %></th>
+        <th class="p-4"><%= t("admin.payouts.status") %></th>
+        <th class="p-4 text-right"><%= t("admin.actions.actions") %></th>
+      </tr>
+    </thead>
+
+    <tbody class="divide-y divide-slate-100">
+      <% @payouts.each do |payout| %>
+        <tr class="align-top">
+          <td class="p-4">
+            <p class="font-black">#<%= payout.booking_id %> · <%= payout.booking.product.title %></p>
+            <p class="mt-1 text-sm text-slate-500">
+              <%= payout.booking.renter.full_name.presence || payout.booking.renter.email %>
+            </p>
+          </td>
+
+          <td class="p-4">
+            <p class="font-black"><%= payout.owner.full_name.presence || payout.owner.email %></p>
+            <p class="mt-1 text-sm text-slate-500"><%= payout.owner.phone %></p>
+          </td>
+
+          <td class="p-4 font-black text-pink-600">
+            <%= number_to_currency(payout.amount.to_i, unit: "₫", precision: 0, format: "%n %u") %>
+          </td>
+
+          <td class="p-4">
+            <span class="px-3 py-1 rounded-full text-xs font-black <%= payout.pending? ? 'bg-orange-50 text-orange-600' : 'bg-green-50 text-green-700' %>">
+              <%= t("admin.payouts.statuses.#{payout.status}") %>
+            </span>
+          </td>
+
+          <td class="p-4 text-right">
+            <%= link_to t("admin.actions.view"), admin_payout_path(payout), class: "inline-flex px-4 py-2 rounded-full bg-slate-950 text-white font-black text-sm" %>
+          </td>
+        </tr>
+      <% end %>
+
+      <% if @payouts.empty? %>
+        <tr>
+          <td colspan="5" class="p-8 text-center text-slate-500 font-bold">
+            <%= t("admin.payouts.empty") %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

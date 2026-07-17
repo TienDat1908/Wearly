@@ -73,6 +73,7 @@ en:
     rent_now: "Rent now"
     sign_in_to_rent: "Sign in to rent"
     manage_item: "Manage item"
+    fulfillment_options: "Available fulfillment methods"
     form:
       title: "Title"
       type: "Type"
@@ -89,6 +90,14 @@ en:
       pricing: "Pricing"
       pricing_hint: "Set your rental price, deposit, and cleaning fee."
       photos_hint: "Upload clear photos. The first photo will be used as the cover."
+      fulfillment: "Pickup and delivery"
+      fulfillment_hint: "Choose how renters can receive the item and provide the pickup location."
+      pickup_available: "Self pickup available"
+      delivery_available: "Delivery available"
+      pickup_address: "Pickup location"
+      ward: "Ward"
+      district: "District"
+      city: "City"
 
   owner:
     products:
@@ -107,6 +116,13 @@ en:
       reject: "Reject booking"
       complete: "Complete booking"
       waiting_payment: "Waiting for renter payment"
+      renter_details: "Renter details"
+      earnings_summary: "Your earnings"
+      deposit_held_hint: "%{amount} deposit is held by Wearly and is not part of your earnings."
+      waiting_renter_receipt: "Waiting for the renter to confirm receipt"
+      confirm_return: "Confirm item returned"
+      rental_in_progress: "Rental is in progress"
+      completed_waiting_payout: "Completed · payout is being processed"
 
   bookings:
     my_bookings: "My bookings"
@@ -122,6 +138,10 @@ en:
     delivery: "Delivery"
     pickup_address: "Pickup address"
     return_address: "Return address"
+    self_pickup_address: "Pickup and return location"
+    delivery_address: "Delivery address"
+    delivery_address_placeholder: "Enter the address where you want to receive the item"
+    address_unavailable: "The owner has not provided a pickup address."
     submit: "Send booking request"
     cancel: "Cancel booking"
     back_to_bookings: "Back to bookings"
@@ -137,10 +157,30 @@ en:
     renter_service_fee: "Service fee"
     rejected: "Rejected"
     cancelled: "Cancelled"
+    validation_failed: "Please check the booking information:"
+    schedule_and_delivery: "Schedule and fulfillment"
+    pickup_return_location: "Pickup and return location"
+    location_snapshot_hint: "This address is saved with the booking and will not change if the listing is edited later."
+    deposit_refundable_hint: "The deposit is held to protect the transaction and is refundable after a successful return."
+    confirm_received: "Confirm item received"
+    confirm_received_hint: "Only confirm after you have received and checked the item."
+    rental_in_progress: "Rental in progress"
+    rental_days_count:
+      one: "1 day"
+      other: "%{count} days"
+    statuses:
+      pending: "Pending owner approval"
+      accepted: "Awaiting payment"
+      paid: "Paid · awaiting receipt"
+      picked_up: "Rental in progress"
+      rejected: "Rejected"
+      cancelled: "Cancelled"
+      completed: "Completed"
 
   actions:
     edit: "Edit"
     delete: "Delete"
+    archive: "Archive"
 
   admin:
     title: "Admin Panel"
@@ -149,6 +189,7 @@ en:
       users: "Users"
       products: "Products"
       bookings: "Bookings"
+      payouts: "Payouts"
       back_to_site: "Back to site"
     actions:
       actions: "Actions"
@@ -181,6 +222,9 @@ en:
       renter_fee: "Renter fee"
       owner_payout: "Owner payout"
       amount_for_owners: "Amount paid to owners"
+      pending_payouts: "Pending payouts"
+      needs_payout: "need payout"
+      latest_payouts: "Latest payouts"
       deposit_held: "Deposit held"
       not_platform_revenue: "Not platform revenue"
       revenue_breakdown: "Revenue breakdown"
@@ -230,16 +274,41 @@ en:
       after_fee: "After platform fee"
       expected_revenue: "Expected revenue"
       revenue_recognized: "Revenue recognized"
+      status_managed_hint: "Booking status is controlled by the transaction workflow and cannot be changed manually."
+      cancel_reason: "Cancellation reason"
+      reject_reason: "Rejection reason"
+    payouts:
+      title: "Owner payouts"
+      subtitle: "Track completed rentals that need to be paid out to owners."
+      empty: "No payouts yet."
+      booking: "Booking"
+      owner: "Owner"
+      amount: "Amount"
+      status: "Status"
+      payout_reference: "Payout #%{id}"
+      booking_details: "Booking details"
+      owner_details: "Owner details"
+      payout_summary: "Payout summary"
+      completed_at: "Completed at"
+      mark_paid: "Mark as paid"
+      admin_note_placeholder: "Internal note for this payout"
+      paid_at: "Paid at %{time}"
+      statuses:
+        pending: "Pending"
+        paid: "Paid"
+        failed: "Failed"
 
   flash:
     auth:
       owner_required: "You need an owner account to list items."
       admin_required: "You need an admin account to access this page."
+      account_blocked: "Your account has been blocked. Please contact Wearly support."
 
     products:
       created: "Your item has been listed."
       updated: "Your item has been updated."
       deleted: "Your item has been deleted."
+      archived: "Your item has been archived. Existing booking history is preserved."
 
     bookings:
       created: "Your booking request has been sent."
@@ -253,6 +322,8 @@ en:
       paid: "Payment completed successfully."
       invalid_status: "This booking cannot be updated from its current status."
       must_be_paid_first: "This booking must be paid before it can be completed."
+      received: "The item receipt has been confirmed."
+      cannot_complete_yet: "The item can only be completed after the renter confirms receipt and the rental period has ended."
 
     admin:
       users:
@@ -261,6 +332,9 @@ en:
         updated: "Product has been updated."
       bookings:
         updated: "Booking has been updated."
+      payouts:
+        paid: "Payout has been marked as paid."
+        invalid_status: "This payout cannot be updated from its current status."
 
   errors:
     messages:
@@ -269,8 +343,20 @@ en:
         other: "%{count} errors prevented this %{resource} from being saved:"
 
   activerecord:
+    attributes:
+      booking:
+        start_time: "Start time"
+        end_time: "Return time"
     errors:
       models:
+        booking:
+          attributes:
+            end_time:
+              after_start_time: "must be after the start time"
+            pickup_method:
+              unsupported: "is not supported for this item"
+        product:
+          fulfillment_method_required: "Select at least one pickup or delivery method"
         user:
           attributes:
             password:

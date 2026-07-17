@@ -279,26 +279,40 @@ end
 
 puts "Creating bookings..."
 
-booking_statuses = ["pending", "accepted", "completed", "cancelled", "rejected"]
+booking_statuses = ["pending", "accepted", "paid", "picked_up", "completed", "cancelled", "rejected"]
 
 20.times do |index|
   product = products[index % products.length]
   renter = renters[index % renters.length]
   owner = product.owner
-
-  start_time = (index - 5).days.from_now.change(hour: 10)
-  end_time = start_time + [1, 2, 3, 4].sample.days
-  rental_days = [(end_time.to_date - start_time.to_date).to_i + 1, 1].max
-
-  rental_amount = product.price_per_day.to_i * rental_days
-  cleaning_fee = product.cleaning_fee.to_i
-  deposit_amount = product.deposit_amount.to_i
-  platform_fee_rate = 15
-  platform_fee_amount = (rental_amount * platform_fee_rate / 100.0).round
-  owner_earning_amount = rental_amount + cleaning_fee - platform_fee_amount
-  total_amount = rental_amount + cleaning_fee + deposit_amount
-
   status = booking_statuses[index % booking_statuses.length]
+
+  start_time =
+    case status
+    when "completed"
+      (index + 8).days.ago.change(hour: 10)
+    when "picked_up"
+      1.day.ago.change(hour: 10)
+    when "paid"
+      1.day.from_now.change(hour: 10)
+    else
+      (index - 5).days.from_now.change(hour: 10)
+    end
+
+  end_time =
+    case status
+    when "completed"
+      start_time + [1, 2, 3].sample.days
+    when "picked_up"
+      2.days.from_now.change(hour: 18)
+    else
+      start_time + [1, 2, 3, 4].sample.days
+    end
+
+  price = Booking.price_breakdown(product: product, start_time: start_time, end_time: end_time)
+
+  pickup_method = ["self_pickup", "delivery"].sample
+  booking_address = pickup_method == "self_pickup" ? product.pickup_location : renter.address
 
   booking = Booking.create!(
     product: product,
@@ -307,32 +321,25 @@ booking_statuses = ["pending", "accepted", "completed", "cancelled", "rejected"]
     status: status,
     start_time: start_time,
     end_time: end_time,
-    rental_days: rental_days,
-    rental_amount: rental_amount,
-    cleaning_fee: cleaning_fee,
-    delivery_fee: 0,
-    deposit_amount: deposit_amount,
-    discount_amount: 0,
-    platform_fee_rate: platform_fee_rate,
-    platform_fee_amount: platform_fee_amount,
-    owner_earning_amount: owner_earning_amount,
-    total_amount: total_amount,
-    pickup_method: ["self_pickup", "delivery"].sample,
-    pickup_address: renter.address,
-    return_address: renter.address,
-    accepted_at: status.in?(["accepted", "completed"]) ? 1.day.ago : nil,
+    **price,
+    pickup_method: pickup_method,
+    pickup_address: booking_address,
+    return_address: booking_address,
+    accepted_at: status.in?(["accepted", "paid", "picked_up", "completed"]) ? 1.day.ago : nil,
     rejected_at: status == "rejected" ? 1.day.ago : nil,
     cancelled_at: status == "cancelled" ? 1.day.ago : nil,
-    completed_at: status == "completed" ? Time.current : nil,
+    picked_up_at: status.in?(["picked_up", "completed"]) ? start_time : nil,
+    returned_at: status == "completed" ? end_time : nil,
+    completed_at: status == "completed" ? end_time : nil,
     cancel_reason: status == "cancelled" ? "Customer changed their plan." : nil,
     reject_reason: status == "rejected" ? "Item is not available for this schedule." : nil
   )
 
   reservation_status =
     case status
-    when "accepted", "completed"
+    when "accepted", "paid", "picked_up"
       "confirmed"
-    when "cancelled", "rejected"
+    when "completed", "cancelled", "rejected"
       "cancelled"
     else
       "pending"
@@ -351,11 +358,11 @@ booking_statuses = ["pending", "accepted", "completed", "cancelled", "rejected"]
   Payment.create!(
     booking: booking,
     payer_id: renter.id,
-    amount: total_amount,
+    amount: price[:total_amount],
     payment_method: ["cash", "bank_transfer"].sample,
-    status: status.in?(["accepted", "completed"]) ? "paid" : "pending",
+    status: status.in?(["paid", "picked_up", "completed"]) ? "paid" : "pending",
     transaction_id: "PAY-#{SecureRandom.hex(6).upcase}",
-    paid_at: status.in?(["accepted", "completed"]) ? Time.current : nil,
+    paid_at: status.in?(["paid", "picked_up", "completed"]) ? Time.current : nil,
     admin_note: "Seed payment"
   )
 
@@ -363,7 +370,7 @@ booking_statuses = ["pending", "accepted", "completed", "cancelled", "rejected"]
     Payout.create!(
       owner_id: owner.id,
       booking: booking,
-      amount: owner_earning_amount,
+      amount: price[:owner_earning_amount],
       status: "paid",
       payout_method: "bank_transfer",
       paid_at: Time.current,

@@ -57,8 +57,8 @@
           <% end %>
 
           <div class="flex items-center gap-2 bg-slate-100 rounded-full p-1">
-            <%= link_to "EN", url_for(locale: :en), class: "px-3 py-1 rounded-full #{I18n.locale == :en ? 'bg-white shadow font-black' : 'text-slate-500'}" %>
-            <%= link_to "VI", url_for(locale: :vi), class: "px-3 py-1 rounded-full #{I18n.locale == :vi ? 'bg-white shadow font-black' : 'text-slate-500'}" %>
+            <%= link_to "EN", locale_url(:en), class: "px-3 py-1 rounded-full #{I18n.locale == :en ? 'bg-white shadow font-black' : 'text-slate-500'}" %>
+            <%= link_to "VI", locale_url(:vi), class: "px-3 py-1 rounded-full #{I18n.locale == :vi ? 'bg-white shadow font-black' : 'text-slate-500'}" %>
           </div>
         </div>
       </div>

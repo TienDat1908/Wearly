@@ -73,6 +73,7 @@ vi:
     rent_now: "Thuê ngay"
     sign_in_to_rent: "Đăng nhập để thuê"
     manage_item: "Quản lý món đồ"
+    fulfillment_options: "Phương thức nhận đồ hỗ trợ"
     form:
       title: "Tên món đồ"
       type: "Loại đồ"
@@ -89,6 +90,14 @@ vi:
       pricing: "Giá thuê"
       pricing_hint: "Thiết lập giá thuê, tiền cọc và phí vệ sinh."
       photos_hint: "Tải ảnh rõ nét. Ảnh đầu tiên sẽ được dùng làm ảnh đại diện."
+      fulfillment: "Nhận đồ và giao hàng"
+      fulfillment_hint: "Chọn cách người thuê có thể nhận đồ và cung cấp địa chỉ lấy đồ."
+      pickup_available: "Cho phép tự đến lấy"
+      delivery_available: "Có hỗ trợ giao hàng"
+      pickup_address: "Địa chỉ lấy đồ"
+      ward: "Phường/Xã"
+      district: "Quận/Huyện"
+      city: "Tỉnh/Thành phố"
 
   owner:
     products:
@@ -107,6 +116,13 @@ vi:
       reject: "Từ chối đơn thuê"
       complete: "Hoàn tất đơn thuê"
       waiting_payment: "Đang chờ người thuê thanh toán"
+      renter_details: "Thông tin người thuê"
+      earnings_summary: "Thu nhập của bạn"
+      deposit_held_hint: "%{amount} tiền cọc đang được Wearly giữ và không tính vào thu nhập của bạn."
+      waiting_renter_receipt: "Đang chờ người thuê xác nhận đã nhận đồ"
+      confirm_return: "Xác nhận đã nhận lại đồ"
+      rental_in_progress: "Đơn thuê đang diễn ra"
+      completed_waiting_payout: "Đã hoàn tất · tiền trả đang được xử lý"
 
   bookings:
     my_bookings: "Đơn thuê của tôi"
@@ -122,6 +138,10 @@ vi:
     delivery: "Giao hàng"
     pickup_address: "Địa chỉ nhận đồ"
     return_address: "Địa chỉ trả đồ"
+    self_pickup_address: "Địa chỉ nhận và trả đồ"
+    delivery_address: "Địa chỉ giao hàng"
+    delivery_address_placeholder: "Nhập địa chỉ bạn muốn nhận đồ"
+    address_unavailable: "Người đăng chưa cung cấp địa chỉ lấy đồ."
     submit: "Gửi yêu cầu thuê"
     cancel: "Hủy đơn thuê"
     back_to_bookings: "Quay lại danh sách đơn thuê"
@@ -137,10 +157,30 @@ vi:
     renter_service_fee: "Phí dịch vụ"
     rejected: "Đã bị từ chối"
     cancelled: "Đã hủy"
+    validation_failed: "Vui lòng kiểm tra lại thông tin thuê:"
+    schedule_and_delivery: "Lịch thuê và giao nhận"
+    pickup_return_location: "Địa điểm nhận và trả đồ"
+    location_snapshot_hint: "Địa chỉ này được lưu theo đơn thuê và không thay đổi khi sản phẩm được chỉnh sửa sau đó."
+    deposit_refundable_hint: "Tiền cọc được giữ để bảo vệ giao dịch và sẽ hoàn lại sau khi trả đồ thành công."
+    confirm_received: "Xác nhận đã nhận đồ"
+    confirm_received_hint: "Chỉ xác nhận sau khi bạn đã nhận và kiểm tra món đồ."
+    rental_in_progress: "Đơn thuê đang diễn ra"
+    rental_days_count:
+      one: "1 ngày"
+      other: "%{count} ngày"
+    statuses:
+      pending: "Chờ người đăng xác nhận"
+      accepted: "Chờ thanh toán"
+      paid: "Đã thanh toán · chờ nhận đồ"
+      picked_up: "Đang thuê"
+      rejected: "Đã bị từ chối"
+      cancelled: "Đã hủy"
+      completed: "Đã hoàn tất"
 
   actions:
     edit: "Sửa"
     delete: "Xóa"
+    archive: "Ẩn sản phẩm"
 
   admin:
     title: "Trang quản trị"
@@ -149,6 +189,7 @@ vi:
       users: "Người dùng"
       products: "Sản phẩm"
       bookings: "Đơn thuê"
+      payouts: "Payout"
       back_to_site: "Về trang chính"
     actions:
       actions: "Thao tác"
@@ -181,6 +222,9 @@ vi:
       renter_fee: "Phí từ người thuê"
       owner_payout: "Tiền trả người đăng"
       amount_for_owners: "Số tiền trả cho người đăng"
+      pending_payouts: "Payout đang chờ"
+      needs_payout: "payout cần xử lý"
+      latest_payouts: "Payout mới"
       deposit_held: "Tiền cọc đang giữ"
       not_platform_revenue: "Không tính là doanh thu phí sàn"
       revenue_breakdown: "Cơ cấu doanh thu"
@@ -230,16 +274,41 @@ vi:
       after_fee: "Sau phí sàn"
       expected_revenue: "Doanh thu dự kiến"
       revenue_recognized: "Đã ghi nhận doanh thu"
+      status_managed_hint: "Trạng thái đơn được điều khiển bởi quy trình giao dịch và không thể sửa thủ công."
+      cancel_reason: "Lý do hủy"
+      reject_reason: "Lý do từ chối"
+    payouts:
+      title: "Payout cho người đăng"
+      subtitle: "Theo dõi các đơn đã hoàn tất cần trả tiền cho người đăng."
+      empty: "Chưa có payout nào."
+      booking: "Đơn thuê"
+      owner: "Người đăng"
+      amount: "Số tiền"
+      status: "Trạng thái"
+      payout_reference: "Payout #%{id}"
+      booking_details: "Chi tiết đơn thuê"
+      owner_details: "Thông tin người đăng"
+      payout_summary: "Tóm tắt payout"
+      completed_at: "Hoàn tất lúc"
+      mark_paid: "Đánh dấu đã trả"
+      admin_note_placeholder: "Ghi chú nội bộ cho payout này"
+      paid_at: "Đã trả lúc %{time}"
+      statuses:
+        pending: "Đang chờ"
+        paid: "Đã trả"
+        failed: "Thất bại"
 
   flash:
     auth:
       owner_required: "Bạn cần tài khoản người đăng đồ để sử dụng chức năng này."
       admin_required: "Bạn cần tài khoản admin để truy cập trang này."
+      account_blocked: "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Wearly để được hỗ trợ."
 
     products:
       created: "Đã đăng món đồ cho thuê."
       updated: "Đã cập nhật món đồ."
       deleted: "Đã xóa món đồ."
+      archived: "Đã ẩn món đồ và giữ nguyên lịch sử giao dịch."
 
     bookings:
       created: "Đã gửi yêu cầu thuê."
@@ -253,6 +322,8 @@ vi:
       paid: "Thanh toán thành công."
       invalid_status: "Không thể cập nhật đơn thuê ở trạng thái hiện tại."
       must_be_paid_first: "Đơn thuê cần được thanh toán trước khi hoàn tất."
+      received: "Đã xác nhận nhận đồ."
+      cannot_complete_yet: "Chỉ có thể hoàn tất sau khi người thuê xác nhận nhận đồ và kỳ thuê đã kết thúc."
 
     admin:
       users:
@@ -261,6 +332,9 @@ vi:
         updated: "Đã cập nhật sản phẩm."
       bookings:
         updated: "Đã cập nhật đơn thuê."
+      payouts:
+        paid: "Đã đánh dấu payout là đã trả."
+        invalid_status: "Không thể cập nhật payout ở trạng thái hiện tại."
 
   errors:
     messages:
@@ -269,8 +343,20 @@ vi:
         other: "Có %{count} lỗi khiến %{resource} không thể được lưu:"
 
   activerecord:
+    attributes:
+      booking:
+        start_time: "Ngày bắt đầu"
+        end_time: "Ngày trả"
     errors:
       models:
+        booking:
+          attributes:
+            end_time:
+              after_start_time: "phải sau ngày bắt đầu"
+            pickup_method:
+              unsupported: "không được hỗ trợ cho món đồ này"
+        product:
+          fulfillment_method_required: "Hãy chọn ít nhất một phương thức nhận đồ hoặc giao hàng"
         user:
           attributes:
             password:

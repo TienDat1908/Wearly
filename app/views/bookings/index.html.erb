@@ -39,11 +39,11 @@
             <div>
               <div class="flex flex-wrap items-center gap-2">
                 <span class="px-3 py-1 rounded-full bg-pink-50 text-pink-600 text-xs font-black uppercase">
-                  <%= booking.status %>
+                  <%= booking_status_label(booking) %>
                 </span>
 
                 <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-black">
-                  <%= pluralize(booking.rental_days.to_i, "day") %>
+                  <%= t("bookings.rental_days_count", count: booking.rental_days.to_i) %>
                 </span>
               </div>
 
@@ -63,12 +63,12 @@
               <div class="mt-4 grid sm:grid-cols-2 gap-3 text-sm">
                 <div class="rounded-2xl bg-slate-50 p-4">
                   <p class="text-slate-500 font-bold"><%= t("bookings.start_time") %></p>
-                  <p class="font-black mt-1"><%= booking.start_time&.strftime("%d %b %Y, %H:%M") || "-" %></p>
+                  <p class="font-black mt-1"><%= booking.start_time ? l(booking.start_time, format: :long) : "-" %></p>
                 </div>
 
                 <div class="rounded-2xl bg-slate-50 p-4">
                   <p class="text-slate-500 font-bold"><%= t("bookings.end_time") %></p>
-                  <p class="font-black mt-1"><%= booking.end_time&.strftime("%d %b %Y, %H:%M") || "-" %></p>
+                  <p class="font-black mt-1"><%= booking.end_time ? l(booking.end_time, format: :long) : "-" %></p>
                 </div>
               </div>
             </div>

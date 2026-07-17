@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   before_action :set_locale
+  before_action :ensure_active_user
   before_action :set_owner_pending_bookings_count
   before_action :configure_permitted_parameters, if: :devise_controller?
 
@@ -17,6 +18,13 @@ class ApplicationController < ActionController::Base
     return if current_user&.admin?
 
     redirect_to root_path, alert: t("flash.auth.admin_required")
+  end
+
+  def ensure_active_user
+    return unless user_signed_in? && current_user.blocked?
+
+    sign_out(current_user)
+    redirect_to root_path, alert: t("flash.auth.account_blocked")
   end
 
   def require_owner!

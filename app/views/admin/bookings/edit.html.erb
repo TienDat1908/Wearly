@@ -2,31 +2,20 @@
   <h2 class="text-4xl font-black mb-6"><%= t("admin.bookings.edit_title") %></h2>
 
   <%= form_with model: [:admin, @booking], local: true, class: "bg-white rounded-[2rem] p-6 shadow-sm space-y-5" do |f| %>
-    <div>
-      <%= f.label :status, t("admin.bookings.status"), class: "font-black" %>
-      <%= f.select :status, [["Pending", "pending"], ["Accepted", "accepted"], ["Rejected", "rejected"], ["Cancelled", "cancelled"], ["Completed", "completed"]], {}, class: "mt-2 w-full rounded-2xl border-slate-200" %>
-    </div>
-
-    <div class="grid md:grid-cols-2 gap-4">
-      <div>
-        <%= f.label :start_time, t("bookings.start_time"), class: "font-black" %>
-        <%= f.datetime_local_field :start_time, class: "mt-2 w-full rounded-2xl border-slate-200" %>
-      </div>
-
-      <div>
-        <%= f.label :end_time, t("bookings.end_time"), class: "font-black" %>
-        <%= f.datetime_local_field :end_time, class: "mt-2 w-full rounded-2xl border-slate-200" %>
-      </div>
+    <div class="rounded-2xl bg-slate-50 p-4">
+      <p class="text-sm text-slate-500 font-bold"><%= t("admin.bookings.status") %></p>
+      <p class="mt-1 font-black"><%= booking_status_label(@booking) %></p>
+      <p class="mt-2 text-xs text-slate-500"><%= t("admin.bookings.status_managed_hint") %></p>
     </div>
 
     <div>
-      <%= f.label :pickup_address, t("bookings.pickup_address"), class: "font-black" %>
-      <%= f.text_area :pickup_address, rows: 3, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+      <%= f.label :cancel_reason, t("admin.bookings.cancel_reason"), class: "font-black" %>
+      <%= f.text_area :cancel_reason, rows: 4, class: "mt-2 w-full rounded-2xl border-slate-200" %>
     </div>
 
     <div>
-      <%= f.label :return_address, t("bookings.return_address"), class: "font-black" %>
-      <%= f.text_area :return_address, rows: 3, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+      <%= f.label :reject_reason, t("admin.bookings.reject_reason"), class: "font-black" %>
+      <%= f.text_area :reject_reason, rows: 4, class: "mt-2 w-full rounded-2xl border-slate-200" %>
     </div>
 
     <%= f.submit t("admin.actions.save"), class: "w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-orange-400 text-white font-black shadow-lg shadow-pink-200" %>

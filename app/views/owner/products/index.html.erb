@@ -30,7 +30,9 @@
 
         <div class="flex gap-2 mt-4">
           <%= link_to t("actions.edit"), edit_owner_product_path(product), class: "px-4 py-2 rounded-full bg-slate-100 font-black" %>
-          <%= button_to t("actions.delete"), owner_product_path(product), method: :delete, class: "px-4 py-2 rounded-full bg-red-50 text-red-600 font-black" %>
+          <% unless product.inactive? %>
+            <%= button_to t("actions.archive"), owner_product_path(product), method: :delete, class: "px-4 py-2 rounded-full bg-red-50 text-red-600 font-black" %>
+          <% end %>
         </div>
       </div>
     <% end %>

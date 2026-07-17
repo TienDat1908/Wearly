@@ -2,14 +2,8 @@
   <%= form_with url: admin_bookings_path, method: :get, local: true, class: "grid md:grid-cols-3 gap-3" do %>
     <%= select_tag :status,
       options_for_select(
-        [
-          [t("admin.filters.all_statuses"), ""],
-          ["Pending", "pending"],
-          ["Accepted", "accepted"],
-          ["Rejected", "rejected"],
-          ["Cancelled", "cancelled"],
-          ["Completed", "completed"]
-        ],
+        [[t("admin.filters.all_statuses"), ""]] +
+          Booking.aasm.states.map { |state| [t("bookings.statuses.#{state.name}"), state.name] },
         params[:status]
       ),
       class: "rounded-2xl border-slate-200" %>
@@ -59,7 +53,7 @@
 
           <td class="p-4">
             <p class="font-black text-pink-600">
-              <%= number_to_currency(booking.total_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %>
+              <%= number_to_currency(booking.gmv_amount, unit: "₫", precision: 0, format: "%n %u") %>
             </p>
             <p class="text-xs text-slate-400 font-bold">
               <%= t("admin.bookings.gmv") %>
@@ -92,7 +86,7 @@
 
           <td class="p-4">
             <span class="px-3 py-1 rounded-full bg-slate-100 text-xs font-black">
-              <%= booking.status %>
+              <%= booking_status_label(booking) %>
             </span>
           </td>
 

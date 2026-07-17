@@ -8,34 +8,54 @@
       <%= number_to_currency(@product.price_per_day, unit: "₫", precision: 0, format: "%n %u") %>
     </p>
 
-    <%= form_with model: @booking, url: bookings_path, local: true, class: "mt-6 space-y-5" do |f| %>
+    <%= form_with model: @booking, url: bookings_path, local: true, class: "mt-6 space-y-5", data: { controller: "pickup-method" } do |f| %>
+      <% if @booking.errors.any? %>
+        <div class="rounded-2xl bg-red-50 text-red-700 p-4">
+          <p class="font-black mb-2"><%= t("bookings.validation_failed") %></p>
+
+          <ul class="list-disc pl-5 text-sm font-semibold space-y-1">
+            <% @booking.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
       <%= f.hidden_field :product_id, value: @product.id %>
 
       <div class="grid md:grid-cols-2 gap-4">
         <div>
           <%= f.label :start_time, t("bookings.start_time"), class: "font-black" %>
-          <%= f.datetime_local_field :start_time, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+          <%= f.datetime_local_field :start_time, required: true, class: "mt-2 w-full rounded-2xl border-slate-200" %>
         </div>
 
         <div>
           <%= f.label :end_time, t("bookings.end_time"), class: "font-black" %>
-          <%= f.datetime_local_field :end_time, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+          <%= f.datetime_local_field :end_time, required: true, class: "mt-2 w-full rounded-2xl border-slate-200" %>
         </div>
       </div>
 
       <div>
         <%= f.label :pickup_method, t("bookings.pickup_method"), class: "font-black" %>
-        <%= f.select :pickup_method, [[t("bookings.self_pickup"), "self_pickup"], [t("bookings.delivery"), "delivery"]], {}, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        <%= f.select :pickup_method,
+          @product.available_pickup_methods.map { |method| [t("bookings.#{method}"), method] },
+          {},
+          class: "mt-2 w-full rounded-2xl border-slate-200",
+          data: { pickup_method_target: "select", action: "change->pickup-method#toggle" } %>
       </div>
 
-      <div>
-        <%= f.label :pickup_address, t("bookings.pickup_address"), class: "font-black" %>
-        <%= f.text_area :pickup_address, rows: 3, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+      <div class="rounded-2xl bg-slate-50 p-5" data-pickup-method-target="selfPickup">
+        <p class="font-black"><%= t("bookings.self_pickup_address") %></p>
+        <p class="mt-2 text-slate-600"><%= @product.pickup_location.presence || t("bookings.address_unavailable") %></p>
       </div>
 
-      <div>
-        <%= f.label :return_address, t("bookings.return_address"), class: "font-black" %>
-        <%= f.text_area :return_address, rows: 3, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+      <div hidden data-pickup-method-target="delivery">
+        <%= f.label :pickup_address, t("bookings.delivery_address"), class: "font-black" %>
+        <%= f.text_area :pickup_address,
+          rows: 3,
+          placeholder: t("bookings.delivery_address_placeholder"),
+          class: "mt-2 w-full rounded-2xl border-slate-200",
+          data: { pickup_method_target: "deliveryAddress" } %>
       </div>
 
       <%= f.submit t("bookings.submit"), class: "w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-orange-400 text-white font-black shadow-lg shadow-pink-200" %>

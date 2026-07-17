@@ -16,7 +16,11 @@ module Admin
 
       revenue_bookings = Booking.revenue_recognized
 
-      @gmv_amount = revenue_bookings.sum(:total_amount).to_i
+      @gmv_amount =
+        revenue_bookings.sum(:rental_amount).to_i +
+        revenue_bookings.sum(:cleaning_fee).to_i +
+        revenue_bookings.sum(:delivery_fee).to_i -
+        revenue_bookings.sum(:discount_amount).to_i
       @owner_platform_fee_amount = revenue_bookings.sum(:platform_fee_amount).to_i
 
       @renter_service_fee_amount =
@@ -31,6 +35,8 @@ module Admin
 
       @owner_payout_amount = revenue_bookings.sum(:owner_earning_amount).to_i
       @deposit_amount = revenue_bookings.sum(:deposit_amount).to_i
+      @pending_payouts_count = Payout.pending.count
+      @pending_payouts_amount = Payout.pending.sum(:amount).to_i
 
       @owner_platform_fee_rate = Booking::OWNER_PLATFORM_FEE_RATE
       @renter_service_fee_rate = Booking::RENTER_SERVICE_FEE_RATE
@@ -44,6 +50,11 @@ module Admin
 
       @latest_bookings = Booking
         .includes(:product, :owner, :renter)
+        .order(created_at: :desc)
+        .limit(5)
+
+      @latest_payouts = Payout
+        .includes(:owner, booking: :product)
         .order(created_at: :desc)
         .limit(5)
     end

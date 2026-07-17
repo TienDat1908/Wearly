@@ -1,6 +1,6 @@
 <div class="flex items-center justify-between mb-6">
   <div>
-    <p class="text-pink-600 font-black uppercase tracking-wide"><%= @booking.status %></p>
+    <p class="text-pink-600 font-black uppercase tracking-wide"><%= booking_status_label(@booking) %></p>
     <h2 class="text-4xl font-black"><%= @booking.product.title %></h2>
     <p class="text-slate-500 mt-1">
       <%= @booking.renter.full_name.presence || @booking.renter.email %>
@@ -54,6 +54,11 @@
       </div>
 
       <div class="flex justify-between">
+        <span class="text-slate-300"><%= t("bookings.renter_service_fee") %></span>
+        <span class="font-black"><%= number_to_currency(@booking.renter_service_fee_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
+      </div>
+
+      <div class="flex justify-between">
         <span class="text-slate-300"><%= t("products.deposit") %></span>
         <span class="font-black"><%= number_to_currency(@booking.deposit_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
       </div>
@@ -61,6 +66,17 @@
       <div class="pt-4 border-t border-white/10 flex justify-between">
         <span class="text-slate-300"><%= t("admin.bookings.total") %></span>
         <span class="font-black text-pink-300"><%= number_to_currency(@booking.total_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
+      </div>
+
+      <div class="pt-4 border-t border-white/10 space-y-3">
+        <div class="flex justify-between text-emerald-300">
+          <span><%= t("admin.bookings.admin_revenue") %></span>
+          <span class="font-black"><%= number_to_currency(@booking.admin_revenue_amount, unit: "₫", precision: 0, format: "%n %u") %></span>
+        </div>
+        <div class="flex justify-between text-pink-300">
+          <span><%= t("admin.bookings.owner_payout") %></span>
+          <span class="font-black"><%= number_to_currency(@booking.owner_earning_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
+        </div>
       </div>
     </div>
   </div>

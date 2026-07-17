@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       member do
         patch :cancel
         patch :pay
+        patch :confirm_received
       end
     end
 
@@ -38,6 +39,7 @@ Rails.application.routes.draw do
       resources :users, only: [:index, :show, :edit, :update]
       resources :products, only: [:index, :show, :edit, :update]
       resources :bookings, only: [:index, :show, :edit, :update]
+      resources :payouts, only: [:index, :show, :update]
     end
   end
 end

@@ -35,9 +35,9 @@
                 <td class="p-4">
                   <p class="font-black"><%= booking.product.title %></p>
                   <p class="text-sm text-slate-500">
-                    <%= booking.start_time&.strftime("%d %b %Y") %>
+                    <%= booking.start_time ? l(booking.start_time, format: :short) : "-" %>
                     →
-                    <%= booking.end_time&.strftime("%d %b %Y") %>
+                    <%= booking.end_time ? l(booking.end_time, format: :short) : "-" %>
                   </p>
                 </td>
 
@@ -47,12 +47,11 @@
 
                 <td class="p-4">
                   <p class="font-black text-pink-600">
-                    <%= number_to_currency(booking.total_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %>
+                    <%= number_to_currency(booking.owner_earning_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %>
                   </p>
 
                   <p class="text-xs text-slate-400 font-bold">
-                    <%= t("admin.bookings.owner_payout") %>:
-                    <%= number_to_currency(booking.owner_earning_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %>
+                    <%= t("admin.bookings.owner_payout") %>
                   </p>
                 </td>
 
@@ -65,6 +64,8 @@
                       "bg-blue-50 text-blue-600"
                     when "paid"
                       "bg-green-50 text-green-600"
+                    when "picked_up"
+                      "bg-blue-50 text-blue-600"
                     when "completed"
                       "bg-emerald-50 text-emerald-600"
                     when "rejected", "cancelled"
@@ -75,7 +76,7 @@
                   %>
 
                   <span class="px-3 py-1 rounded-full text-xs font-black <%= status_class %>">
-                    <%= booking.status %>
+                    <%= booking_status_label(booking) %>
                   </span>
 
                   <% if booking.status == "accepted" %>
@@ -103,7 +104,7 @@
                         method: :patch,
                         form: { class: "inline-block" },
                         class: "px-4 py-2 rounded-full bg-red-500 text-white font-black hover:bg-red-600" %>
-                    <% elsif booking.status == "paid" %>
+                    <% elsif booking.completable? %>
                       <%= button_to t("owner.bookings.complete"),
                         complete_owner_booking_path(booking),
                         method: :patch,

@@ -33,12 +33,6 @@ module Admin
 
     def booking_params
       params.require(:booking).permit(
-        :status,
-        :start_time,
-        :end_time,
-        :pickup_method,
-        :pickup_address,
-        :return_address,
         :cancel_reason,
         :reject_reason
       )

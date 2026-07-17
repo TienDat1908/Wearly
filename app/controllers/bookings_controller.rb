@@ -28,22 +28,42 @@ class BookingsController < ApplicationController
       return
     end
 
-    start_time = Time.zone.parse(booking_params[:start_time])
-    end_time = Time.zone.parse(booking_params[:end_time])
-
-    unless @product.available_for?(start_time, end_time)
-      redirect_to product_path(@product), alert: t("flash.bookings.unavailable")
-      return
-    end
-
-    price = calculate_price(@product, start_time, end_time)
+    booking_address =
+      if booking_params[:pickup_method] == "self_pickup"
+        @product.pickup_location
+      else
+        booking_params[:pickup_address]
+      end
 
     @booking = Booking.new(
       product: @product,
       owner: @product.owner,
       renter: current_user,
-      start_time: start_time,
-      end_time: end_time,
+      start_time: booking_params[:start_time],
+      end_time: booking_params[:end_time],
+      pickup_method: booking_params[:pickup_method],
+      pickup_address: booking_address,
+      return_address: booking_address
+    )
+
+    unless @booking.valid?
+      render :new, status: :unprocessable_entity
+      return
+    end
+
+    unless @product.available_for?(@booking.start_time, @booking.end_time)
+      @booking.errors.add(:base, t("flash.bookings.unavailable"))
+      render :new, status: :unprocessable_entity
+      return
+    end
+
+    price = Booking.price_breakdown(
+      product: @product,
+      start_time: @booking.start_time,
+      end_time: @booking.end_time
+    )
+
+    @booking.assign_attributes(
       rental_days: price[:rental_days],
       rental_amount: price[:rental_amount],
       cleaning_fee: price[:cleaning_fee],
@@ -53,29 +73,34 @@ class BookingsController < ApplicationController
       renter_service_fee_rate: price[:renter_service_fee_rate],
       renter_service_fee_amount: price[:renter_service_fee_amount],
       owner_earning_amount: price[:owner_earning_amount],
-      total_amount: price[:total_amount],
-      pickup_method: booking_params[:pickup_method],
-      pickup_address: booking_params[:pickup_address],
-      return_address: booking_params[:return_address]
+      total_amount: price[:total_amount]
     )
 
-    ActiveRecord::Base.transaction do
-      @booking.save!
+    @product.with_lock do
+      unless @product.available_for?(@booking.start_time, @booking.end_time)
+        @booking.errors.add(:base, t("flash.bookings.unavailable"))
+        raise ActiveRecord::Rollback
+      end
 
-      ProductReservation.create!(
+      @booking.save!
+      @booking.create_product_reservation!(
         product: @product,
-        booking: @booking,
         renter: current_user,
-        start_time: start_time,
-        end_time: end_time,
+        start_time: @booking.start_time,
+        end_time: @booking.end_time,
         status: "pending",
         reason: "booking"
       )
     end
 
+    unless @booking.persisted?
+      render :new, status: :unprocessable_entity
+      return
+    end
+
     redirect_to booking_path(@booking), notice: t("flash.bookings.created")
-  rescue ActiveRecord::RecordInvalid, ArgumentError
-    redirect_to product_path(@product), alert: t("flash.bookings.failed")
+  rescue ActiveRecord::RecordInvalid
+    render :new, status: :unprocessable_entity
   end
 
   def cancel
@@ -88,6 +113,7 @@ class BookingsController < ApplicationController
 
     ActiveRecord::Base.transaction do
       @booking.cancel!
+      @booking.update!(cancelled_at: Time.current)
       @booking.product_reservation&.update!(status: "cancelled")
     end
 
@@ -120,6 +146,22 @@ class BookingsController < ApplicationController
     redirect_to booking_path(@booking), notice: t("flash.bookings.paid")
   end
 
+  def confirm_received
+    @booking = current_user.rentals.find(params[:id])
+
+    unless @booking.paid? && @booking.paid_successfully?
+      redirect_to booking_path(@booking), alert: t("flash.bookings.invalid_status")
+      return
+    end
+
+    ActiveRecord::Base.transaction do
+      @booking.confirm_pickup!
+      @booking.update!(picked_up_at: Time.current)
+    end
+
+    redirect_to booking_path(@booking), notice: t("flash.bookings.received")
+  end
+
   private
 
   def booking_params
@@ -128,43 +170,8 @@ class BookingsController < ApplicationController
       :start_time,
       :end_time,
       :pickup_method,
-      :pickup_address,
-      :return_address
+      :pickup_address
     )
   end
 
-  def calculate_price(product, start_time, end_time)
-    rental_days = [(end_time.to_date - start_time.to_date).to_i + 1, 1].max
-
-    rental_amount = product.price_per_day.to_i * rental_days
-    cleaning_fee = product.cleaning_fee.to_i
-    deposit_amount = product.deposit_amount.to_i
-
-    platform_fee_rate = Booking::OWNER_PLATFORM_FEE_RATE
-    renter_service_fee_rate = Booking::RENTER_SERVICE_FEE_RATE
-
-    platform_fee_amount = (rental_amount * platform_fee_rate / 100.0).round
-    renter_service_fee_amount = (rental_amount * renter_service_fee_rate / 100.0).round
-
-    owner_earning_amount = rental_amount + cleaning_fee - platform_fee_amount
-
-    total_amount =
-      rental_amount +
-      cleaning_fee +
-      deposit_amount +
-      renter_service_fee_amount
-
-    {
-      rental_days: rental_days,
-      rental_amount: rental_amount,
-      cleaning_fee: cleaning_fee,
-      deposit_amount: deposit_amount,
-      platform_fee_rate: platform_fee_rate,
-      platform_fee_amount: platform_fee_amount,
-      renter_service_fee_rate: renter_service_fee_rate,
-      renter_service_fee_amount: renter_service_fee_amount,
-      owner_earning_amount: owner_earning_amount,
-      total_amount: total_amount
-    }
-  end
 end
