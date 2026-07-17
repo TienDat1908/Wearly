@@ -11,11 +11,22 @@ class BookingsController < ApplicationController
 
   def new
     @product = Product.active.find(params[:product_id])
+
+    if @product.owner_id == current_user.id
+      redirect_to product_path(@product), alert: t("flash.bookings.cannot_rent_own_product")
+      return
+    end
+
     @booking = Booking.new
   end
 
   def create
     @product = Product.active.find(booking_params[:product_id])
+
+    if @product.owner_id == current_user.id
+      redirect_to product_path(@product), alert: t("flash.bookings.cannot_rent_own_product")
+      return
+    end
 
     start_time = Time.zone.parse(booking_params[:start_time])
     end_time = Time.zone.parse(booking_params[:end_time])
@@ -69,10 +80,44 @@ class BookingsController < ApplicationController
 
   def cancel
     @booking = current_user.rentals.find(params[:id])
-    @booking.cancel!
-    @booking.product_reservation&.update!(status: "cancelled")
+
+    unless @booking.pending? || @booking.accepted?
+      redirect_to booking_path(@booking), alert: t("flash.bookings.invalid_status")
+      return
+    end
+
+    ActiveRecord::Base.transaction do
+      @booking.cancel!
+      @booking.product_reservation&.update!(status: "cancelled")
+    end
 
     redirect_to booking_path(@booking), notice: t("flash.bookings.cancelled")
+  end
+
+  def pay
+    @booking = current_user.rentals.find(params[:id])
+
+    unless @booking.accepted?
+      redirect_to booking_path(@booking), alert: t("flash.bookings.invalid_status")
+      return
+    end
+
+    ActiveRecord::Base.transaction do
+      payment = @booking.payment || @booking.build_payment
+
+      payment.update!(
+        payer_id: current_user.id,
+        amount: @booking.total_amount.to_i,
+        payment_method: "manual",
+        status: "paid",
+        transaction_id: "MANUAL-#{SecureRandom.hex(8).upcase}",
+        paid_at: Time.current
+      )
+
+      @booking.pay!
+    end
+
+    redirect_to booking_path(@booking), notice: t("flash.bookings.paid")
   end
 
   private
@@ -102,7 +147,12 @@ class BookingsController < ApplicationController
     renter_service_fee_amount = (rental_amount * renter_service_fee_rate / 100.0).round
 
     owner_earning_amount = rental_amount + cleaning_fee - platform_fee_amount
-    total_amount = rental_amount + cleaning_fee + deposit_amount + renter_service_fee_amount
+
+    total_amount =
+      rental_amount +
+      cleaning_fee +
+      deposit_amount +
+      renter_service_fee_amount
 
     {
       rental_days: rental_days,

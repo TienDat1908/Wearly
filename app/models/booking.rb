@@ -10,6 +10,17 @@ class Booking < ApplicationRecord
 
   has_one :payment, dependent: :destroy
   has_one :product_reservation, dependent: :destroy
+  has_one :payout, dependent: :destroy
+
+  scope :revenue_recognized, -> { where(status: ["paid", "completed"]) }
+
+  def admin_revenue_amount
+    platform_fee_amount.to_i + renter_service_fee_amount.to_i
+  end
+
+  def paid_successfully?
+    payment&.status == "paid"
+  end
 
   def self.gmv
     sum(:total_amount).to_i
@@ -38,12 +49,17 @@ class Booking < ApplicationRecord
   aasm column: :status do
     state :pending, initial: true
     state :accepted
+    state :paid
     state :rejected
     state :cancelled
     state :completed
 
     event :accept do
       transitions from: :pending, to: :accepted
+    end
+
+    event :pay do
+      transitions from: :accepted, to: :paid
     end
 
     event :reject do
@@ -55,7 +71,7 @@ class Booking < ApplicationRecord
     end
 
     event :complete do
-      transitions from: :accepted, to: :completed
+      transitions from: :paid, to: :completed
     end
   end
 end

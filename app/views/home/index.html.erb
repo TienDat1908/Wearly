@@ -15,7 +15,18 @@
 
       <div class="mt-8 flex flex-wrap gap-4">
         <%= link_to t("home.explore_now"), products_path, class: "px-7 py-4 rounded-full bg-slate-950 text-white font-black shadow-xl shadow-slate-300" %>
+
         <% if user_signed_in? && (current_user.owner? || current_user.admin?) %>
+          <%= link_to owner_bookings_path, class: "relative px-7 py-4 rounded-full bg-white border border-pink-200 text-slate-950 font-black shadow-sm" do %>
+            <%= t("home.booking_requests") %>
+
+            <% if @owner_pending_bookings_count.to_i.positive? %>
+              <span class="ml-2 inline-flex min-w-6 h-6 px-2 rounded-full bg-pink-500 text-white text-xs items-center justify-center">
+                <%= @owner_pending_bookings_count %>
+              </span>
+            <% end %>
+          <% end %>
+
           <%= link_to t("home.list_your_item"), owner_products_path, class: "px-7 py-4 rounded-full bg-white border border-slate-200 font-black" %>
         <% elsif !user_signed_in? %>
           <%= link_to t("home.list_your_item"), new_user_registration_path(role: "owner"), class: "px-7 py-4 rounded-full bg-white border border-slate-200 font-black" %>

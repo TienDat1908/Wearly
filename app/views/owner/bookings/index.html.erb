@@ -1,2 +1,131 @@
-<h1>Owner::Bookings#index</h1>
-<p>Find me in app/views/owner/bookings/index.html.erb</p>
+<section class="max-w-7xl mx-auto px-5 py-10">
+  <div class="flex items-end justify-between mb-8">
+    <div>
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-100 text-pink-700 text-sm font-black">
+        🧾 <%= t("owner.bookings.title") %>
+      </div>
+
+      <h1 class="mt-4 text-4xl md:text-5xl font-black tracking-tight">
+        <%= t("owner.bookings.index_title") %>
+      </h1>
+
+      <p class="mt-2 text-slate-500">
+        <%= t("owner.bookings.index_subtitle") %>
+      </p>
+    </div>
+  </div>
+
+  <% if @bookings.any? %>
+    <div class="bg-white rounded-[2rem] shadow-sm border border-orange-100 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left min-w-[900px]">
+          <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+            <tr>
+              <th class="p-4"><%= t("admin.bookings.product") %></th>
+              <th class="p-4"><%= t("admin.bookings.renter") %></th>
+              <th class="p-4"><%= t("admin.bookings.amount") %></th>
+              <th class="p-4"><%= t("admin.bookings.status") %></th>
+              <th class="p-4 text-right"><%= t("admin.actions.actions") %></th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-slate-100">
+            <% @bookings.each do |booking| %>
+              <tr class="hover:bg-pink-50/50">
+                <td class="p-4">
+                  <p class="font-black"><%= booking.product.title %></p>
+                  <p class="text-sm text-slate-500">
+                    <%= booking.start_time&.strftime("%d %b %Y") %>
+                    →
+                    <%= booking.end_time&.strftime("%d %b %Y") %>
+                  </p>
+                </td>
+
+                <td class="p-4 text-slate-600">
+                  <%= booking.renter.full_name.presence || booking.renter.email %>
+                </td>
+
+                <td class="p-4">
+                  <p class="font-black text-pink-600">
+                    <%= number_to_currency(booking.total_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %>
+                  </p>
+
+                  <p class="text-xs text-slate-400 font-bold">
+                    <%= t("admin.bookings.owner_payout") %>:
+                    <%= number_to_currency(booking.owner_earning_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %>
+                  </p>
+                </td>
+
+                <td class="p-4">
+                  <% status_class =
+                    case booking.status
+                    when "pending"
+                      "bg-orange-50 text-orange-600"
+                    when "accepted"
+                      "bg-blue-50 text-blue-600"
+                    when "paid"
+                      "bg-green-50 text-green-600"
+                    when "completed"
+                      "bg-emerald-50 text-emerald-600"
+                    when "rejected", "cancelled"
+                      "bg-red-50 text-red-600"
+                    else
+                      "bg-slate-100 text-slate-600"
+                    end
+                  %>
+
+                  <span class="px-3 py-1 rounded-full text-xs font-black <%= status_class %>">
+                    <%= booking.status %>
+                  </span>
+
+                  <% if booking.status == "accepted" %>
+                    <p class="mt-2 text-xs text-slate-400 font-bold">
+                      <%= t("owner.bookings.waiting_payment") %>
+                    </p>
+                  <% end %>
+                </td>
+
+                <td class="p-4">
+                  <div class="flex justify-end items-center gap-2">
+                    <%= link_to t("admin.actions.view"),
+                      owner_booking_path(booking),
+                      class: "px-4 py-2 rounded-full bg-slate-100 text-slate-900 font-black hover:bg-slate-200" %>
+
+                    <% if booking.status == "pending" %>
+                      <%= button_to t("owner.bookings.accept"),
+                        accept_owner_booking_path(booking),
+                        method: :patch,
+                        form: { class: "inline-block" },
+                        class: "px-4 py-2 rounded-full bg-green-500 text-white font-black hover:bg-green-600" %>
+
+                      <%= button_to t("owner.bookings.reject"),
+                        reject_owner_booking_path(booking),
+                        method: :patch,
+                        form: { class: "inline-block" },
+                        class: "px-4 py-2 rounded-full bg-red-500 text-white font-black hover:bg-red-600" %>
+                    <% elsif booking.status == "paid" %>
+                      <%= button_to t("owner.bookings.complete"),
+                        complete_owner_booking_path(booking),
+                        method: :patch,
+                        form: { class: "inline-block" },
+                        class: "px-4 py-2 rounded-full bg-pink-500 text-white font-black hover:bg-pink-600" %>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% else %>
+    <div class="bg-white rounded-[2rem] p-10 text-center shadow-sm border border-orange-100">
+      <div class="mx-auto w-20 h-20 rounded-[2rem] bg-gradient-to-br from-pink-100 to-orange-100 flex items-center justify-center text-4xl">
+        🧾
+      </div>
+
+      <h2 class="mt-5 text-3xl font-black"><%= t("owner.bookings.empty_title") %></h2>
+      <p class="mt-2 text-slate-500"><%= t("owner.bookings.empty_subtitle") %></p>
+    </div>
+  <% end %>
+</section>

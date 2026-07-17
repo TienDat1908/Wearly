@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   before_action :set_locale
+  before_action :set_owner_pending_bookings_count
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   private
@@ -57,5 +58,19 @@ class ApplicationController < ActionController::Base
       permitted[:role] = "renter" unless %w[renter owner].include?(permitted[:role])
       permitted
     end
+  end
+
+  def set_owner_pending_bookings_count
+    @owner_pending_bookings_count = 0
+
+    return unless user_signed_in?
+    return unless current_user.owner? || current_user.admin?
+
+    @owner_pending_bookings_count =
+      if current_user.admin?
+        Booking.where(status: "pending").count
+      else
+        current_user.owner_bookings.where(status: "pending").count
+      end
   end
 end

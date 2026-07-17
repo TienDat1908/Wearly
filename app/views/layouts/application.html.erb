@@ -33,6 +33,16 @@
             <%= link_to t("nav.my_rentals"), bookings_path, class: "hover:text-pink-600" %>
 
             <% if current_user.owner? || current_user.admin? %>
+              <%= link_to owner_bookings_path, class: "relative hover:text-pink-600" do %>
+                <%= t("nav.booking_requests") %>
+
+                <% if @owner_pending_bookings_count.to_i.positive? %>
+                  <span class="absolute -top-3 -right-4 min-w-5 h-5 px-1 rounded-full bg-pink-500 text-white text-[10px] font-black flex items-center justify-center">
+                    <%= @owner_pending_bookings_count %>
+                  </span>
+                <% end %>
+              <% end %>
+
               <%= link_to t("nav.list_item"), owner_products_path, class: "hover:text-pink-600" %>
             <% end %>
 

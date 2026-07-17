@@ -48,10 +48,18 @@
           </p>
         </div>
 
-        <% if user_signed_in? %>
-          <%= link_to t("products.rent_now"), new_booking_path(product_id: @product.id), class: "px-6 py-3 rounded-full bg-slate-950 text-white font-black" %>
+        <% if user_signed_in? && @product.owner_id == current_user.id %>
+          <%= link_to t("products.manage_item"),
+            edit_owner_product_path(@product),
+            class: "px-6 py-3 rounded-full bg-slate-950 text-white font-black" %>
+        <% elsif user_signed_in? %>
+          <%= link_to t("products.rent_now"),
+            new_booking_path(product_id: @product.id),
+            class: "px-6 py-3 rounded-full bg-slate-950 text-white font-black" %>
         <% else %>
-          <%= link_to t("products.sign_in_to_rent"), new_user_session_path, class: "px-6 py-3 rounded-full bg-slate-950 text-white font-black" %>
+          <%= link_to t("products.sign_in_to_rent"),
+            new_user_session_path,
+            class: "px-6 py-3 rounded-full bg-slate-950 text-white font-black" %>
         <% end %>
       </div>
     </div>

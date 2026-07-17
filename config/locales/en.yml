@@ -10,6 +10,7 @@ en:
     sign_in: "Sign in"
     sign_up: "Sign up"
     sign_out: "Sign out"
+    booking_requests: "Booking requests"
 
   auth:
     login: "Email or phone"
@@ -55,6 +56,7 @@ en:
     list_your_item: "List your item"
     latest_products: "Latest listings"
     view_all: "View all"
+    booking_requests: "Booking requests"
 
   products:
     index_title: "Explore rentals"
@@ -70,6 +72,7 @@ en:
     rental_price: "Rental price"
     rent_now: "Rent now"
     sign_in_to_rent: "Sign in to rent"
+    manage_item: "Manage item"
     form:
       title: "Title"
       type: "Type"
@@ -93,6 +96,17 @@ en:
       subtitle: "Manage the items you are renting out."
       new_title: "List a new item"
       edit_title: "Edit item"
+    bookings:
+      title: "Booking requests"
+      index_title: "Rental requests"
+      index_subtitle: "Review requests from renters and accept or reject bookings."
+      empty_title: "No booking requests yet"
+      empty_subtitle: "When renters request your items, they will appear here."
+      back: "Back to owner bookings"
+      accept: "Accept booking"
+      reject: "Reject booking"
+      complete: "Complete booking"
+      waiting_payment: "Waiting for renter payment"
 
   bookings:
     my_bookings: "My bookings"
@@ -113,6 +127,16 @@ en:
     back_to_bookings: "Back to bookings"
     booking_reference: "Booking reference"
     schedule: "Schedule"
+    pay_now: "Pay now"
+    payment_completed: "Payment completed"
+    payment_completed_hint: "Your payment has been received. The platform fee is now recorded."
+    waiting_owner_approval: "Waiting for owner approval"
+    waiting_owner_approval_hint: "The owner needs to accept this rental request before you can pay."
+    owner_accepted: "Owner accepted your request"
+    pay_to_confirm_hint: "Please pay to confirm this booking."
+    renter_service_fee: "Service fee"
+    rejected: "Rejected"
+    cancelled: "Cancelled"
 
   actions:
     edit: "Edit"
@@ -171,12 +195,6 @@ en:
       owner_side_desc: "Wearly deducts %{rate}% from the rental amount before paying the owner."
       renter_side_desc: "Wearly charges renters %{rate}% as a service fee."
       deposit_note_desc: "Deposits are held for protection and should not be counted as platform revenue."
-      admin_revenue: "Admin revenue"
-      owner_payout: "Owner payout"
-      gmv: "GMV"
-      owner_fee_short: "Owner %{rate}%"
-      renter_fee_short: "Renter %{rate}%"
-      after_fee: "After platform fee"
     users:
       user: "User"
       phone: "Phone"
@@ -204,6 +222,14 @@ en:
       rental_amount: "Rental amount"
       payment_summary: "Payment summary"
       total: "Total"
+      admin_revenue: "Admin revenue"
+      owner_payout: "Owner payout"
+      gmv: "GMV"
+      owner_fee_short: "Owner %{rate}%"
+      renter_fee_short: "Renter %{rate}%"
+      after_fee: "After platform fee"
+      expected_revenue: "Expected revenue"
+      revenue_recognized: "Revenue recognized"
 
   flash:
     auth:
@@ -220,6 +246,13 @@ en:
       failed: "Could not create booking."
       unavailable: "This item is not available for the selected time."
       cancelled: "Your booking has been cancelled."
+      cannot_rent_own_product: "You cannot rent your own item."
+      accepted: "Booking has been accepted."
+      rejected: "Booking has been rejected."
+      completed: "Booking has been completed."
+      paid: "Payment completed successfully."
+      invalid_status: "This booking cannot be updated from its current status."
+      must_be_paid_first: "This booking must be paid before it can be completed."
 
     admin:
       users:
