@@ -7,7 +7,7 @@ module Admin
     before_action :set_booking, only: [:show, :edit, :update]
 
     def index
-      @bookings = Booking.includes(:product, :owner, :renter).order(created_at: :desc)
+      @bookings = Booking.includes(:product, :owner, :renter, :payment, :product_reservation, :payout).order(created_at: :desc)
       @bookings = @bookings.where(status: params[:status]) if params[:status].present?
     end
 
@@ -28,7 +28,7 @@ module Admin
     private
 
     def set_booking
-      @booking = Booking.includes(:product, :owner, :renter).find(params[:id])
+      @booking = Booking.includes(:owner, :renter, :payment, :product_reservation, :payout, product: [:owner, photos_attachments: :blob]).find(params[:id])
     end
 
     def booking_params

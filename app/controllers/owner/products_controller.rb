@@ -53,7 +53,12 @@ module Owner
     end
 
     def require_owner!
-      return if current_user.owner? || current_user.admin?
+      return if current_user.owner?
+
+      if current_user.admin?
+        redirect_to admin_root_path, alert: t("flash.auth.owner_area_unavailable")
+        return
+      end
 
       redirect_to root_path, alert: t("flash.auth.owner_required")
     end

@@ -7,7 +7,7 @@ module Owner
     def index
       @bookings = current_user
         .owner_bookings
-        .includes(:product, :renter)
+        .includes(:product, renter: { avatar_attachment: :blob })
         .order(created_at: :desc)
     end
 
@@ -69,7 +69,10 @@ module Owner
     private
 
     def set_booking
-      @booking = current_user.owner_bookings.find(params[:id])
+      @booking = current_user
+        .owner_bookings
+        .includes(:product, renter: { avatar_attachment: :blob })
+        .find(params[:id])
     end
   end
 end

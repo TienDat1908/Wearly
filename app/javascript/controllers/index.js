@@ -9,3 +9,6 @@ application.register("hello", HelloController)
 
 import PickupMethodController from "./pickup_method_controller"
 application.register("pickup-method", PickupMethodController)
+
+import RevealController from "./reveal_controller"
+application.register("reveal", RevealController)

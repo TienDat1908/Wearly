@@ -21,18 +21,28 @@
 
         <div class="grid sm:grid-cols-2 gap-4">
           <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500 font-bold">Booking ID</p>
+            <%= link_to "##{@payout.booking.id}", admin_booking_path(@payout.booking), class: "mt-2 block font-black text-pink-600" %>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
             <p class="text-sm text-slate-500 font-bold"><%= t("admin.bookings.product") %></p>
-            <p class="mt-2 font-black"><%= @payout.booking.product.title %></p>
+            <%= link_to @payout.booking.product.title, admin_product_path(@payout.booking.product), class: "mt-2 block font-black text-pink-600" %>
           </div>
 
           <div class="rounded-2xl bg-slate-50 p-4">
             <p class="text-sm text-slate-500 font-bold"><%= t("admin.bookings.renter") %></p>
-            <p class="mt-2 font-black"><%= @payout.booking.renter.full_name.presence || @payout.booking.renter.email %></p>
+            <%= link_to (@payout.booking.renter.full_name.presence || @payout.booking.renter.email), admin_user_path(@payout.booking.renter), class: "mt-2 block font-black text-pink-600" %>
           </div>
 
           <div class="rounded-2xl bg-slate-50 p-4">
             <p class="text-sm text-slate-500 font-bold"><%= t("admin.bookings.status") %></p>
             <p class="mt-2 font-black"><%= booking_status_label(@payout.booking) %></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500 font-bold"><%= t("admin.bookings.total") %></p>
+            <p class="mt-2 font-black"><%= number_to_currency(@payout.booking.total_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></p>
           </div>
 
           <div class="rounded-2xl bg-slate-50 p-4">
@@ -48,7 +58,12 @@
         <div class="grid sm:grid-cols-2 gap-4">
           <div class="rounded-2xl bg-slate-50 p-4">
             <p class="text-sm text-slate-500 font-bold"><%= t("admin.users.user") %></p>
-            <p class="mt-2 font-black"><%= @payout.owner.full_name.presence || @payout.owner.email %></p>
+            <%= link_to (@payout.owner.full_name.presence || @payout.owner.email), admin_user_path(@payout.owner), class: "mt-2 block font-black text-pink-600" %>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500 font-bold">Email</p>
+            <p class="mt-2 font-black break-all"><%= @payout.owner.email %></p>
           </div>
 
           <div class="rounded-2xl bg-slate-50 p-4">
@@ -56,9 +71,24 @@
             <p class="mt-2 font-black"><%= @payout.owner.phone.presence || "-" %></p>
           </div>
 
-          <div class="rounded-2xl bg-slate-50 p-4 sm:col-span-2">
+          <div class="rounded-2xl bg-slate-50 p-4">
             <p class="text-sm text-slate-500 font-bold"><%= t("admin.users.address") %></p>
-            <p class="mt-2 font-black"><%= @payout.owner.address.presence || "-" %></p>
+            <p class="mt-2 font-black"><%= [@payout.owner.address, @payout.owner.ward, @payout.owner.district, @payout.owner.city].compact_blank.join(", ").presence || "-" %></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500 font-bold"><%= t("profile.bank_name") %></p>
+            <p class="mt-2 font-black"><%= @payout.owner.bank_name.presence || "-" %></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500 font-bold"><%= t("profile.bank_account_name") %></p>
+            <p class="mt-2 font-black"><%= @payout.owner.bank_account_name.presence || "-" %></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4 sm:col-span-2">
+            <p class="text-sm text-slate-500 font-bold"><%= t("profile.bank_account_number") %></p>
+            <p class="mt-2 font-black"><%= @payout.owner.bank_account_number.presence || "-" %></p>
           </div>
         </div>
       </div>
@@ -87,6 +117,35 @@
           <span class="text-slate-300"><%= t("admin.bookings.owner_payout") %></span>
           <span class="text-2xl font-black text-pink-300"><%= number_to_currency(@payout.amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
         </div>
+
+        <div class="border-t border-white/10 pt-4 space-y-3">
+          <div class="flex justify-between gap-4">
+            <span class="text-slate-300"><%= t("admin.payouts.status") %></span>
+            <span class="font-black"><%= t("admin.payouts.statuses.#{@payout.status}") %></span>
+          </div>
+
+          <div class="flex justify-between gap-4">
+            <span class="text-slate-300">Method</span>
+            <span class="font-black"><%= @payout.payout_method.presence || "-" %></span>
+          </div>
+
+          <div class="flex justify-between gap-4">
+            <span class="text-slate-300">Created</span>
+            <span class="font-black text-right"><%= l(@payout.created_at, format: :long) %></span>
+          </div>
+
+          <div class="flex justify-between gap-4">
+            <span class="text-slate-300">Updated</span>
+            <span class="font-black text-right"><%= l(@payout.updated_at, format: :long) %></span>
+          </div>
+        </div>
+
+        <% if @payout.admin_note.present? %>
+          <div class="rounded-2xl bg-white/10 p-4">
+            <p class="text-xs text-slate-400 font-black uppercase tracking-widest">Admin note</p>
+            <p class="mt-2 font-bold whitespace-pre-line"><%= @payout.admin_note %></p>
+          </div>
+        <% end %>
 
         <% if @payout.paid_at.present? %>
           <div class="rounded-2xl bg-green-500/10 text-green-300 p-4 font-black text-center">

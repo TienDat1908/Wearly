@@ -1,34 +1,137 @@
-<div class="max-w-4xl">
-  <h2 class="text-4xl font-black mb-6"><%= t("admin.products.edit_title") %></h2>
+<div class="max-w-5xl space-y-6">
+  <div>
+    <p class="text-slate-400 font-black uppercase tracking-widest text-xs">PRODUCT #<%= @product.id %></p>
+    <h2 class="mt-2 text-4xl font-black"><%= t("admin.products.edit_title") %></h2>
+  </div>
 
-  <%= form_with model: [:admin, @product], local: true, class: "bg-white rounded-[2rem] p-6 shadow-sm space-y-5" do |f| %>
-    <div>
-      <%= f.label :title, t("products.form.title"), class: "font-black" %>
-      <%= f.text_field :title, class: "mt-2 w-full rounded-2xl border-slate-200" %>
-    </div>
+  <%= form_with model: [:admin, @product], local: true, class: "bg-white rounded-[2rem] p-6 shadow-sm space-y-8" do |f| %>
+    <section>
+      <h3 class="text-xl font-black"><%= t("admin.products.details") %></h3>
 
-    <div class="grid md:grid-cols-3 gap-4">
-      <div>
-        <%= f.label :product_type, t("products.form.type"), class: "font-black" %>
-        <%= f.select :product_type, Product.product_types.keys.map { |type| [type.humanize, type] }, {}, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+      <div class="mt-5 grid md:grid-cols-3 gap-4">
+        <div class="md:col-span-3">
+          <%= f.label :title, t("products.form.title"), class: "font-black" %>
+          <%= f.text_field :title, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :product_type, t("products.form.type"), class: "font-black" %>
+          <%= f.select :product_type, Product.product_types.keys.map { |type| [type.humanize, type] }, {}, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :status, t("admin.products.status"), class: "font-black" %>
+          <%= f.select :status, Product.statuses.keys.map { |status| [status.humanize, status] }, {}, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :condition_status, t("products.form.condition_status"), class: "font-black" %>
+          <%= f.text_field :condition_status, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :size, t("products.form.size"), class: "font-black" %>
+          <%= f.text_field :size, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :color, t("products.form.color"), class: "font-black" %>
+          <%= f.text_field :color, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :brand, t("products.form.brand"), class: "font-black" %>
+          <%= f.text_field :brand, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :gender, t("products.form.gender"), class: "font-black" %>
+          <%= f.text_field :gender, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :age_group, t("products.form.age_group"), class: "font-black" %>
+          <%= f.text_field :age_group, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div class="md:col-span-3">
+          <%= f.label :description, t("products.form.description"), class: "font-black" %>
+          <%= f.text_area :description, rows: 5, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
       </div>
+    </section>
 
-      <div>
-        <%= f.label :status, t("admin.products.status"), class: "font-black" %>
-        <%= f.select :status, Product.statuses.keys.map { |status| [status.humanize, status] }, {}, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+    <section>
+      <h3 class="text-xl font-black"><%= t("products.form.pricing") %></h3>
+
+      <div class="mt-5 grid md:grid-cols-4 gap-4">
+        <div>
+          <%= f.label :price_per_day, t("products.form.price_per_day"), class: "font-black" %>
+          <%= f.number_field :price_per_day, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :deposit_amount, t("products.form.deposit_amount"), class: "font-black" %>
+          <%= f.number_field :deposit_amount, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :cleaning_fee, t("products.form.cleaning_fee"), class: "font-black" %>
+          <%= f.number_field :cleaning_fee, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :replacement_value, t("products.form.replacement_value"), class: "font-black" %>
+          <%= f.number_field :replacement_value, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
       </div>
+    </section>
 
-      <div>
-        <%= f.label :price_per_day, t("products.form.price_per_day"), class: "font-black" %>
-        <%= f.number_field :price_per_day, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+    <section>
+      <h3 class="text-xl font-black"><%= t("profile.address_info") %></h3>
+
+      <div class="mt-5 grid md:grid-cols-3 gap-4">
+        <div class="md:col-span-3">
+          <%= f.label :address, t("admin.users.address"), class: "font-black" %>
+          <%= f.text_area :address, rows: 3, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :ward, t("products.form.ward"), class: "font-black" %>
+          <%= f.text_field :ward, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :district, t("products.form.district"), class: "font-black" %>
+          <%= f.text_field :district, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :city, t("products.form.city"), class: "font-black" %>
+          <%= f.text_field :city, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div>
-      <%= f.label :description, t("products.form.description"), class: "font-black" %>
-      <%= f.text_area :description, rows: 5, class: "mt-2 w-full rounded-2xl border-slate-200" %>
-    </div>
+    <section>
+      <h3 class="text-xl font-black"><%= t("bookings.pickup_method") %></h3>
 
-    <%= f.submit t("admin.actions.save"), class: "w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-orange-400 text-white font-black shadow-lg shadow-pink-200" %>
+      <div class="mt-5 grid md:grid-cols-2 gap-4">
+        <label class="rounded-2xl bg-slate-50 p-4 font-black flex items-center gap-3">
+          <%= f.check_box :pickup_available, class: "rounded border-slate-300" %>
+          <%= t("bookings.self_pickup") %>
+        </label>
+
+        <label class="rounded-2xl bg-slate-50 p-4 font-black flex items-center gap-3">
+          <%= f.check_box :delivery_available, class: "rounded border-slate-300" %>
+          <%= t("bookings.delivery") %>
+        </label>
+      </div>
+    </section>
+
+    <div class="flex flex-col sm:flex-row gap-3 sm:justify-between border-t border-slate-100 pt-6">
+      <%= link_to t("admin.actions.view"), admin_product_path(@product), class: "px-6 py-4 rounded-2xl bg-slate-100 text-slate-700 font-black text-center" %>
+      <%= f.submit t("admin.actions.save"), class: "px-8 py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-orange-400 text-white font-black shadow-lg shadow-pink-200 cursor-pointer" %>
+    </div>
   <% end %>
 </div>

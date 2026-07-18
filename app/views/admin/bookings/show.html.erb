@@ -1,83 +1,238 @@
-<div class="flex items-center justify-between mb-6">
-  <div>
-    <p class="text-pink-600 font-black uppercase tracking-wide"><%= booking_status_label(@booking) %></p>
-    <h2 class="text-4xl font-black"><%= @booking.product.title %></h2>
-    <p class="text-slate-500 mt-1">
-      <%= @booking.renter.full_name.presence || @booking.renter.email %>
-      →
-      <%= @booking.owner.full_name.presence || @booking.owner.email %>
-    </p>
+<% payment = @booking.payment %>
+<% reservation = @booking.product_reservation %>
+<% payout = @booking.payout %>
+
+<div class="space-y-6">
+  <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+    <div>
+      <p class="text-pink-600 font-black uppercase tracking-wide">
+        <%= booking_status_label(@booking) %> · BOOKING #<%= @booking.id %>
+      </p>
+      <h2 class="mt-2 text-4xl font-black"><%= @booking.product.title %></h2>
+      <p class="text-slate-500 mt-1">
+        <%= link_to (@booking.renter.full_name.presence || @booking.renter.email), admin_user_path(@booking.renter), class: "hover:text-pink-600 font-bold" %>
+        →
+        <%= link_to (@booking.owner.full_name.presence || @booking.owner.email), admin_user_path(@booking.owner), class: "hover:text-pink-600 font-bold" %>
+      </p>
+    </div>
+
+    <%= link_to t("admin.actions.edit"), edit_admin_booking_path(@booking), class: "px-5 py-3 rounded-full bg-slate-950 text-white font-black" %>
   </div>
 
-  <%= link_to t("admin.actions.edit"), edit_admin_booking_path(@booking), class: "px-5 py-3 rounded-full bg-slate-950 text-white font-black" %>
-</div>
+  <div class="grid xl:grid-cols-[1fr_420px] gap-6">
+    <div class="space-y-6">
+      <section class="bg-white rounded-[2rem] p-6 shadow-sm">
+        <h3 class="text-xl font-black mb-5"><%= t("admin.bookings.details") %></h3>
 
-<div class="grid lg:grid-cols-3 gap-6">
-  <div class="lg:col-span-2 bg-white rounded-[2rem] p-6 shadow-sm">
-    <h3 class="text-xl font-black mb-5"><%= t("admin.bookings.details") %></h3>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("admin.bookings.product") %></p>
+            <%= link_to @booking.product.title, admin_product_path(@booking.product), class: "font-black text-pink-600" %>
+          </div>
 
-    <div class="grid md:grid-cols-2 gap-4">
-      <div class="rounded-2xl bg-slate-50 p-4">
-        <p class="text-sm text-slate-500"><%= t("bookings.start_time") %></p>
-        <p class="font-black"><%= l(@booking.start_time, format: :long) if @booking.start_time %></p>
-      </div>
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("admin.bookings.status") %></p>
+            <p class="font-black"><%= booking_status_label(@booking) %></p>
+          </div>
 
-      <div class="rounded-2xl bg-slate-50 p-4">
-        <p class="text-sm text-slate-500"><%= t("bookings.end_time") %></p>
-        <p class="font-black"><%= l(@booking.end_time, format: :long) if @booking.end_time %></p>
-      </div>
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("bookings.start_time") %></p>
+            <p class="font-black"><%= @booking.start_time ? l(@booking.start_time, format: :long) : "-" %></p>
+          </div>
 
-      <div class="rounded-2xl bg-slate-50 p-4">
-        <p class="text-sm text-slate-500"><%= t("admin.bookings.rental_days") %></p>
-        <p class="font-black"><%= @booking.rental_days %></p>
-      </div>
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("bookings.end_time") %></p>
+            <p class="font-black"><%= @booking.end_time ? l(@booking.end_time, format: :long) : "-" %></p>
+          </div>
 
-      <div class="rounded-2xl bg-slate-50 p-4">
-        <p class="text-sm text-slate-500"><%= t("admin.bookings.amount") %></p>
-        <p class="font-black text-pink-600"><%= number_to_currency(@booking.total_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></p>
-      </div>
-    </div>
-  </div>
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("admin.bookings.rental_days") %></p>
+            <p class="font-black"><%= @booking.rental_days.presence || "-" %></p>
+          </div>
 
-  <div class="bg-slate-950 text-white rounded-[2rem] p-6 shadow-sm">
-    <h3 class="text-xl font-black mb-5"><%= t("admin.bookings.payment_summary") %></h3>
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("bookings.pickup_method") %></p>
+            <p class="font-black"><%= pickup_method_label(@booking) %></p>
+          </div>
 
-    <div class="space-y-4">
-      <div class="flex justify-between">
-        <span class="text-slate-300"><%= t("admin.bookings.rental_amount") %></span>
-        <span class="font-black"><%= number_to_currency(@booking.rental_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
-      </div>
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("bookings.pickup_address") %></p>
+            <p class="font-black whitespace-pre-line"><%= @booking.pickup_address.presence || "-" %></p>
+          </div>
 
-      <div class="flex justify-between">
-        <span class="text-slate-300"><%= t("products.cleaning_fee") %></span>
-        <span class="font-black"><%= number_to_currency(@booking.cleaning_fee.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
-      </div>
-
-      <div class="flex justify-between">
-        <span class="text-slate-300"><%= t("bookings.renter_service_fee") %></span>
-        <span class="font-black"><%= number_to_currency(@booking.renter_service_fee_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
-      </div>
-
-      <div class="flex justify-between">
-        <span class="text-slate-300"><%= t("products.deposit") %></span>
-        <span class="font-black"><%= number_to_currency(@booking.deposit_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
-      </div>
-
-      <div class="pt-4 border-t border-white/10 flex justify-between">
-        <span class="text-slate-300"><%= t("admin.bookings.total") %></span>
-        <span class="font-black text-pink-300"><%= number_to_currency(@booking.total_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
-      </div>
-
-      <div class="pt-4 border-t border-white/10 space-y-3">
-        <div class="flex justify-between text-emerald-300">
-          <span><%= t("admin.bookings.admin_revenue") %></span>
-          <span class="font-black"><%= number_to_currency(@booking.admin_revenue_amount, unit: "₫", precision: 0, format: "%n %u") %></span>
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("bookings.return_address") %></p>
+            <p class="font-black whitespace-pre-line"><%= @booking.return_address.presence || "-" %></p>
+          </div>
         </div>
-        <div class="flex justify-between text-pink-300">
-          <span><%= t("admin.bookings.owner_payout") %></span>
-          <span class="font-black"><%= number_to_currency(@booking.owner_earning_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
+      </section>
+
+      <section class="bg-white rounded-[2rem] p-6 shadow-sm">
+        <h3 class="text-xl font-black mb-5"><%= t("admin.bookings.parties") %></h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <% [[t("admin.bookings.renter"), @booking.renter], [t("admin.bookings.owner"), @booking.owner]].each do |label, user| %>
+            <div class="rounded-2xl bg-slate-50 p-4">
+              <p class="text-sm text-slate-500"><%= label %></p>
+              <%= link_to (user.full_name.presence || user.email), admin_user_path(user), class: "font-black text-pink-600" %>
+              <p class="mt-2 text-sm text-slate-500"><%= user.phone.presence || "-" %></p>
+              <p class="text-sm text-slate-500 break-all"><%= user.email %></p>
+            </div>
+          <% end %>
         </div>
-      </div>
+      </section>
+
+      <section class="bg-white rounded-[2rem] p-6 shadow-sm">
+        <h3 class="text-xl font-black mb-5"><%= t("admin.bookings.workflow_timeline") %></h3>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <% {
+            "Accepted at" => @booking.accepted_at,
+            "Rejected at" => @booking.rejected_at,
+            "Cancelled at" => @booking.cancelled_at,
+            "Picked up at" => @booking.picked_up_at,
+            "Returned at" => @booking.returned_at,
+            "Completed at" => @booking.completed_at
+          }.each do |label, value| %>
+            <div class="rounded-2xl bg-slate-50 p-4">
+              <p class="text-sm text-slate-500"><%= label %></p>
+              <p class="font-black"><%= value ? l(value, format: :long) : "-" %></p>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="mt-4 grid md:grid-cols-2 gap-4">
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("admin.bookings.cancel_reason") %></p>
+            <p class="font-black whitespace-pre-line"><%= @booking.cancel_reason.presence || "-" %></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("admin.bookings.reject_reason") %></p>
+            <p class="font-black whitespace-pre-line"><%= @booking.reject_reason.presence || "-" %></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-[2rem] p-6 shadow-sm">
+        <h3 class="text-xl font-black mb-5"><%= t("admin.bookings.linked_records") %></h3>
+
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500">Payment</p>
+            <% if payment %>
+              <p class="font-black">#<%= payment.id %> · <%= payment.status %></p>
+              <p class="text-sm text-slate-500"><%= payment.payment_method.presence || "-" %></p>
+              <p class="text-sm text-slate-500 break-all"><%= payment.transaction_id.presence || "-" %></p>
+            <% else %>
+              <p class="font-black">-</p>
+            <% end %>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500">Reservation</p>
+            <% if reservation %>
+              <p class="font-black">#<%= reservation.id %> · <%= reservation.status %></p>
+              <p class="text-sm text-slate-500"><%= reservation.reason.presence || "-" %></p>
+            <% else %>
+              <p class="font-black">-</p>
+            <% end %>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500">Payout</p>
+            <% if payout %>
+              <%= link_to "##{payout.id} · #{payout.status}", admin_payout_path(payout), class: "font-black text-pink-600" %>
+              <p class="text-sm text-slate-500"><%= number_to_currency(payout.amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></p>
+            <% else %>
+              <p class="font-black">-</p>
+            <% end %>
+          </div>
+        </div>
+      </section>
     </div>
+
+    <aside class="space-y-6">
+      <section class="bg-slate-950 text-white rounded-[2rem] p-6 shadow-sm">
+        <h3 class="text-xl font-black mb-5"><%= t("admin.bookings.payment_summary") %></h3>
+
+        <div class="space-y-4">
+          <% [
+            [t("admin.bookings.rental_amount"), @booking.rental_amount],
+            [t("products.cleaning_fee"), @booking.cleaning_fee],
+            [t("admin.bookings.delivery_fee"), @booking.delivery_fee],
+            [t("products.deposit"), @booking.deposit_amount],
+            [t("admin.bookings.renter_fee_short", rate: @booking.renter_service_fee_rate.to_i), @booking.renter_service_fee_amount],
+            [t("admin.bookings.discount_amount"), -@booking.discount_amount.to_i]
+          ].each do |label, amount| %>
+            <div class="flex justify-between gap-4">
+              <span class="text-slate-300"><%= label %></span>
+              <span class="font-black"><%= number_to_currency(amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
+            </div>
+          <% end %>
+
+          <div class="pt-4 border-t border-white/10 flex justify-between">
+            <span class="text-slate-300"><%= t("admin.bookings.total") %></span>
+            <span class="font-black text-pink-300"><%= number_to_currency(@booking.total_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
+          </div>
+
+          <div class="pt-4 border-t border-white/10 space-y-3">
+            <div class="flex justify-between text-emerald-300">
+              <span><%= t("admin.bookings.admin_revenue") %></span>
+              <span class="font-black"><%= number_to_currency(@booking.admin_revenue_amount, unit: "₫", precision: 0, format: "%n %u") %></span>
+            </div>
+            <div class="flex justify-between text-slate-300">
+              <span><%= t("admin.bookings.owner_fee_short", rate: @booking.platform_fee_rate.to_i) %></span>
+              <span class="font-black"><%= number_to_currency(@booking.platform_fee_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
+            </div>
+            <div class="flex justify-between text-pink-300">
+              <span><%= t("admin.bookings.owner_payout") %></span>
+              <span class="font-black"><%= number_to_currency(@booking.owner_earning_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
+            </div>
+            <div class="flex justify-between text-slate-300">
+              <span><%= t("admin.bookings.gmv") %></span>
+              <span class="font-black"><%= number_to_currency(@booking.gmv_amount, unit: "₫", precision: 0, format: "%n %u") %></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-[2rem] p-6 shadow-sm">
+        <h3 class="text-xl font-black mb-5"><%= t("admin.products.details") %></h3>
+
+        <div class="space-y-4">
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("admin.bookings.product") %></p>
+            <%= link_to @booking.product.title, admin_product_path(@booking.product), class: "font-black text-pink-600" %>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("products.form.type") %></p>
+            <p class="font-black"><%= @booking.product.product_type %></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("products.rental_price") %></p>
+            <p class="font-black"><%= number_to_currency(@booking.product.price_per_day.to_i, unit: "₫", precision: 0, format: "%n %u") %></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-[2rem] p-6 shadow-sm">
+        <h3 class="text-xl font-black mb-5"><%= t("admin.users.system_info") %></h3>
+
+        <div class="space-y-4">
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500">Created at</p>
+            <p class="font-black"><%= l(@booking.created_at, format: :long) %></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500">Updated at</p>
+            <p class="font-black"><%= l(@booking.updated_at, format: :long) %></p>
+          </div>
+        </div>
+      </section>
+    </aside>
   </div>
 </div>

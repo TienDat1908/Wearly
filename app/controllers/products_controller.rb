@@ -8,6 +8,6 @@ class ProductsController < ApplicationController
   end
 
   def show
-    @product = Product.active.find(params[:id])
+    @product = Product.active.includes(owner: { avatar_attachment: :blob }, photos_attachments: :blob).find(params[:id])
   end
 end

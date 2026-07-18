@@ -51,6 +51,8 @@ group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 
+  gem 'dotenv-rails'
+
   # Highlight the fine-grained location where an error occurred [https://github.com/ruby/error_highlight]
 end
 
@@ -62,6 +64,10 @@ end
 
 # Authentication
 gem "devise"
+gem "omniauth-facebook"
+gem "omniauth-google-oauth2"
+gem "omniauth-instagram-api"
+gem "omniauth-rails_csrf_protection"
 
 # State machine for booking status
 gem "aasm"

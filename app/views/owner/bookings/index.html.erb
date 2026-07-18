@@ -42,7 +42,9 @@
                 </td>
 
                 <td class="p-4 text-slate-600">
-                  <%= booking.renter.full_name.presence || booking.renter.email %>
+                  <%= link_to (booking.renter.full_name.presence || booking.renter.email),
+                    user_path(booking.renter),
+                    class: "font-black text-pink-600 hover:text-pink-700" %>
                 </td>
 
                 <td class="p-4">

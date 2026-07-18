@@ -1,69 +1,117 @@
-<section class="min-h-[calc(100vh-92px)] flex items-center justify-center px-5 py-12">
-  <div class="w-full max-w-5xl">
-    <div class="text-center mb-8">
-      <div class="mx-auto w-16 h-16 rounded-3xl bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center font-black text-2xl shadow-lg shadow-pink-200">
+<section class="relative min-h-[calc(100vh-92px)] overflow-hidden px-5 py-10">
+  <div class="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_18%_12%,rgba(236,72,153,0.16),transparent_30rem),radial-gradient(circle_at_80%_25%,rgba(251,146,60,0.16),transparent_30rem),linear-gradient(135deg,#fffaf5_0%,#fff_52%,#f8fafc_100%)]"></div>
+
+  <div class="mx-auto max-w-7xl grid xl:grid-cols-[420px_1fr] gap-8 items-start">
+    <aside class="rounded-[2.75rem] bg-slate-950 text-white p-6 md:p-8 shadow-2xl shadow-pink-100 xl:sticky xl:top-28">
+      <div class="w-16 h-16 rounded-[1.5rem] bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center font-black text-2xl shadow-xl shadow-pink-950/40">
         W
       </div>
 
-      <h1 class="mt-5 text-4xl md:text-5xl font-black tracking-tight">
+      <p class="mt-8 text-sm font-black uppercase tracking-[0.24em] text-pink-300"><%= t("auth.sign_up") %></p>
+      <h1 class="mt-3 text-5xl font-black tracking-tight leading-[0.95]">
         <%= t("auth.sign_up_title") %>
       </h1>
 
-      <p class="mt-3 text-slate-500">
+      <p class="mt-5 text-slate-300 leading-7">
         <%= t("auth.sign_up_subtitle") %>
       </p>
-    </div>
 
-    <div class="bg-white rounded-[2.5rem] p-6 md:p-8 shadow-2xl shadow-pink-100 border border-orange-100">
-      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-5" }) do |f| %>
+      <div class="mt-8 space-y-3">
+        <div class="rounded-2xl bg-white/10 p-4">
+          <p class="font-black">1. <%= t("auth.renter") %></p>
+          <p class="mt-1 text-sm text-slate-400"><%= t("auth.sign_up_renter_hint") %></p>
+        </div>
+
+        <div class="rounded-2xl bg-white/10 p-4">
+          <p class="font-black">2. <%= t("auth.owner") %></p>
+          <p class="mt-1 text-sm text-slate-400"><%= t("auth.sign_up_owner_hint") %></p>
+        </div>
+      </div>
+
+      <div class="mt-8 rounded-[2rem] bg-gradient-to-br from-pink-500 to-orange-400 p-5">
+        <p class="text-4xl">✨</p>
+        <p class="mt-3 text-2xl font-black"><%= t("app.tagline") %></p>
+      </div>
+    </aside>
+
+    <div class="rounded-[2.75rem] bg-white/90 backdrop-blur-xl p-6 md:p-8 shadow-2xl shadow-slate-200/70 border border-white">
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-7">
+        <div>
+          <p class="text-sm font-black uppercase tracking-[0.22em] text-pink-500"><%= t("auth.create_account") %></p>
+          <h2 class="mt-2 text-4xl font-black tracking-tight"><%= t("auth.sign_up_title") %></h2>
+          <p class="mt-2 text-slate-500"><%= t("auth.sign_up_subtitle") %></p>
+        </div>
+
+        <%= link_to t("auth.sign_in"), new_session_path(resource_name), class: "px-5 py-3 rounded-full bg-slate-100 text-slate-700 font-black hover:bg-pink-50 hover:text-pink-600 transition" %>
+      </div>
+
+      <div class="mb-7">
+        <%= render "devise/shared/social_login", resource_name: resource_name %>
+      </div>
+
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-6" }) do |f| %>
         <%= render "devise/shared/error_messages", resource: resource %>
 
-        <div class="grid md:grid-cols-2 gap-5">
-          <div>
-            <%= f.label :full_name, t("auth.full_name"), class: "block font-black mb-2" %>
-            <%= f.text_field :full_name, autofocus: true, autocomplete: "name", class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400", placeholder: t("auth.full_name_placeholder") %>
+        <section class="rounded-[2rem] bg-slate-50 p-5">
+          <h3 class="text-xl font-black"><%= t("profile.personal_info") %></h3>
+
+          <div class="mt-5 grid md:grid-cols-2 gap-4">
+            <div>
+              <%= f.label :full_name, t("auth.full_name"), class: "block font-black mb-2" %>
+              <%= f.text_field :full_name, autofocus: true, autocomplete: "name", class: "w-full rounded-2xl border-slate-200 bg-white px-5 py-4 focus:border-pink-400 focus:ring-pink-400", placeholder: t("auth.full_name_placeholder") %>
+            </div>
+
+            <div>
+              <%= f.label :phone, t("auth.phone"), class: "block font-black mb-2" %>
+              <%= f.telephone_field :phone, autocomplete: "tel", class: "w-full rounded-2xl border-slate-200 bg-white px-5 py-4 focus:border-pink-400 focus:ring-pink-400", placeholder: t("auth.phone_placeholder") %>
+            </div>
+
+            <div class="md:col-span-2">
+              <%= f.label :email, "Email", class: "block font-black mb-2" %>
+              <%= f.email_field :email, autocomplete: "email", class: "w-full rounded-2xl border-slate-200 bg-white px-5 py-4 focus:border-pink-400 focus:ring-pink-400", placeholder: "you@example.com" %>
+            </div>
+          </div>
+        </section>
+
+        <section class="grid lg:grid-cols-2 gap-5">
+          <div class="rounded-[2rem] bg-slate-50 p-5">
+            <h3 class="text-xl font-black"><%= t("profile.password_section") %></h3>
+
+            <div class="mt-5 space-y-4">
+              <div>
+                <%= f.label :password, t("auth.password"), class: "block font-black mb-2" %>
+                <%= f.password_field :password, autocomplete: "new-password", class: "w-full rounded-2xl border-slate-200 bg-white px-5 py-4 focus:border-pink-400 focus:ring-pink-400", placeholder: t("auth.password_placeholder") %>
+                <p class="mt-2 text-xs text-slate-500"><%= t("auth.password_hint") %></p>
+              </div>
+
+              <div>
+                <%= f.label :password_confirmation, t("auth.password_confirmation"), class: "block font-black mb-2" %>
+                <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "w-full rounded-2xl border-slate-200 bg-white px-5 py-4 focus:border-pink-400 focus:ring-pink-400", placeholder: t("auth.password_confirmation_placeholder") %>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <%= f.label :phone, t("auth.phone"), class: "block font-black mb-2" %>
-            <%= f.telephone_field :phone, autocomplete: "tel", class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400", placeholder: t("auth.phone_placeholder") %>
+          <div class="rounded-[2rem] bg-slate-50 p-5">
+            <h3 class="text-xl font-black"><%= t("auth.account_type") %></h3>
+
+            <div class="mt-5 space-y-4">
+              <div>
+                <%= f.label :role, t("auth.account_type"), class: "block font-black mb-2" %>
+                <%= f.select :role, [[t("auth.renter"), "renter"], [t("auth.owner"), "owner"]], {}, class: "w-full rounded-2xl border-slate-200 bg-white px-5 py-4 focus:border-pink-400 focus:ring-pink-400" %>
+              </div>
+
+              <div>
+                <%= f.label :preferred_locale, t("auth.language"), class: "block font-black mb-2" %>
+                <%= f.select :preferred_locale, [["English", "en"], ["Tiếng Việt", "vi"]], {}, class: "w-full rounded-2xl border-slate-200 bg-white px-5 py-4 focus:border-pink-400 focus:ring-pink-400" %>
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
 
-        <div>
-          <%= f.label :email, "Email", class: "block font-black mb-2" %>
-          <%= f.email_field :email, autocomplete: "email", class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400", placeholder: "you@example.com" %>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-5">
-          <div>
-            <%= f.label :password, t("auth.password"), class: "block font-black mb-2" %>
-            <%= f.password_field :password, autocomplete: "new-password", class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400", placeholder: t("auth.password_placeholder") %>
-            <p class="mt-2 text-xs text-slate-500"><%= t("auth.password_hint") %></p>
-          </div>
-
-          <div>
-            <%= f.label :password_confirmation, t("auth.password_confirmation"), class: "block font-black mb-2" %>
-            <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400", placeholder: t("auth.password_confirmation_placeholder") %>
-          </div>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-5">
-          <div>
-            <%= f.label :role, t("auth.account_type"), class: "block font-black mb-2" %>
-            <%= f.select :role, [[t("auth.renter"), "renter"], [t("auth.owner"), "owner"]], {}, class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
-          </div>
-
-          <div>
-            <%= f.label :preferred_locale, t("auth.language"), class: "block font-black mb-2" %>
-            <%= f.select :preferred_locale, [["English", "en"], ["Tiếng Việt", "vi"]], {}, class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
-          </div>
-        </div>
-
-        <%= f.submit t("auth.sign_up"), class: "w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-orange-400 text-white font-black shadow-xl shadow-pink-200 hover:-translate-y-0.5 transition" %>
+        <%= f.submit t("auth.sign_up"), class: "w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-orange-400 text-white font-black shadow-xl shadow-pink-200 hover:-translate-y-0.5 transition cursor-pointer" %>
       <% end %>
 
-      <div class="mt-6 text-center">
+      <div class="mt-6 rounded-2xl bg-slate-50 p-4 text-center">
         <p class="text-slate-500">
           <%= t("auth.already_have_account") %>
           <%= link_to t("auth.sign_in"), new_session_path(resource_name), class: "font-black text-pink-600 hover:text-pink-700" %>

@@ -35,7 +35,7 @@ module Admin
     private
 
     def set_user
-      @user = User.find(params[:id])
+      @user = User.includes(:social_accounts, avatar_attachment: :blob).find(params[:id])
     end
 
     def user_params
@@ -46,10 +46,19 @@ module Admin
         :role,
         :status,
         :preferred_locale,
+        :avatar,
         :city,
         :district,
         :ward,
-        :address
+        :address,
+        :facebook_url,
+        :instagram_url,
+        :tiktok_url,
+        :zalo_url,
+        :website_url,
+        :bank_name,
+        :bank_account_name,
+        :bank_account_number
       )
     end
   end

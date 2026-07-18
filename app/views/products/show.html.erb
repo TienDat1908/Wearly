@@ -15,6 +15,20 @@
     <div class="bg-white rounded-[2rem] p-8 shadow-sm h-fit">
       <p class="text-pink-600 font-black uppercase tracking-wide"><%= @product.product_type %></p>
       <h1 class="text-4xl font-black mt-2"><%= @product.title %></h1>
+      <%= link_to user_path(@product.owner), class: "mt-4 flex items-center gap-3 rounded-2xl bg-slate-50 p-4 hover:bg-pink-50 transition" do %>
+        <div class="w-12 h-12 rounded-2xl overflow-hidden bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center font-black">
+          <% if @product.owner.avatar.attached? %>
+            <%= image_tag @product.owner.avatar, class: "w-full h-full object-cover" %>
+          <% else %>
+            <%= @product.owner.full_name.to_s.first.presence || "O" %>
+          <% end %>
+        </div>
+
+        <div>
+          <p class="text-sm text-slate-500 font-bold"><%= t("profiles.owner_profile") %></p>
+          <p class="font-black text-slate-950"><%= @product.owner.full_name.presence || @product.owner.email %></p>
+        </div>
+      <% end %>
 
       <p class="mt-4 text-slate-600"><%= @product.description %></p>
 

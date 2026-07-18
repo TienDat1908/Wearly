@@ -2,15 +2,21 @@ class BookingsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @bookings = current_user.rentals.includes(:product).order(created_at: :desc)
+    @bookings = current_user
+      .rentals
+      .includes(:owner, product: [photos_attachments: :blob])
+      .order(created_at: :desc)
   end
 
   def show
-    @booking = current_user.rentals.find(params[:id])
+    @booking = current_user
+      .rentals
+      .includes(:owner, product: [photos_attachments: :blob])
+      .find(params[:id])
   end
 
   def new
-    @product = Product.active.find(params[:product_id])
+    @product = Product.active.includes(owner: { avatar_attachment: :blob }).find(params[:product_id])
 
     if @product.owner_id == current_user.id
       redirect_to product_path(@product), alert: t("flash.bookings.cannot_rent_own_product")

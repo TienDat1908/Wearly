@@ -6,11 +6,22 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
+  devise_for :users,
+    only: :omniauth_callbacks,
+    controllers: {
+      omniauth_callbacks: "users/omniauth_callbacks"
+    }
+
   scope "(:locale)", locale: /en|vi/ do
     root "home#index"
 
-    devise_for :users
+    devise_for :users,
+      skip: :omniauth_callbacks,
+      controllers: {
+        registrations: "users/registrations"
+      }
 
+    resources :users, only: [:show]
     resources :products, only: [:index, :show]
 
     resources :bookings, only: [:index, :show, :new, :create] do
@@ -40,6 +51,8 @@ Rails.application.routes.draw do
       resources :products, only: [:index, :show, :edit, :update]
       resources :bookings, only: [:index, :show, :edit, :update]
       resources :payouts, only: [:index, :show, :update]
+
+      resource :account, only: [:edit, :update]
     end
   end
 end

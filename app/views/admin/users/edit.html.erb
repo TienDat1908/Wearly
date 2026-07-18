@@ -1,46 +1,136 @@
-<div class="max-w-3xl">
-  <h2 class="text-4xl font-black mb-6"><%= t("admin.users.edit_title") %></h2>
+<div class="max-w-5xl space-y-6">
+  <div>
+    <p class="text-slate-400 font-black uppercase tracking-widest text-xs">USER #<%= @user.id %></p>
+    <h2 class="mt-2 text-4xl font-black"><%= t("admin.users.edit_title") %></h2>
+  </div>
 
-  <%= form_with model: [:admin, @user], local: true, class: "bg-white rounded-[2rem] p-6 shadow-sm space-y-5" do |f| %>
-    <div>
-      <%= f.label :full_name, t("auth.full_name"), class: "font-black" %>
-      <%= f.text_field :full_name, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+  <%= form_with model: [:admin, @user], local: true, multipart: true, class: "bg-white rounded-[2rem] p-6 shadow-sm space-y-8" do |f| %>
+    <section>
+      <h3 class="text-xl font-black"><%= t("profile.personal_info") %></h3>
+
+      <div class="mt-5 flex flex-col sm:flex-row sm:items-center gap-5">
+        <div class="w-24 h-24 rounded-[2rem] overflow-hidden bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center font-black text-3xl">
+          <% if @user.avatar.attached? %>
+            <%= image_tag @user.avatar, class: "w-full h-full object-cover" %>
+          <% else %>
+            <%= @user.full_name.to_s.first.presence || "U" %>
+          <% end %>
+        </div>
+
+        <div class="flex-1">
+          <%= f.label :avatar, t("profile.avatar"), class: "font-black" %>
+          <%= f.file_field :avatar, accept: "image/png,image/jpeg,image/webp", class: "mt-2 w-full rounded-2xl border-slate-200 bg-slate-50" %>
+        </div>
+      </div>
+
+      <div class="mt-5 grid md:grid-cols-2 gap-4">
+        <div>
+          <%= f.label :full_name, t("auth.full_name"), class: "font-black" %>
+          <%= f.text_field :full_name, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :phone, t("auth.phone"), class: "font-black" %>
+          <%= f.telephone_field :phone, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :email, "Email", class: "font-black" %>
+          <%= f.email_field :email, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :preferred_locale, t("auth.language"), class: "font-black" %>
+          <%= f.select :preferred_locale, [["English", "en"], ["Tiếng Việt", "vi"]], {}, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h3 class="text-xl font-black"><%= t("admin.users.access") %></h3>
+
+      <div class="mt-5 grid md:grid-cols-2 gap-4">
+        <div>
+          <%= f.label :role, t("admin.users.role"), class: "font-black" %>
+          <%= f.select :role, User.roles.keys.map { |role| [role.humanize, role] }, {}, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :status, t("admin.users.status"), class: "font-black" %>
+          <%= f.select :status, User.statuses.keys.map { |status| [status.humanize, status] }, {}, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h3 class="text-xl font-black"><%= t("profile.address_info") %></h3>
+
+      <div class="mt-5 grid md:grid-cols-3 gap-4">
+        <div class="md:col-span-3">
+          <%= f.label :address, t("admin.users.address"), class: "font-black" %>
+          <%= f.text_area :address, rows: 3, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :ward, t("products.form.ward"), class: "font-black" %>
+          <%= f.text_field :ward, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :district, t("products.form.district"), class: "font-black" %>
+          <%= f.text_field :district, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :city, t("products.form.city"), class: "font-black" %>
+          <%= f.text_field :city, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h3 class="text-xl font-black"><%= t("profile.social_info") %></h3>
+
+      <div class="mt-5 grid md:grid-cols-2 gap-4">
+        <% [
+          [:facebook_url, t("profile.facebook_url")],
+          [:instagram_url, t("profile.instagram_url")],
+          [:tiktok_url, t("profile.tiktok_url")],
+          [:zalo_url, t("profile.zalo_url")],
+          [:website_url, t("profile.website_url")]
+        ].each do |field, label| %>
+          <div class="<%= field == :website_url ? 'md:col-span-2' : '' %>">
+            <%= f.label field, label, class: "font-black" %>
+            <%= f.url_field field, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+          </div>
+        <% end %>
+      </div>
+    </section>
+
+    <section>
+      <h3 class="text-xl font-black"><%= t("profile.owner_info") %></h3>
+
+      <div class="mt-5 grid md:grid-cols-3 gap-4">
+        <div>
+          <%= f.label :bank_name, t("profile.bank_name"), class: "font-black" %>
+          <%= f.text_field :bank_name, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :bank_account_name, t("profile.bank_account_name"), class: "font-black" %>
+          <%= f.text_field :bank_account_name, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+
+        <div>
+          <%= f.label :bank_account_number, t("profile.bank_account_number"), class: "font-black" %>
+          <%= f.text_field :bank_account_number, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        </div>
+      </div>
+    </section>
+
+    <div class="flex flex-col sm:flex-row gap-3 sm:justify-between border-t border-slate-100 pt-6">
+      <%= link_to t("admin.actions.view"), admin_user_path(@user), class: "px-6 py-4 rounded-2xl bg-slate-100 text-slate-700 font-black text-center" %>
+      <%= f.submit t("admin.actions.save"), class: "px-8 py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-orange-400 text-white font-black shadow-lg shadow-pink-200 cursor-pointer" %>
     </div>
-
-    <div class="grid md:grid-cols-2 gap-4">
-      <div>
-        <%= f.label :email, "Email", class: "font-black" %>
-        <%= f.email_field :email, class: "mt-2 w-full rounded-2xl border-slate-200" %>
-      </div>
-
-      <div>
-        <%= f.label :phone, t("auth.phone"), class: "font-black" %>
-        <%= f.telephone_field :phone, class: "mt-2 w-full rounded-2xl border-slate-200" %>
-      </div>
-    </div>
-
-    <div class="grid md:grid-cols-3 gap-4">
-      <div>
-        <%= f.label :role, t("admin.users.role"), class: "font-black" %>
-        <%= f.select :role, User.roles.keys.map { |role| [role.humanize, role] }, {}, class: "mt-2 w-full rounded-2xl border-slate-200" %>
-      </div>
-
-      <div>
-        <%= f.label :status, t("admin.users.status"), class: "font-black" %>
-        <%= f.select :status, User.statuses.keys.map { |status| [status.humanize, status] }, {}, class: "mt-2 w-full rounded-2xl border-slate-200" %>
-      </div>
-
-      <div>
-        <%= f.label :preferred_locale, t("auth.language"), class: "font-black" %>
-        <%= f.select :preferred_locale, [["English", "en"], ["Tiếng Việt", "vi"]], {}, class: "mt-2 w-full rounded-2xl border-slate-200" %>
-      </div>
-    </div>
-
-    <div>
-      <%= f.label :address, t("admin.users.address"), class: "font-black" %>
-      <%= f.text_area :address, rows: 3, class: "mt-2 w-full rounded-2xl border-slate-200" %>
-    </div>
-
-    <%= f.submit t("admin.actions.save"), class: "w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-orange-400 text-white font-black shadow-lg shadow-pink-200" %>
   <% end %>
 </div>

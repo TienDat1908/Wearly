@@ -12,78 +12,100 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body class="bg-slate-950 text-slate-950">
-    <div class="min-h-screen flex">
-      <aside class="hidden lg:flex w-72 bg-slate-950 text-white flex-col border-r border-white/10">
-        <div class="p-6">
+  <body class="admin-shell bg-slate-950 text-slate-950">
+    <div class="min-h-screen flex admin-frame">
+      <aside class="hidden lg:flex w-72 bg-slate-950/95 text-white flex-col border-r border-white/10">
+        <div class="px-6 py-7">
           <%= link_to admin_root_path, class: "flex items-center gap-3" do %>
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-orange-400 flex items-center justify-center font-black text-xl shadow-lg shadow-pink-900/40">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-orange-400 flex items-center justify-center font-black text-xl shadow-lg shadow-pink-950/50 ring-1 ring-white/10">
               W
             </div>
 
             <div>
               <p class="font-black text-xl leading-none"><%= t("app.name") %></p>
-              <p class="text-xs text-slate-400"><%= t("admin.title") %></p>
+              <p class="mt-1 text-xs text-slate-400 font-bold uppercase tracking-widest"><%= t("admin.title") %></p>
             </div>
           <% end %>
         </div>
 
-        <nav class="px-4 space-y-2 text-sm font-bold">
-          <%= link_to admin_root_path, class: "flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10 #{controller_name == 'dashboard' ? 'bg-white text-slate-950' : 'text-slate-300'}" do %>
-            <span>📊</span>
+        <nav class="px-4 space-y-1 text-sm font-bold">
+          <p class="px-4 pb-2 text-[11px] font-black uppercase tracking-widest text-slate-500"><%= t("admin.nav.workspace") %></p>
+
+          <%= link_to admin_root_path, class: "flex items-center gap-3 px-4 py-3 rounded-xl transition #{controller_name == 'dashboard' ? 'bg-white text-slate-950 shadow-lg shadow-black/20' : 'text-slate-300 hover:bg-white/10 hover:text-white'}" do %>
+            <span class="w-6 text-center">📊</span>
             <span><%= t("admin.nav.dashboard") %></span>
           <% end %>
 
-          <%= link_to admin_users_path, class: "flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10 #{controller_name == 'users' ? 'bg-white text-slate-950' : 'text-slate-300'}" do %>
-            <span>👥</span>
+          <%= link_to admin_users_path, class: "flex items-center gap-3 px-4 py-3 rounded-xl transition #{controller_name == 'users' ? 'bg-white text-slate-950 shadow-lg shadow-black/20' : 'text-slate-300 hover:bg-white/10 hover:text-white'}" do %>
+            <span class="w-6 text-center">👥</span>
             <span><%= t("admin.nav.users") %></span>
           <% end %>
 
-          <%= link_to admin_products_path, class: "flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10 #{controller_name == 'products' ? 'bg-white text-slate-950' : 'text-slate-300'}" do %>
-            <span>👗</span>
+          <%= link_to admin_products_path, class: "flex items-center gap-3 px-4 py-3 rounded-xl transition #{controller_name == 'products' ? 'bg-white text-slate-950 shadow-lg shadow-black/20' : 'text-slate-300 hover:bg-white/10 hover:text-white'}" do %>
+            <span class="w-6 text-center">👗</span>
             <span><%= t("admin.nav.products") %></span>
           <% end %>
 
-          <%= link_to admin_bookings_path, class: "flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10 #{controller_name == 'bookings' ? 'bg-white text-slate-950' : 'text-slate-300'}" do %>
-            <span>🧾</span>
+          <%= link_to admin_bookings_path, class: "flex items-center gap-3 px-4 py-3 rounded-xl transition #{controller_name == 'bookings' ? 'bg-white text-slate-950 shadow-lg shadow-black/20' : 'text-slate-300 hover:bg-white/10 hover:text-white'}" do %>
+            <span class="w-6 text-center">🧾</span>
             <span><%= t("admin.nav.bookings") %></span>
           <% end %>
 
-          <%= link_to admin_payouts_path, class: "flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10 #{controller_name == 'payouts' ? 'bg-white text-slate-950' : 'text-slate-300'}" do %>
-            <span>₫</span>
+          <%= link_to admin_payouts_path, class: "flex items-center gap-3 px-4 py-3 rounded-xl transition #{controller_name == 'payouts' ? 'bg-white text-slate-950 shadow-lg shadow-black/20' : 'text-slate-300 hover:bg-white/10 hover:text-white'}" do %>
+            <span class="w-6 text-center">₫</span>
             <span><%= t("admin.nav.payouts") %></span>
+          <% end %>
+
+          <p class="px-4 pt-5 pb-2 text-[11px] font-black uppercase tracking-widest text-slate-500"><%= t("admin.nav.system") %></p>
+
+          <%= link_to edit_admin_account_path, class: "flex items-center gap-3 px-4 py-3 rounded-xl transition #{controller_name == 'accounts' ? 'bg-white text-slate-950 shadow-lg shadow-black/20' : 'text-slate-300 hover:bg-white/10 hover:text-white'}" do %>
+            <span class="w-6 text-center">⚙</span>
+            <span><%= t("admin.nav.account") %></span>
           <% end %>
         </nav>
 
-        <div class="mt-auto p-4 space-y-3">
-          <div class="flex items-center gap-2 bg-white/10 rounded-full p-1 text-xs font-black">
-            <%= link_to "EN", locale_url(:en), class: "flex-1 text-center px-3 py-2 rounded-full #{I18n.locale == :en ? 'bg-white text-slate-950' : 'text-slate-300'}" %>
-            <%= link_to "VI", locale_url(:vi), class: "flex-1 text-center px-3 py-2 rounded-full #{I18n.locale == :vi ? 'bg-white text-slate-950' : 'text-slate-300'}" %>
+        <div class="mt-auto p-4 space-y-4">
+          <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+            <p class="text-xs font-black uppercase tracking-widest text-slate-500"><%= t("admin.nav.signed_in") %></p>
+            <p class="mt-2 font-black truncate"><%= current_user.full_name.presence || current_user.email %></p>
+            <p class="text-xs text-slate-400 truncate"><%= current_user.email %></p>
           </div>
 
-          <%= link_to t("admin.nav.back_to_site"), root_path, class: "block text-center px-4 py-3 rounded-2xl bg-white/10 text-white font-black" %>
+          <div class="flex items-center gap-2 bg-white/10 rounded-xl p-1 text-xs font-black">
+            <%= link_to "EN", locale_url(:en), class: "flex-1 text-center px-3 py-2 rounded-lg #{I18n.locale == :en ? 'bg-white text-slate-950' : 'text-slate-300'}" %>
+            <%= link_to "VI", locale_url(:vi), class: "flex-1 text-center px-3 py-2 rounded-lg #{I18n.locale == :vi ? 'bg-white text-slate-950' : 'text-slate-300'}" %>
+          </div>
 
-          <%= button_to t("nav.sign_out"), destroy_user_session_path, method: :delete, class: "w-full px-4 py-3 rounded-2xl bg-red-500 text-white font-black" %>
+          <%= button_to t("nav.sign_out"), destroy_user_session_path, method: :delete, class: "w-full px-4 py-3 rounded-xl bg-red-500/10 text-red-200 border border-red-500/20 font-black hover:bg-red-500 hover:text-white transition" %>
         </div>
       </aside>
 
-      <main class="flex-1 bg-[#faf7f2] min-h-screen">
-        <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-orange-100">
+      <main class="flex-1 min-h-screen bg-slate-100">
+        <header class="sticky top-0 z-40 bg-white/85 backdrop-blur-xl border-b border-slate-200">
           <div class="px-5 lg:px-8 py-4 flex items-center justify-between">
             <div>
-              <p class="text-xs font-black uppercase tracking-widest text-pink-500"><%= t("admin.title") %></p>
+              <p class="text-[11px] font-black uppercase tracking-widest text-slate-400"><%= t("admin.title") %></p>
               <h1 class="text-2xl font-black"><%= t("admin.nav.#{controller_name}", default: t("admin.title")) %></h1>
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-4">
+              <div class="hidden lg:flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-700 border border-emerald-100">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span><%= t("admin.nav.live") %></span>
+              </div>
+
               <div class="hidden sm:block text-right">
                 <p class="font-black"><%= current_user.full_name.presence || current_user.email %></p>
                 <p class="text-xs text-slate-500"><%= current_user.role %></p>
               </div>
 
-              <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center font-black">
-                <%= current_user.full_name.to_s.first.presence || "A" %>
-              </div>
+              <%= link_to edit_admin_account_path, class: "w-11 h-11 rounded-2xl overflow-hidden bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center font-black" do %>
+                <% if current_user.avatar.attached? %>
+                  <%= image_tag current_user.avatar, class: "w-full h-full object-cover" %>
+                <% else %>
+                  <%= current_user.full_name.to_s.first.presence || "A" %>
+                <% end %>
+              <% end %>
             </div>
           </div>
         </header>

@@ -32,6 +32,20 @@
             <h2 class="mt-2 text-2xl font-black"><%= @booking.product.title %></h2>
             <p class="mt-3 text-slate-600"><%= @booking.product.description %></p>
 
+            <%= link_to user_path(@booking.owner), class: "mt-4 inline-flex items-center gap-3 rounded-2xl bg-pink-50 px-4 py-3 hover:bg-pink-100 transition" do %>
+              <span class="w-10 h-10 rounded-xl overflow-hidden bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center font-black">
+                <% if @booking.owner.avatar.attached? %>
+                  <%= image_tag @booking.owner.avatar, class: "w-full h-full object-cover" %>
+                <% else %>
+                  <%= @booking.owner.full_name.to_s.first.presence || "O" %>
+                <% end %>
+              </span>
+              <span>
+                <span class="block text-xs text-pink-600 font-black uppercase"><%= t("profiles.owner_profile") %></span>
+                <span class="block font-black text-slate-950"><%= @booking.owner.full_name.presence || @booking.owner.email %></span>
+              </span>
+            <% end %>
+
             <div class="mt-5 grid sm:grid-cols-3 gap-3">
               <div class="rounded-2xl bg-slate-50 p-4">
                 <p class="text-sm text-slate-500 font-bold"><%= t("products.size") %></p>

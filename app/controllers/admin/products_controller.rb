@@ -30,7 +30,7 @@ module Admin
     private
 
     def set_product
-      @product = Product.find(params[:id])
+      @product = Product.includes(:owner, photos_attachments: :blob).find(params[:id])
     end
 
     def product_params

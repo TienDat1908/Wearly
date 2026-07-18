@@ -1,45 +1,231 @@
-<div class="flex items-center justify-between mb-6">
-  <div>
-    <h2 class="text-4xl font-black"><%= @user.full_name.presence || @user.email %></h2>
-    <p class="text-slate-500 mt-1"><%= @user.email %></p>
-  </div>
+<% full_address = [@user.address, @user.ward, @user.district, @user.city].compact_blank.join(", ") %>
+<% social_links = {
+  t("profile.facebook_url") => @user.facebook_url,
+  t("profile.instagram_url") => @user.instagram_url,
+  t("profile.tiktok_url") => @user.tiktok_url,
+  t("profile.zalo_url") => @user.zalo_url,
+  t("profile.website_url") => @user.website_url
+} %>
 
-  <%= link_to t("admin.actions.edit"), edit_admin_user_path(@user), class: "px-5 py-3 rounded-full bg-slate-950 text-white font-black" %>
-</div>
-
-<div class="grid lg:grid-cols-3 gap-6">
-  <div class="bg-white rounded-[2rem] p-6 shadow-sm">
-    <div class="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center text-4xl font-black">
-      <%= @user.full_name.to_s.first.presence || "U" %>
+<div class="space-y-6">
+  <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+    <div>
+      <p class="text-slate-400 font-black uppercase tracking-widest text-xs">USER #<%= @user.id %></p>
+      <h2 class="mt-2 text-4xl font-black"><%= @user.full_name.presence || @user.email %></h2>
+      <p class="text-slate-500 mt-1"><%= @user.email %></p>
     </div>
 
-    <h3 class="mt-5 text-2xl font-black"><%= @user.full_name.presence || "-" %></h3>
-    <p class="text-slate-500"><%= @user.email %></p>
-
-    <div class="mt-5 flex gap-2">
-      <span class="px-3 py-1 rounded-full bg-slate-100 text-xs font-black"><%= @user.role %></span>
-      <span class="px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-black"><%= @user.status %></span>
-    </div>
+    <%= link_to t("admin.actions.edit"), edit_admin_user_path(@user), class: "px-5 py-3 rounded-full bg-slate-950 text-white font-black" %>
   </div>
 
-  <div class="lg:col-span-2 bg-white rounded-[2rem] p-6 shadow-sm">
-    <h3 class="text-xl font-black mb-5"><%= t("admin.users.profile") %></h3>
-
-    <div class="grid md:grid-cols-2 gap-4">
-      <div class="rounded-2xl bg-slate-50 p-4">
-        <p class="text-sm text-slate-500"><%= t("admin.users.phone") %></p>
-        <p class="font-black"><%= @user.phone.presence || "-" %></p>
+  <div class="grid xl:grid-cols-[360px_1fr] gap-6">
+    <aside class="bg-slate-950 text-white rounded-[2rem] p-6 shadow-sm h-fit">
+      <div class="w-28 h-28 rounded-[2rem] overflow-hidden bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center text-4xl font-black ring-1 ring-white/10">
+        <% if @user.avatar.attached? %>
+          <%= image_tag @user.avatar, class: "w-full h-full object-cover" %>
+        <% else %>
+          <%= @user.full_name.to_s.first.presence || "U" %>
+        <% end %>
       </div>
 
-      <div class="rounded-2xl bg-slate-50 p-4">
-        <p class="text-sm text-slate-500"><%= t("admin.users.locale") %></p>
-        <p class="font-black"><%= @user.preferred_locale.presence || "-" %></p>
+      <h3 class="mt-5 text-2xl font-black"><%= @user.full_name.presence || "-" %></h3>
+      <p class="text-slate-400 break-all"><%= @user.email %></p>
+
+      <div class="mt-5 flex flex-wrap gap-2">
+        <span class="px-3 py-1 rounded-full bg-white/10 text-xs font-black"><%= @user.role %></span>
+        <span class="px-3 py-1 rounded-full <%= @user.active? ? 'bg-emerald-500/10 text-emerald-300' : 'bg-red-500/10 text-red-300' %> text-xs font-black"><%= @user.status %></span>
+        <span class="px-3 py-1 rounded-full bg-pink-500/10 text-pink-300 text-xs font-black"><%= @user.preferred_locale.presence || "-" %></span>
       </div>
 
-      <div class="rounded-2xl bg-slate-50 p-4 md:col-span-2">
-        <p class="text-sm text-slate-500"><%= t("admin.users.address") %></p>
-        <p class="font-black"><%= [@user.address, @user.ward, @user.district, @user.city].compact_blank.join(", ").presence || "-" %></p>
+      <div class="mt-6 grid grid-cols-3 gap-3 text-center">
+        <div class="rounded-2xl bg-white/10 p-3">
+          <p class="text-2xl font-black"><%= @user.products.count %></p>
+          <p class="text-[11px] text-slate-400 font-bold uppercase"><%= t("admin.nav.products") %></p>
+        </div>
+
+        <div class="rounded-2xl bg-white/10 p-3">
+          <p class="text-2xl font-black"><%= @user.rentals.count %></p>
+          <p class="text-[11px] text-slate-400 font-bold uppercase"><%= t("admin.nav.bookings") %></p>
+        </div>
+
+        <div class="rounded-2xl bg-white/10 p-3">
+          <p class="text-2xl font-black"><%= @user.owner_bookings.count %></p>
+          <p class="text-[11px] text-slate-400 font-bold uppercase"><%= t("admin.users.owner_orders") %></p>
+        </div>
       </div>
+    </aside>
+
+    <div class="space-y-6">
+      <section class="bg-white rounded-[2rem] p-6 shadow-sm">
+        <h3 class="text-xl font-black mb-5"><%= t("admin.users.profile") %></h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("auth.full_name") %></p>
+            <p class="font-black"><%= @user.full_name.presence || "-" %></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500">Email</p>
+            <p class="font-black break-all"><%= @user.email.presence || "-" %></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("admin.users.phone") %></p>
+            <p class="font-black"><%= @user.phone.presence || "-" %></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("admin.users.locale") %></p>
+            <p class="font-black"><%= @user.preferred_locale.presence || "-" %></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("admin.users.role") %></p>
+            <p class="font-black"><%= @user.role %></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("admin.users.status") %></p>
+            <p class="font-black"><%= @user.status %></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-[2rem] p-6 shadow-sm">
+        <h3 class="text-xl font-black mb-5"><%= t("profile.address_info") %></h3>
+
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="rounded-2xl bg-slate-50 p-4 md:col-span-3">
+            <p class="text-sm text-slate-500"><%= t("admin.users.address") %></p>
+            <p class="font-black"><%= full_address.presence || "-" %></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("products.form.ward") %></p>
+            <p class="font-black"><%= @user.ward.presence || "-" %></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("products.form.district") %></p>
+            <p class="font-black"><%= @user.district.presence || "-" %></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("products.form.city") %></p>
+            <p class="font-black"><%= @user.city.presence || "-" %></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-[2rem] p-6 shadow-sm">
+        <h3 class="text-xl font-black mb-5"><%= t("profile.social_info") %></h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <% social_links.each do |label, value| %>
+            <div class="rounded-2xl bg-slate-50 p-4">
+              <p class="text-sm text-slate-500"><%= label %></p>
+              <% if value.present? %>
+                <%= link_to value, value, target: "_blank", rel: "noopener", class: "font-black text-pink-600 break-all" %>
+              <% else %>
+                <p class="font-black">-</p>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-[2rem] p-6 shadow-sm">
+        <h3 class="text-xl font-black mb-5"><%= t("admin.users.social_accounts") %></h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <% @user.social_accounts.order(created_at: :desc).each do |account| %>
+            <div class="rounded-2xl bg-slate-50 p-4">
+              <p class="text-sm text-slate-500"><%= account.provider %></p>
+              <p class="font-black break-all"><%= account.uid %></p>
+              <p class="mt-2 text-sm text-slate-500 break-all"><%= account.email.presence || "-" %></p>
+              <p class="text-sm text-slate-500"><%= account.name.presence || "-" %></p>
+            </div>
+          <% end %>
+
+          <% if @user.social_accounts.none? %>
+            <p class="rounded-2xl bg-slate-50 p-4 font-black">-</p>
+          <% end %>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-[2rem] p-6 shadow-sm">
+        <h3 class="text-xl font-black mb-5"><%= t("profile.owner_info") %></h3>
+
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("profile.bank_name") %></p>
+            <p class="font-black"><%= @user.bank_name.presence || "-" %></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("profile.bank_account_name") %></p>
+            <p class="font-black"><%= @user.bank_account_name.presence || "-" %></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500"><%= t("profile.bank_account_number") %></p>
+            <p class="font-black"><%= @user.bank_account_number.presence || "-" %></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-[2rem] p-6 shadow-sm">
+        <h3 class="text-xl font-black mb-5"><%= t("admin.users.system_info") %></h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500">Created at</p>
+            <p class="font-black"><%= l(@user.created_at, format: :long) %></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500">Updated at</p>
+            <p class="font-black"><%= l(@user.updated_at, format: :long) %></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-[2rem] p-6 shadow-sm">
+        <h3 class="text-xl font-black mb-5"><%= t("admin.users.activity") %></h3>
+
+        <div class="grid lg:grid-cols-3 gap-4">
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500 font-bold"><%= t("admin.nav.products") %></p>
+            <div class="mt-3 space-y-2">
+              <% @user.products.order(created_at: :desc).limit(5).each do |product| %>
+                <%= link_to product.title, admin_product_path(product), class: "block font-black text-pink-600" %>
+              <% end %>
+              <p class="font-black"><%= "-" if @user.products.none? %></p>
+            </div>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500 font-bold"><%= t("bookings.my_bookings") %></p>
+            <div class="mt-3 space-y-2">
+              <% @user.rentals.includes(:product).order(created_at: :desc).limit(5).each do |booking| %>
+                <%= link_to "##{booking.id} · #{booking.product.title}", admin_booking_path(booking), class: "block font-black text-pink-600" %>
+              <% end %>
+              <p class="font-black"><%= "-" if @user.rentals.none? %></p>
+            </div>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-sm text-slate-500 font-bold"><%= t("admin.users.owner_orders") %></p>
+            <div class="mt-3 space-y-2">
+              <% @user.owner_bookings.includes(:product).order(created_at: :desc).limit(5).each do |booking| %>
+                <%= link_to "##{booking.id} · #{booking.product.title}", admin_booking_path(booking), class: "block font-black text-pink-600" %>
+              <% end %>
+              <p class="font-black"><%= "-" if @user.owner_bookings.none? %></p>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </div>

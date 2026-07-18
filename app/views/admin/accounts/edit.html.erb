@@ -1,0 +1,174 @@
+<div class="max-w-7xl space-y-6">
+  <section class="relative overflow-hidden rounded-2xl bg-slate-950 text-white border border-white/10 shadow-2xl shadow-slate-300/50">
+    <div class="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-pink-500/20"></div>
+
+    <div class="relative p-6 lg:p-8">
+      <div class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-8">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-5">
+          <div class="w-24 h-24 rounded-2xl overflow-hidden bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center font-black text-3xl shadow-xl shadow-black/30 ring-1 ring-white/10">
+            <% if @admin.avatar.attached? %>
+              <%= image_tag @admin.avatar, class: "w-full h-full object-cover" %>
+            <% else %>
+              <%= @admin.full_name.to_s.first.presence || "A" %>
+            <% end %>
+          </div>
+
+          <div>
+            <p class="text-xs font-black uppercase tracking-widest text-pink-300"><%= t("admin.account.title") %></p>
+            <h2 class="mt-2 text-4xl lg:text-5xl font-black tracking-tight"><%= @admin.full_name.presence || t("admin.account.heading") %></h2>
+            <p class="mt-2 text-slate-300 font-bold"><%= @admin.email %></p>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-3 gap-3 min-w-full xl:min-w-[520px]">
+          <div class="rounded-2xl bg-white/10 border border-white/10 p-4">
+            <p class="text-[11px] font-black uppercase tracking-widest text-slate-400"><%= t("admin.account.access_level") %></p>
+            <p class="mt-2 text-xl font-black"><%= @admin.role.to_s.upcase %></p>
+          </div>
+
+          <div class="rounded-2xl bg-white/10 border border-white/10 p-4">
+            <p class="text-[11px] font-black uppercase tracking-widest text-slate-400"><%= t("admin.account.status") %></p>
+            <p class="mt-2 text-xl font-black"><%= @admin.status.to_s.humanize %></p>
+          </div>
+
+          <div class="rounded-2xl bg-white/10 border border-white/10 p-4">
+            <p class="text-[11px] font-black uppercase tracking-widest text-slate-400"><%= t("admin.account.locale") %></p>
+            <p class="mt-2 text-xl font-black"><%= @admin.preferred_locale.to_s.upcase %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <%= form_with model: @admin, url: admin_account_path, method: :patch, local: true, multipart: true, class: "grid xl:grid-cols-[280px_1fr] gap-6 items-start" do |f| %>
+    <% if @admin.errors.any? %>
+      <div class="xl:col-span-2 rounded-2xl bg-red-50 text-red-700 px-5 py-4 font-semibold">
+        <p class="font-black"><%= t("bookings.validation_failed") %></p>
+        <ul class="mt-2 list-disc ml-5">
+          <% @admin.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <aside class="xl:sticky xl:top-28 space-y-4">
+      <div class="rounded-2xl bg-white border border-slate-200 p-4">
+        <p class="text-xs font-black uppercase tracking-widest text-slate-400"><%= t("admin.account.sections") %></p>
+
+        <div class="mt-4 space-y-1 text-sm font-black">
+          <a href="#identity" class="block rounded-xl px-3 py-2 bg-slate-950 text-white"><%= t("admin.account.identity") %></a>
+          <a href="#preferences" class="block rounded-xl px-3 py-2 text-slate-600 hover:bg-slate-100"><%= t("admin.account.preferences") %></a>
+          <a href="#security" class="block rounded-xl px-3 py-2 text-slate-600 hover:bg-slate-100"><%= t("admin.account.security") %></a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-slate-950 text-white border border-white/10 p-5">
+        <p class="text-xs font-black uppercase tracking-widest text-slate-500"><%= t("admin.account.security_posture") %></p>
+        <div class="mt-4 space-y-3 text-sm font-bold">
+          <div class="flex items-center justify-between gap-3">
+            <span class="text-slate-300"><%= t("admin.account.password_protected") %></span>
+            <span class="px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-xs font-black"><%= t("admin.account.enabled") %></span>
+          </div>
+
+          <div class="flex items-center justify-between gap-3">
+            <span class="text-slate-300"><%= t("admin.account.admin_scope") %></span>
+            <span class="px-2 py-1 rounded-full bg-pink-500/10 text-pink-300 text-xs font-black"><%= @admin.role.to_s.upcase %></span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="space-y-6">
+      <section id="identity" class="rounded-2xl bg-white border border-slate-200 p-6 lg:p-8">
+        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+          <div>
+            <p class="text-xs font-black uppercase tracking-widest text-slate-400"><%= t("admin.account.identity") %></p>
+            <h3 class="mt-2 text-2xl font-black"><%= t("admin.account.identity_heading") %></h3>
+            <p class="mt-2 text-slate-500 font-bold"><%= t("admin.account.identity_hint") %></p>
+          </div>
+
+          <div class="lg:w-96 rounded-2xl bg-slate-950 text-white border border-white/10 p-5 shadow-2xl shadow-slate-200/70">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-2xl overflow-hidden bg-gradient-to-br from-pink-500 to-orange-400 flex items-center justify-center font-black text-2xl ring-1 ring-white/10">
+                <% if @admin.avatar.attached? %>
+                  <%= image_tag @admin.avatar, class: "w-full h-full object-cover" %>
+                <% else %>
+                  <%= @admin.full_name.to_s.first.presence || "A" %>
+                <% end %>
+              </div>
+
+              <div>
+                <p class="font-black"><%= t("profile.avatar") %></p>
+                <p class="text-sm text-slate-400 font-bold"><%= t("profile.avatar_hint") %></p>
+              </div>
+            </div>
+
+            <label class="relative mt-5 flex items-center justify-between gap-4 rounded-2xl border border-dashed border-slate-600 bg-white/5 px-4 py-4 cursor-pointer hover:border-pink-300 hover:bg-white/10 transition">
+              <span class="text-sm font-black text-slate-200"><%= t("admin.account.upload_avatar") %></span>
+              <span class="rounded-xl bg-white text-slate-950 px-4 py-2 text-sm font-black"><%= t("admin.account.choose_file") %></span>
+              <%= f.file_field :avatar, accept: "image/png,image/jpeg,image/webp", class: "absolute inset-0 opacity-0 cursor-pointer" %>
+            </label>
+          </div>
+        </div>
+
+        <div class="mt-6 grid md:grid-cols-2 gap-5">
+          <div>
+            <%= f.label :full_name, t("auth.full_name"), class: "block font-black mb-2" %>
+            <%= f.text_field :full_name %>
+          </div>
+
+          <div>
+            <%= f.label :phone, t("auth.phone"), class: "block font-black mb-2" %>
+            <%= f.telephone_field :phone %>
+          </div>
+
+          <div class="md:col-span-2">
+            <%= f.label :email, "Email", class: "block font-black mb-2" %>
+            <%= f.email_field :email %>
+            <p class="mt-2 text-sm text-slate-500 font-bold"><%= t("admin.account.email_hint") %></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="preferences" class="rounded-2xl bg-white border border-slate-200 p-6 lg:p-8">
+        <p class="text-xs font-black uppercase tracking-widest text-slate-400"><%= t("admin.account.preferences") %></p>
+        <h3 class="mt-2 text-2xl font-black"><%= t("admin.account.preferences_heading") %></h3>
+
+        <div class="mt-6 max-w-xl">
+          <%= f.label :preferred_locale, t("auth.language"), class: "block font-black mb-2" %>
+          <%= f.select :preferred_locale, [["English", "en"], ["Tiếng Việt", "vi"]] %>
+        </div>
+      </section>
+
+      <section id="security" class="rounded-2xl bg-white border border-slate-200 p-6 lg:p-8">
+        <p class="text-xs font-black uppercase tracking-widest text-slate-400"><%= t("admin.account.security") %></p>
+        <h3 class="mt-2 text-2xl font-black"><%= t("admin.account.security_heading") %></h3>
+        <p class="mt-2 text-slate-500 font-bold"><%= t("profile.password_hint") %></p>
+
+        <div class="mt-6 grid md:grid-cols-2 gap-5">
+          <div>
+            <%= f.label :password, t("auth.password"), class: "block font-black mb-2" %>
+            <%= f.password_field :password, autocomplete: "new-password" %>
+          </div>
+
+          <div>
+            <%= f.label :password_confirmation, t("auth.password_confirmation"), class: "block font-black mb-2" %>
+            <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+          </div>
+
+          <div class="md:col-span-2">
+            <%= f.label :current_password, t("profile.current_password"), class: "block font-black mb-2" %>
+            <%= f.password_field :current_password, autocomplete: "current-password" %>
+            <p class="mt-2 text-sm text-slate-500 font-bold"><%= t("profile.current_password_hint") %></p>
+          </div>
+        </div>
+      </section>
+
+      <div class="sticky bottom-4 z-10 rounded-2xl bg-slate-950/95 text-white border border-white/10 p-3 shadow-2xl shadow-slate-300/60 flex items-center justify-between gap-4">
+        <p class="hidden sm:block text-sm font-bold text-slate-300"><%= t("admin.account.save_hint") %></p>
+        <%= f.submit t("admin.account.save"), class: "ml-auto px-7 py-3 rounded-xl bg-white text-slate-950 font-black cursor-pointer hover:bg-slate-100 transition" %>
+      </div>
+    </div>
+  <% end %>
+</div>
