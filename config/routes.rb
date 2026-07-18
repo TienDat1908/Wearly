@@ -12,6 +12,25 @@ Rails.application.routes.draw do
       omniauth_callbacks: "users/omniauth_callbacks"
     }
 
+  namespace :api do
+    namespace :v1 do
+      scope :auth, controller: :auth do
+        post :sign_in
+        post :sign_up
+        get :me
+        patch :profile
+      end
+
+      resources :bookings, only: [:index, :show, :create] do
+        collection do
+          post :price_preview
+        end
+      end
+
+      resources :products, only: [:index, :show]
+    end
+  end
+
   scope "(:locale)", locale: /en|vi/ do
     root "home#index"
 
