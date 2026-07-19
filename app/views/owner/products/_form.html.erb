@@ -112,8 +112,81 @@
     <p class="mt-1 text-slate-500"><%= t("products.form.photos_hint") %></p>
   </div>
 
-  <div>
-    <%= f.file_field :photos, multiple: true, class: "block w-full rounded-2xl border border-dashed border-pink-300 bg-pink-50/50 px-4 py-5 font-bold text-slate-700 file:mr-4 file:rounded-full file:border-0 file:bg-slate-950 file:px-5 file:py-3 file:text-white file:font-black" %>
+  <div
+    data-controller="photo-picker"
+    data-has-existing-photos="<%= product.persisted? && product.photos.attached? %>"
+    data-current-cover-text="<%= t("products.form.current_cover") %>"
+    data-use-as-cover-text="<%= t("products.form.use_as_cover") %>"
+    data-no-photos-text="<%= t("products.form.no_photos_selected") %>"
+    data-selected-photos-suffix="<%= t("products.form.selected_photos_suffix") %>"
+    class="space-y-5">
+    <%= hidden_field_tag "product[primary_photo_index]", nil, data: { photo_picker_target: "primaryIndex" } %>
+
+    <label class="group block cursor-pointer rounded-[2rem] border-2 border-dashed border-pink-300 bg-gradient-to-br from-pink-50 to-orange-50 p-5 transition hover:-translate-y-0.5 hover:border-pink-400 hover:shadow-xl hover:shadow-pink-100">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <div class="text-xl font-black text-slate-950"><%= t("products.form.upload_many_photos") %></div>
+          <p class="mt-1 text-sm font-bold text-slate-500"><%= t("products.form.upload_many_photos_hint") %></p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="rounded-full bg-slate-950 px-5 py-3 text-sm font-black text-white shadow-lg shadow-slate-200 transition group-hover:bg-pink-500">
+            <%= t("products.form.choose_photos") %>
+          </span>
+          <span data-photo-picker-target="summary" class="rounded-full bg-white px-4 py-3 text-sm font-black text-slate-600 shadow-sm">
+            <%= t("products.form.no_photos_selected") %>
+          </span>
+        </div>
+      </div>
+
+      <%= f.file_field :photos,
+        multiple: true,
+        accept: "image/png,image/jpeg,image/webp,image/gif",
+        data: {
+          photo_picker_target: "input",
+          action: "change->photo-picker#render"
+        },
+        class: "sr-only" %>
+
+      <p class="mt-4 text-sm font-bold text-slate-500">
+        <%= t("products.form.new_photos_cover_hint") %>
+      </p>
+    </label>
+
+    <div data-photo-picker-target="preview" hidden class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+
+    <% if product.persisted? && product.photos.attached? %>
+      <div class="rounded-[2rem] bg-slate-50 p-5">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h3 class="text-xl font-black"><%= t("products.form.primary_photo") %></h3>
+            <p class="mt-1 text-sm font-semibold text-slate-500"><%= t("products.form.primary_photo_hint") %></p>
+          </div>
+
+          <span class="rounded-full bg-pink-100 px-3 py-1 text-xs font-black text-pink-600">
+            <%= product.photos.count %> photos
+          </span>
+        </div>
+
+        <div class="mt-5 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <% product.photos.each do |photo| %>
+            <label class="group cursor-pointer">
+              <%= f.radio_button :primary_photo_attachment_id,
+                photo.id,
+                checked: product.cover_photo_attachment_id == photo.id,
+                class: "peer sr-only" %>
+
+              <div class="relative overflow-hidden rounded-[1.5rem] border-4 border-transparent bg-white shadow-sm peer-checked:border-pink-500 peer-checked:shadow-xl peer-checked:shadow-pink-100 transition">
+                <%= image_tag photo, class: "aspect-[4/5] w-full object-cover group-hover:scale-105 transition duration-500" %>
+                <div class="absolute inset-x-3 bottom-3 rounded-full bg-white/90 px-3 py-2 text-center text-xs font-black text-slate-950 backdrop-blur">
+                  <%= product.cover_photo_attachment_id == photo.id ? t("products.form.current_cover") : t("products.form.use_as_cover") %>
+                </div>
+              </div>
+            </label>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
   </div>
 
   <%= f.submit t("products.form.save"), class: "w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-orange-400 text-white font-black shadow-xl shadow-pink-200 hover:-translate-y-0.5 transition" %>

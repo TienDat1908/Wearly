@@ -77,8 +77,8 @@
           <div class="rounded-[2.75rem] overflow-hidden bg-slate-950 p-4">
             <% hero_product = @hero_products.first %>
             <%= link_to(hero_product ? product_path(hero_product) : products_path, class: "group block rounded-[2.25rem] overflow-hidden bg-gradient-to-br from-pink-500 via-rose-400 to-orange-300 aspect-[4/5] relative") do %>
-              <% if hero_product&.photos&.attached? %>
-                <%= image_tag hero_product.photos.first, class: "w-full h-full object-cover group-hover:scale-105 transition duration-700" %>
+              <% if hero_product&.cover_photo.present? %>
+                <%= image_tag hero_product.cover_photo, class: "w-full h-full object-cover group-hover:scale-105 transition duration-700" %>
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/10 to-transparent"></div>
               <% else %>
                 <div class="w-full h-full flex items-center justify-center text-white">

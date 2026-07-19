@@ -129,6 +129,31 @@
       </div>
     </section>
 
+    <% if @product.photos.attached? %>
+      <section>
+        <h3 class="text-xl font-black"><%= t("products.form.primary_photo") %></h3>
+        <p class="mt-1 text-sm font-semibold text-slate-500"><%= t("products.form.primary_photo_hint") %></p>
+
+        <div class="mt-5 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <% @product.photos.each do |photo| %>
+            <label class="group cursor-pointer">
+              <%= f.radio_button :primary_photo_attachment_id,
+                photo.id,
+                checked: @product.cover_photo_attachment_id == photo.id,
+                class: "peer sr-only" %>
+
+              <div class="relative overflow-hidden rounded-[1.5rem] border-4 border-transparent bg-slate-50 peer-checked:border-pink-500 peer-checked:shadow-xl peer-checked:shadow-pink-100 transition">
+                <%= image_tag photo, class: "aspect-[4/5] w-full object-cover group-hover:scale-105 transition duration-500" %>
+                <div class="absolute inset-x-3 bottom-3 rounded-full bg-white/90 px-3 py-2 text-center text-xs font-black text-slate-950 backdrop-blur">
+                  <%= @product.cover_photo_attachment_id == photo.id ? t("products.form.current_cover") : t("products.form.use_as_cover") %>
+                </div>
+              </div>
+            </label>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+
     <div class="flex flex-col sm:flex-row gap-3 sm:justify-between border-t border-slate-100 pt-6">
       <%= link_to t("admin.actions.view"), admin_product_path(@product), class: "px-6 py-4 rounded-2xl bg-slate-100 text-slate-700 font-black text-center" %>
       <%= f.submit t("admin.actions.save"), class: "px-8 py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-orange-400 text-white font-black shadow-lg shadow-pink-200 cursor-pointer" %>

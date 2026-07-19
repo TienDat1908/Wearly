@@ -5,7 +5,7 @@ module Owner
     before_action :set_product, only: [:edit, :update, :destroy]
 
     def index
-      @products = current_user.products.order(created_at: :desc)
+      @products = current_user.products.includes(photos_attachments: :blob).order(created_at: :desc)
     end
 
     def new
@@ -24,6 +24,7 @@ module Owner
       @product.status = "active"
 
       if @product.save
+        assign_uploaded_cover_from_index!(@product, starting_after_count: 0)
         redirect_to owner_products_path, notice: t("flash.products.created")
       else
         render :new, status: :unprocessable_entity
@@ -34,7 +35,10 @@ module Owner
     end
 
     def update
+      existing_photos_count = @product.photos.count
+
       if @product.update(product_params)
+        assign_uploaded_cover_from_index!(@product, starting_after_count: existing_photos_count)
         redirect_to owner_products_path, notice: t("flash.products.updated")
       else
         render :edit, status: :unprocessable_entity
@@ -84,8 +88,25 @@ module Owner
         :ward,
         :pickup_available,
         :delivery_available,
+        :primary_photo_attachment_id,
         photos: []
       )
+    end
+
+    def assign_uploaded_cover_from_index!(product, starting_after_count:)
+      index = params.dig(:product, :primary_photo_index)
+      return if index.blank?
+
+      selected_photo = product
+        .photos
+        .attachments
+        .order(:created_at, :id)
+        .offset(starting_after_count)
+        .to_a[index.to_i]
+
+      return unless selected_photo
+
+      product.update_column(:primary_photo_attachment_id, selected_photo.id)
     end
   end
 end

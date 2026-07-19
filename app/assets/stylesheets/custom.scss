@@ -7,6 +7,14 @@
   backdrop-filter: blur(20px);
 }
 
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 :root {
   --wearly-pink: #ec4899;
   --wearly-orange: #fb923c;

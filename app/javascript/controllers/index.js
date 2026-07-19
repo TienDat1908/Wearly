@@ -12,3 +12,9 @@ application.register("pickup-method", PickupMethodController)
 
 import RevealController from "./reveal_controller"
 application.register("reveal", RevealController)
+
+import PhotoPickerController from "./photo_picker_controller"
+application.register("photo-picker", PhotoPickerController)
+
+import ProductGalleryController from "./product_gallery_controller"
+application.register("product-gallery", ProductGalleryController)

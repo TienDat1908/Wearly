@@ -54,6 +54,20 @@ class Product < ApplicationRecord
     pickup_location.present? ? %w[self_pickup delivery] : %w[delivery]
   end
 
+  def cover_photo
+    selected_cover_photo || photos.first
+  end
+
+  def cover_photo_attachment_id
+    selected_cover_photo&.id || self[:primary_photo_attachment_id]
+  end
+
+  def photo_gallery
+    return photos unless cover_photo_attachment_id.present?
+
+    photos.sort_by { |photo| photo.id == cover_photo_attachment_id ? 0 : 1 }
+  end
+
   def pickup_location
     product_address = [address, ward, district, city].compact_blank.join(", ")
     return product_address if product_address.present?
@@ -62,6 +76,12 @@ class Product < ApplicationRecord
   end
 
   private
+
+  def selected_cover_photo
+    return unless self[:primary_photo_attachment_id].present?
+
+    photos.detect { |photo| photo.id == self[:primary_photo_attachment_id] }
+  end
 
   def at_least_one_fulfillment_method
     return if pickup_available? || delivery_available?

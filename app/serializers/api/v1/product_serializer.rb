@@ -30,7 +30,8 @@ module Api
           delivery_available: product.delivery_available?,
           available_pickup_methods: product.available_pickup_methods,
           pickup_location: product.pickup_location,
-          primary_photo_url: photo_urls.first,
+          primary_photo_attachment_id: product.cover_photo_attachment_id,
+          primary_photo_url: attachment_url(product.cover_photo),
           photo_urls: photo_urls,
           owner: UserSerializer.new(product.owner, request: request).as_json,
           created_at: product.created_at&.iso8601,
@@ -46,9 +47,13 @@ module Api
       attr_reader :product, :request
 
       def photo_urls
-        @photo_urls ||= product.photos.map do |photo|
-          request.base_url + rails_blob_path(photo, only_path: true)
-        end
+        @photo_urls ||= product.photo_gallery.map { |photo| attachment_url(photo) }
+      end
+
+      def attachment_url(attachment)
+        return unless attachment
+
+        request.base_url + rails_blob_path(attachment, only_path: true)
       end
     end
   end

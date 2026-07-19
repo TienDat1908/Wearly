@@ -44,7 +44,7 @@ module Admin
       @latest_users = User.order(created_at: :desc).limit(5)
 
       @latest_products = Product
-        .includes(:owner)
+        .includes(:owner, photos_attachments: :blob)
         .order(created_at: :desc)
         .limit(5)
 

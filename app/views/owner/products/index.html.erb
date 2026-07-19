@@ -12,8 +12,8 @@
     <% @products.each do |product| %>
       <div class="bg-white rounded-[2rem] p-4 shadow-sm">
         <div class="aspect-[4/5] rounded-[1.5rem] bg-slate-100 overflow-hidden">
-          <% if product.photos.attached? %>
-            <%= image_tag product.photos.first, class: "w-full h-full object-cover" %>
+          <% if product.cover_photo.present? %>
+            <%= image_tag product.cover_photo, class: "w-full h-full object-cover" %>
           <% else %>
             <div class="w-full h-full flex items-center justify-center text-6xl bg-gradient-to-br from-pink-100 to-orange-100">
               ✨

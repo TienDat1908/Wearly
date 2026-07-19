@@ -22,8 +22,15 @@
 
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <% if @product.photos.attached? %>
-            <% @product.photos.each do |photo| %>
-              <%= image_tag photo, class: "rounded-[2rem] w-full aspect-[4/5] object-cover bg-slate-100" %>
+            <% @product.photo_gallery.each_with_index do |photo, index| %>
+              <div class="relative">
+                <%= image_tag photo, class: "rounded-[2rem] w-full aspect-[4/5] object-cover bg-slate-100 #{index.zero? ? "ring-4 ring-pink-200" : ""}" %>
+                <% if index.zero? %>
+                  <span class="absolute left-3 top-3 rounded-full bg-pink-500 px-3 py-1 text-xs font-black text-white">
+                    <%= t("products.cover_photo") %>
+                  </span>
+                <% end %>
+              </div>
             <% end %>
           <% else %>
             <div class="sm:col-span-2 lg:col-span-3 rounded-[2rem] aspect-[16/8] bg-gradient-to-br from-pink-100 to-orange-100 flex items-center justify-center text-8xl">✨</div>

@@ -7,7 +7,7 @@ module Admin
     before_action :set_product, only: [:show, :edit, :update]
 
     def index
-      @products = Product.includes(:owner).order(created_at: :desc)
+      @products = Product.includes(:owner, photos_attachments: :blob).order(created_at: :desc)
       @products = @products.where(status: params[:status]) if params[:status].present?
       @products = @products.where(product_type: params[:product_type]) if params[:product_type].present?
       @products = @products.search_by_keyword(params[:q]) if params[:q].present?
@@ -54,7 +54,8 @@ module Admin
         :district,
         :ward,
         :pickup_available,
-        :delivery_available
+        :delivery_available,
+        :primary_photo_attachment_id
       )
     end
   end

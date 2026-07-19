@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_18_000000) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_18_205124) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -185,8 +185,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_18_000000) do
     t.jsonb "details"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "primary_photo_attachment_id"
     t.index ["city"], name: "index_products_on_city"
     t.index ["owner_id"], name: "index_products_on_owner_id"
+    t.index ["primary_photo_attachment_id"], name: "index_products_on_primary_photo_attachment_id"
     t.index ["product_type"], name: "index_products_on_product_type"
     t.index ["status"], name: "index_products_on_status"
   end
@@ -301,6 +303,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_18_000000) do
   add_foreign_key "product_reservations", "bookings"
   add_foreign_key "product_reservations", "products"
   add_foreign_key "product_reservations", "users", column: "renter_id"
+  add_foreign_key "products", "active_storage_attachments", column: "primary_photo_attachment_id"
   add_foreign_key "products", "users", column: "owner_id"
   add_foreign_key "promotion_redemptions", "bookings"
   add_foreign_key "promotion_redemptions", "promotions"

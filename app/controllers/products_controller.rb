@@ -1,6 +1,6 @@
 class ProductsController < ApplicationController
   def index
-    @products = Product.active.includes(:owner).order(created_at: :desc)
+    @products = Product.active.includes(:owner, photos_attachments: :blob).order(created_at: :desc)
 
     @products = @products.search_by_keyword(params[:q]) if params[:q].present?
     @products = @products.where(product_type: params[:product_type]) if params[:product_type].present?

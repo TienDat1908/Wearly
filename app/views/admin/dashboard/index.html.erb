@@ -261,8 +261,8 @@
     <% @latest_products.each do |product| %>
       <%= link_to admin_product_path(product), class: "rounded-[1.5rem] bg-slate-50 p-3 hover:bg-pink-50 transition" do %>
         <div class="aspect-[4/5] rounded-[1.25rem] bg-white overflow-hidden">
-          <% if product.photos.attached? %>
-            <%= image_tag product.photos.first, class: "w-full h-full object-cover" %>
+          <% if product.cover_photo.present? %>
+            <%= image_tag product.cover_photo, class: "w-full h-full object-cover" %>
           <% else %>
             <div class="w-full h-full flex items-center justify-center text-5xl bg-gradient-to-br from-pink-100 to-orange-100">
               ✨
