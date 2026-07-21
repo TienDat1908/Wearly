@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_18_205124) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_19_081500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -303,7 +303,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_18_205124) do
   add_foreign_key "product_reservations", "bookings"
   add_foreign_key "product_reservations", "products"
   add_foreign_key "product_reservations", "users", column: "renter_id"
-  add_foreign_key "products", "active_storage_attachments", column: "primary_photo_attachment_id"
   add_foreign_key "products", "users", column: "owner_id"
   add_foreign_key "promotion_redemptions", "bookings"
   add_foreign_key "promotion_redemptions", "promotions"

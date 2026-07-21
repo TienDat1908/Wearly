@@ -36,9 +36,23 @@ module Owner
 
     def update
       existing_photos_count = @product.photos.count
+      replacing_photos = replacing_product_photos?
+      attributes = product_params
+      attributes = attributes.except(:photos) unless replacing_photos
 
-      if @product.update(product_params)
-        assign_uploaded_cover_from_index!(@product, starting_after_count: existing_photos_count)
+      if replacing_photos
+        @product.update_column(:primary_photo_attachment_id, nil)
+        attributes = attributes.except(:primary_photo_attachment_id)
+      end
+
+      if @product.update(attributes)
+        if replacing_photos
+          assign_uploaded_cover_from_index!(@product, starting_after_count: 0)
+          assign_first_photo_as_cover!(@product)
+        else
+          assign_uploaded_cover_from_index!(@product, starting_after_count: existing_photos_count)
+        end
+
         redirect_to owner_products_path, notice: t("flash.products.updated")
       else
         render :edit, status: :unprocessable_entity
@@ -107,6 +121,21 @@ module Owner
       return unless selected_photo
 
       product.update_column(:primary_photo_attachment_id, selected_photo.id)
+    end
+
+    def assign_first_photo_as_cover!(product)
+      return if product.primary_photo_attachment_id.present?
+
+      first_photo = product.photos.attachments.order(:created_at, :id).first
+      product.update_column(:primary_photo_attachment_id, first_photo.id) if first_photo
+    end
+
+    def replacing_product_photos?
+      uploaded_product_photos.any?
+    end
+
+    def uploaded_product_photos
+      Array(params.dig(:product, :photos)).compact_blank
     end
   end
 end

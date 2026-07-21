@@ -2,23 +2,23 @@
   <div class="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_20%,rgba(236,72,153,0.16),transparent_32rem),radial-gradient(circle_at_80%_10%,rgba(251,146,60,0.14),transparent_28rem),linear-gradient(135deg,#fffaf5_0%,#fff_48%,#f8fafc_100%)]"></div>
 
   <div class="mx-auto max-w-7xl h-full grid lg:grid-cols-[1fr_520px] gap-8 items-center">
-    <div class="hidden lg:block">
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-pink-100 text-pink-700 text-sm font-black shadow-sm">
+    <div class="hidden lg:flex min-h-0 flex-col items-start justify-center">
+      <div class="inline-flex max-w-max items-center gap-2 px-4 py-2 rounded-full bg-white/85 border border-pink-100 text-pink-700 text-sm font-black shadow-sm">
         ✨ <%= t("app.tagline") %>
       </div>
 
-      <h1 class="mt-5 text-5xl xl:text-6xl font-black tracking-tight leading-[0.9] text-slate-950">
+      <h1 class="mt-4 text-5xl xl:text-[3.5rem] font-black tracking-tight leading-[0.92] text-slate-950">
         <%= t("auth.sign_in_hero_title") %>
       </h1>
 
-      <p class="mt-5 text-lg text-slate-600 max-w-xl leading-8">
+      <p class="mt-4 text-lg text-slate-600 max-w-xl leading-7">
         <%= t("auth.sign_in_hero_subtitle") %>
       </p>
 
-      <div class="mt-7 relative max-w-lg">
-        <div class="absolute -inset-4 rounded-[3rem] bg-gradient-to-br from-pink-200/60 to-orange-200/60 blur-2xl"></div>
-        <div class="relative rounded-[2.5rem] bg-slate-950 text-white p-5 shadow-2xl shadow-pink-100">
-          <div class="aspect-[16/10] rounded-[2.25rem] bg-gradient-to-br from-pink-500 via-rose-400 to-orange-300 flex items-center justify-center">
+      <div class="mt-6 relative w-full max-w-[430px]">
+        <div class="absolute -inset-5 rounded-[3rem] bg-gradient-to-br from-pink-200/70 via-rose-100/50 to-orange-200/70 blur-2xl"></div>
+        <div class="relative rounded-[2.25rem] bg-slate-950 text-white p-5 shadow-2xl shadow-pink-100">
+          <div class="aspect-[4/3] rounded-[1.9rem] bg-gradient-to-br from-pink-500 via-rose-400 to-orange-300 flex items-center justify-center">
             <div class="text-center">
               <div class="text-6xl">👗</div>
               <p class="mt-4 text-2xl font-black">Outfits · Cameras · Moments</p>
@@ -26,19 +26,19 @@
           </div>
 
           <div class="mt-4 grid grid-cols-3 gap-3">
-            <div class="rounded-2xl bg-white/10 p-3">
+            <div class="rounded-2xl bg-white/10 p-3.5">
               <p class="text-2xl">👗</p>
-              <p class="mt-1 font-black"><%= t("auth.feature_outfits") %></p>
+              <p class="mt-1 text-sm font-black"><%= t("auth.feature_outfits") %></p>
             </div>
 
-            <div class="rounded-2xl bg-white/10 p-3">
+            <div class="rounded-2xl bg-white/10 p-3.5">
               <p class="text-2xl">📷</p>
-              <p class="mt-1 font-black"><%= t("auth.feature_cameras") %></p>
+              <p class="mt-1 text-sm font-black"><%= t("auth.feature_cameras") %></p>
             </div>
 
-            <div class="rounded-2xl bg-white/10 p-3">
+            <div class="rounded-2xl bg-white/10 p-3.5">
               <p class="text-2xl">✨</p>
-              <p class="mt-1 font-black"><%= t("auth.feature_events") %></p>
+              <p class="mt-1 text-sm font-black"><%= t("auth.feature_events") %></p>
             </div>
           </div>
         </div>
