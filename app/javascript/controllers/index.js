@@ -18,3 +18,9 @@ application.register("photo-picker", PhotoPickerController)
 
 import ProductGalleryController from "./product_gallery_controller"
 application.register("product-gallery", ProductGalleryController)
+
+import HomeSpotlightPreviewController from "./home_spotlight_preview_controller"
+application.register("home-spotlight-preview", HomeSpotlightPreviewController)
+
+import HomeSpotlightCarouselController from "./home_spotlight_carousel_controller"
+application.register("home-spotlight-carousel", HomeSpotlightCarouselController)

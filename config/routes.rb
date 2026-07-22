@@ -71,6 +71,7 @@ Rails.application.routes.draw do
       resources :bookings, only: [:index, :show, :edit, :update]
       resources :payouts, only: [:index, :show, :update]
 
+      resource :home_spotlight, only: [:edit, :update]
       resource :account, only: [:edit, :update]
     end
   end

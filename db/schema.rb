@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_19_081500) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_22_040000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -96,6 +96,18 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_19_081500) do
     t.index ["opened_by_id"], name: "index_disputes_on_opened_by_id"
     t.index ["resolved_by_id"], name: "index_disputes_on_resolved_by_id"
     t.index ["status"], name: "index_disputes_on_status"
+  end
+
+  create_table "home_spotlights", force: :cascade do |t|
+    t.bigint "product_id"
+    t.string "eyebrow", default: "Featured pick", null: false
+    t.string "title", default: "Ready for tonight", null: false
+    t.string "subtitle"
+    t.boolean "active", default: true, null: false
+    t.integer "position", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_home_spotlights_on_product_id"
   end
 
   create_table "payments", force: :cascade do |t|
@@ -293,6 +305,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_19_081500) do
   add_foreign_key "disputes", "bookings"
   add_foreign_key "disputes", "users", column: "opened_by_id"
   add_foreign_key "disputes", "users", column: "resolved_by_id"
+  add_foreign_key "home_spotlights", "products"
   add_foreign_key "payments", "bookings"
   add_foreign_key "payments", "users", column: "payer_id"
   add_foreign_key "payouts", "bookings"

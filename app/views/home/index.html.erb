@@ -67,21 +67,25 @@
       </div>
 
       <div class="relative" data-reveal>
+        <% spotlight_images = @home_spotlight&.display_images.to_a.first(5) %>
         <div class="absolute -inset-5 rounded-[3.5rem] bg-gradient-to-br from-pink-200/80 via-orange-100/80 to-yellow-100/80 rotate-3 blur-sm"></div>
         <div class="absolute -left-5 top-10 z-10 hidden md:block rounded-[2rem] bg-white/95 p-4 shadow-2xl shadow-pink-100 border border-white -rotate-6">
-          <p class="text-xs font-black uppercase tracking-widest text-slate-400"><%= t("home.trending_now") %></p>
-          <p class="mt-1 text-2xl font-black text-pink-600"><%= t("home.hero_float") %></p>
+          <p class="text-xs font-black uppercase tracking-widest text-slate-400"><%= @home_spotlight&.eyebrow.presence || t("home.featured_pick") %></p>
+          <p class="mt-1 text-2xl font-black text-pink-600"><%= @home_spotlight&.title.presence || t("home.hero_float") %></p>
         </div>
 
         <div class="relative rounded-[3.5rem] bg-white p-4 md:p-5 shadow-2xl shadow-slate-200 border border-white">
           <div class="rounded-[2.75rem] overflow-hidden bg-slate-950 p-4">
-            <% hero_product = @hero_products.first %>
-            <%= link_to(hero_product ? product_path(hero_product) : products_path, class: "group block rounded-[2.25rem] overflow-hidden bg-gradient-to-br from-pink-500 via-rose-400 to-orange-300 aspect-[4/5] relative") do %>
-              <% if hero_product&.cover_photo.present? %>
-                <%= image_tag hero_product.cover_photo, class: "w-full h-full object-cover group-hover:scale-105 transition duration-700" %>
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/10 to-transparent"></div>
+            <div class="group block rounded-[2.25rem] overflow-hidden bg-gradient-to-br from-pink-500 via-rose-400 to-orange-300 aspect-[4/5] relative" data-controller="home-spotlight-carousel">
+              <% if spotlight_images.any? %>
+                <% spotlight_images.each_with_index do |spotlight_image, index| %>
+                  <div class="<%= 'hidden' unless index.zero? %> absolute inset-0" data-home-spotlight-carousel-target="slide">
+                    <%= image_tag spotlight_image, class: "w-full h-full object-cover transition duration-700" %>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-slate-950/10 to-transparent"></div>
+                  </div>
+                <% end %>
               <% else %>
-                <div class="w-full h-full flex items-center justify-center text-white">
+                <div class="absolute inset-0 flex items-center justify-center text-white" data-home-spotlight-carousel-target="slide">
                   <div class="text-center">
                     <div class="text-8xl">👗</div>
                     <p class="mt-5 text-3xl font-black">Outfits · Cameras · Moments</p>
@@ -89,17 +93,29 @@
                 </div>
               <% end %>
 
-              <div class="absolute left-5 right-5 bottom-5 rounded-[2rem] bg-white/95 backdrop-blur p-5 shadow-2xl">
-                <p class="text-xs font-black uppercase tracking-widest text-pink-500"><%= hero_product&.product_type || t("home.curated") %></p>
-                <h3 class="mt-2 text-2xl font-black line-clamp-2 text-slate-950"><%= hero_product&.title || t("home.curated_placeholder") %></h3>
-                <div class="mt-3 flex items-center justify-between gap-3">
-                  <p class="text-slate-500 font-bold"><%= [hero_product&.district, hero_product&.city].compact_blank.join(", ").presence || "Wearly" %></p>
-                  <% if hero_product %>
-                    <p class="font-black text-pink-600"><%= number_to_currency(hero_product.price_per_day.to_i, unit: "₫", precision: 0, format: "%n %u") %></p>
-                  <% end %>
+              <% if spotlight_images.size > 1 %>
+                <button type="button" class="absolute left-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 font-black text-slate-950 shadow-xl transition hover:bg-white" data-action="home-spotlight-carousel#previous">‹</button>
+                <button type="button" class="absolute right-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 font-black text-slate-950 shadow-xl transition hover:bg-white" data-action="home-spotlight-carousel#next">›</button>
+
+                <div class="absolute right-5 top-5 z-20 rounded-full bg-slate-950/80 px-3 py-1 text-xs font-black text-white backdrop-blur" data-home-spotlight-carousel-target="counter">
+                  1 / <%= spotlight_images.size %>
                 </div>
+              <% end %>
+
+              <div class="absolute left-5 right-5 bottom-5 rounded-[2rem] bg-white/95 backdrop-blur p-5 shadow-2xl">
+                <p class="text-xs font-black uppercase tracking-widest text-pink-500"><%= @home_spotlight&.eyebrow.presence || t("home.featured_pick") %></p>
+                <h3 class="mt-2 text-2xl font-black line-clamp-2 text-slate-950"><%= @home_spotlight&.title.presence || t("home.hero_float") %></h3>
+                <p class="mt-3 text-slate-500 font-bold"><%= @home_spotlight&.subtitle.presence || t("home.curated_placeholder") %></p>
+
+                <% if spotlight_images.size > 1 %>
+                  <div class="mt-4 flex gap-2">
+                    <% spotlight_images.each_with_index do |_spotlight_image, index| %>
+                      <button type="button" class="h-2.5 rounded-full transition <%= index.zero? ? 'w-8 bg-pink-500' : 'w-2.5 bg-white/40 ring-1 ring-slate-300' %>" data-home-spotlight-carousel-target="dot" data-index="<%= index %>" data-action="home-spotlight-carousel#go" aria-label="<%= t("home.spotlight_go_to", number: index + 1) %>"></button>
+                    <% end %>
+                  </div>
+                <% end %>
               </div>
-            <% end %>
+            </div>
           </div>
         </div>
       </div>
