@@ -1,7 +1,9 @@
-<div class="max-w-7xl">
-  <div class="mb-8 overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
-    <div class="relative p-7 lg:p-8">
-      <div class="absolute right-0 top-0 h-40 w-80 rounded-bl-[5rem] bg-gradient-to-br from-pink-100 via-orange-50 to-transparent"></div>
+<% preview_images = @home_spotlight.display_images.first(5) %>
+
+<div class="max-w-[92rem]">
+  <div class="mb-10 overflow-hidden rounded-[2.25rem] border border-slate-200 bg-white shadow-sm">
+    <div class="relative p-7 lg:p-9">
+      <div class="absolute right-0 top-0 h-44 w-96 rounded-bl-[5rem] bg-gradient-to-br from-pink-100 via-orange-50 to-transparent"></div>
 
       <div class="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div class="max-w-3xl">
@@ -11,7 +13,7 @@
         </div>
 
         <div class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-950 text-lg text-white">✨</span>
+          <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-950 text-lg text-white">✨</span>
           <div>
             <p class="text-[11px] font-black uppercase tracking-widest text-slate-400"><%= t("admin.home_spotlight.active") %></p>
             <p class="font-black text-slate-950"><%= @home_spotlight.active? ? t("admin.nav.live") : t("admin.home_spotlight.hidden") %></p>
@@ -21,105 +23,144 @@
     </div>
   </div>
 
-  <%= form_with model: @home_spotlight, url: admin_home_spotlight_path, method: :patch, local: true, html: { multipart: true, data: { controller: "home-spotlight-preview" } }, class: "grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_420px]" do |f| %>
-    <div class="space-y-6">
-      <section class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
-        <div class="border-b border-slate-100 px-6 py-5">
-          <p class="text-xs font-black uppercase tracking-widest text-slate-400">01 · <%= t("admin.home_spotlight.content") %></p>
-          <h3 class="mt-1 text-2xl font-black text-slate-950"><%= t("admin.home_spotlight.trend_board") %></h3>
+  <%= form_with model: @home_spotlight,
+    url: admin_home_spotlight_path,
+    method: :patch,
+    local: true,
+    html: { multipart: true, data: { controller: "home-spotlight-preview" } },
+    class: "grid items-start gap-10 xl:grid-cols-[minmax(0,1fr)_450px]" do |f| %>
+
+    <div class="space-y-10">
+      <section class="overflow-hidden rounded-[2.25rem] border border-slate-200 bg-white shadow-sm">
+        <div class="flex items-start justify-between gap-4 border-b border-slate-100 bg-slate-50/60 px-7 py-6">
+          <div>
+            <p class="text-xs font-black uppercase tracking-widest text-slate-400">01 · <%= t("admin.home_spotlight.images") %></p>
+            <h3 class="mt-1 text-2xl font-black text-slate-950"><%= t("admin.home_spotlight.trend_board") %></h3>
+          </div>
+          <span class="rounded-full bg-pink-50 px-4 py-2 text-sm font-black text-pink-500"><%= preview_images.size %> / 5</span>
         </div>
 
-        <div class="grid gap-5 p-6">
-          <div class="grid md:grid-cols-3 gap-4">
-            <div class="rounded-2xl bg-pink-50 p-5">
+        <div class="space-y-7 p-7">
+          <div class="grid gap-5 md:grid-cols-3">
+            <div class="rounded-[1.5rem] border border-pink-100 bg-pink-50 p-5">
               <p class="text-2xl">🔥</p>
               <p class="mt-3 font-black text-slate-950"><%= t("admin.home_spotlight.rank_one") %></p>
               <p class="mt-1 text-sm font-bold leading-6 text-slate-500"><%= t("admin.home_spotlight.rank_one_hint") %></p>
             </div>
 
-            <div class="rounded-2xl bg-orange-50 p-5">
+            <div class="rounded-[1.5rem] border border-orange-100 bg-orange-50 p-5">
               <p class="text-2xl">🖼️</p>
               <p class="mt-3 font-black text-slate-950"><%= t("admin.home_spotlight.max_images") %></p>
               <p class="mt-1 text-sm font-bold leading-6 text-slate-500"><%= t("admin.home_spotlight.max_images_hint") %></p>
             </div>
 
-            <div class="rounded-2xl bg-slate-50 p-5">
-              <p class="text-2xl">✍️</p>
-              <p class="mt-3 font-black text-slate-950"><%= t("admin.home_spotlight.admin_copy") %></p>
-              <p class="mt-1 text-sm font-bold leading-6 text-slate-500"><%= t("admin.home_spotlight.admin_copy_hint") %></p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
-        <div class="border-b border-slate-100 px-6 py-5">
-          <p class="text-xs font-black uppercase tracking-widest text-slate-400">02 · Copywriting</p>
-          <h3 class="mt-1 text-2xl font-black text-slate-950"><%= t("admin.home_spotlight.headline") %></h3>
-        </div>
-
-        <div class="grid gap-5 p-6">
-          <div class="grid md:grid-cols-2 gap-4">
-            <div>
-              <%= f.label :eyebrow, t("admin.home_spotlight.eyebrow"), class: "block font-black mb-2 text-slate-950" %>
-              <%= f.text_field :eyebrow, class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-5 py-4 font-bold text-slate-950 focus:border-pink-400 focus:ring-pink-400", data: { home_spotlight_preview_target: "eyebrowInput", action: "input->home-spotlight-preview#update" } %>
-            </div>
-
-            <div>
-              <%= f.label :title, t("admin.home_spotlight.headline"), class: "block font-black mb-2 text-slate-950" %>
-              <%= f.text_field :title, class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-5 py-4 font-bold text-slate-950 focus:border-pink-400 focus:ring-pink-400", data: { home_spotlight_preview_target: "titleInput", action: "input->home-spotlight-preview#update" } %>
+            <div class="rounded-[1.5rem] border border-slate-100 bg-slate-50 p-5">
+              <p class="text-2xl">↔️</p>
+              <p class="mt-3 font-black text-slate-950"><%= t("admin.home_spotlight.preview") %></p>
+              <p class="mt-1 text-sm font-bold leading-6 text-slate-500"><%= t("admin.home_spotlight.image_hint") %></p>
             </div>
           </div>
 
-          <div>
-            <%= f.label :subtitle, t("admin.home_spotlight.description"), class: "block font-black mb-2 text-slate-950" %>
-            <%= f.text_area :subtitle, rows: 4, class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-5 py-4 font-bold text-slate-950 focus:border-pink-400 focus:ring-pink-400", data: { home_spotlight_preview_target: "subtitleInput", action: "input->home-spotlight-preview#update" } %>
-          </div>
-        </div>
-      </section>
-
-      <section class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
-        <div class="border-b border-slate-100 px-6 py-5">
-          <p class="text-xs font-black uppercase tracking-widest text-slate-400">03 · Media & visibility</p>
-          <h3 class="mt-1 text-2xl font-black text-slate-950"><%= t("admin.home_spotlight.images") %></h3>
-        </div>
-
-        <div class="grid gap-5 p-6">
-          <div class="grid md:grid-cols-[1fr_180px] gap-4">
-            <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 font-black text-slate-950">
-              <%= f.check_box :active, class: "rounded border-slate-300 text-pink-500 focus:ring-pink-400", data: { home_spotlight_preview_target: "activeInput", action: "change->home-spotlight-preview#update" } %>
-              <%= t("admin.home_spotlight.active") %>
-            </label>
-
-            <div>
-              <%= f.label :position, t("admin.home_spotlight.position"), class: "block font-black mb-2 text-slate-950" %>
-              <%= f.number_field :position, min: 1, class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-5 py-4 font-bold text-slate-950 focus:border-pink-400 focus:ring-pink-400" %>
-            </div>
-          </div>
-
-          <div class="rounded-[2rem] border border-pink-100 bg-gradient-to-br from-pink-50 to-orange-50 p-5">
+          <div class="rounded-[2rem] border border-pink-100 bg-gradient-to-br from-pink-50 to-orange-50 p-6">
             <%= f.label :images, t("admin.home_spotlight.images"), class: "block font-black mb-3 text-slate-950" %>
-            <div class="rounded-2xl border-2 border-dashed border-pink-200 bg-white/75 p-4">
-              <%= f.file_field :images, multiple: true, accept: "image/png,image/jpeg,image/webp", class: "block w-full text-sm font-bold text-slate-600 file:mr-4 file:rounded-full file:border-0 file:bg-slate-950 file:px-5 file:py-3 file:font-black file:text-white", data: { home_spotlight_preview_target: "imageInput", action: "change->home-spotlight-preview#previewImage" } %>
+            <div class="rounded-2xl border-2 border-dashed border-pink-200 bg-white/80 p-4">
+              <%= f.file_field :images,
+                multiple: true,
+                accept: "image/png,image/jpeg,image/webp",
+                class: "block w-full text-sm font-bold text-slate-600 file:mr-4 file:rounded-full file:border-0 file:bg-slate-950 file:px-5 file:py-3 file:font-black file:text-white",
+                data: {
+                  home_spotlight_preview_target: "imageInput",
+                  action: "change->home-spotlight-preview#previewImage"
+                } %>
             </div>
             <p class="mt-3 text-sm font-bold text-slate-500"><%= t("admin.home_spotlight.image_hint") %></p>
           </div>
         </div>
       </section>
 
-      <div class="sticky bottom-4 z-10 rounded-[1.75rem] border border-white/80 bg-white/90 p-3 shadow-2xl shadow-slate-300/60 backdrop-blur">
-        <%= f.submit t("admin.actions.save"), class: "w-full rounded-[1.35rem] bg-gradient-to-r from-pink-500 to-orange-400 px-6 py-4 text-white font-black shadow-xl shadow-pink-100 cursor-pointer hover:-translate-y-0.5 transition" %>
+      <section class="overflow-hidden rounded-[2.25rem] border border-slate-200 bg-white shadow-sm">
+        <div class="border-b border-slate-100 bg-slate-50/60 px-7 py-6">
+          <p class="text-xs font-black uppercase tracking-widest text-slate-400">02 · <%= t("admin.home_spotlight.content") %></p>
+          <h3 class="mt-1 text-2xl font-black text-slate-950"><%= t("admin.home_spotlight.headline") %></h3>
+        </div>
+
+        <div class="space-y-7 p-7">
+          <div class="grid gap-6 md:grid-cols-2">
+            <div>
+              <%= f.label :eyebrow, t("admin.home_spotlight.eyebrow"), class: "block font-black mb-2 text-slate-950" %>
+              <%= f.text_field :eyebrow,
+                class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-5 py-4 font-bold text-slate-950 focus:border-pink-400 focus:ring-pink-400",
+                data: {
+                  home_spotlight_preview_target: "eyebrowInput",
+                  action: "input->home-spotlight-preview#update"
+                } %>
+            </div>
+
+            <div>
+              <%= f.label :title, t("admin.home_spotlight.headline"), class: "block font-black mb-2 text-slate-950" %>
+              <%= f.text_field :title,
+                class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-5 py-4 font-bold text-slate-950 focus:border-pink-400 focus:ring-pink-400",
+                data: {
+                  home_spotlight_preview_target: "titleInput",
+                  action: "input->home-spotlight-preview#update"
+                } %>
+            </div>
+          </div>
+
+          <div>
+            <%= f.label :subtitle, t("admin.home_spotlight.description"), class: "block font-black mb-2 text-slate-950" %>
+            <%= f.text_area :subtitle,
+              rows: 4,
+              class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-5 py-4 font-bold text-slate-950 focus:border-pink-400 focus:ring-pink-400",
+              data: {
+                home_spotlight_preview_target: "subtitleInput",
+                action: "input->home-spotlight-preview#update"
+              } %>
+          </div>
+
+          <div class="rounded-[1.5rem] border border-slate-100 bg-slate-50 p-5">
+            <p class="text-2xl">✍️</p>
+            <p class="mt-3 font-black text-slate-950"><%= t("admin.home_spotlight.admin_copy") %></p>
+            <p class="mt-1 text-sm font-bold leading-6 text-slate-500"><%= t("admin.home_spotlight.admin_copy_hint") %></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="overflow-hidden rounded-[2.25rem] border border-slate-200 bg-white shadow-sm">
+        <div class="border-b border-slate-100 bg-slate-50/60 px-7 py-6">
+          <p class="text-xs font-black uppercase tracking-widest text-slate-400">03 · <%= t("admin.home_spotlight.active") %></p>
+          <h3 class="mt-1 text-2xl font-black text-slate-950"><%= t("admin.home_spotlight.position") %></h3>
+        </div>
+
+        <div class="grid gap-6 p-7 md:grid-cols-[1fr_180px]">
+          <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 font-black text-slate-950">
+            <%= f.check_box :active,
+              class: "rounded border-slate-300 text-pink-500 focus:ring-pink-400",
+              data: {
+                home_spotlight_preview_target: "activeInput",
+                action: "change->home-spotlight-preview#update"
+              } %>
+            <%= t("admin.home_spotlight.active") %>
+          </label>
+
+          <div>
+            <%= f.label :position, t("admin.home_spotlight.position"), class: "block font-black mb-2 text-slate-950" %>
+            <%= f.number_field :position, min: 1, class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-5 py-4 font-bold text-slate-950 focus:border-pink-400 focus:ring-pink-400" %>
+          </div>
+        </div>
+      </section>
+
+      <div class="rounded-[1.75rem] border border-slate-200 bg-white p-3 shadow-sm">
+        <%= f.submit t("admin.actions.save"), class: "w-full cursor-pointer rounded-[1.35rem] bg-gradient-to-r from-pink-500 to-orange-400 px-6 py-4 font-black text-white shadow-xl shadow-pink-100 transition hover:-translate-y-0.5" %>
       </div>
     </div>
-
-    <% preview_images = @home_spotlight.display_images.first(5) %>
 
     <aside class="xl:sticky xl:top-28">
       <div class="overflow-hidden rounded-[2rem] border border-slate-800 bg-slate-950 p-4 text-white shadow-2xl shadow-slate-300">
         <div class="flex items-center justify-between gap-4 px-1 pb-4">
           <div>
             <p class="text-xs font-black uppercase tracking-widest text-pink-300"><%= t("admin.home_spotlight.preview") %></p>
-            <p class="mt-1 text-sm font-bold text-slate-400">Homepage hero card</p>
+            <p class="mt-1 text-sm font-bold text-slate-400"><%= t("admin.home_spotlight.preview_title") %></p>
           </div>
 
           <span class="rounded-full bg-emerald-400/10 px-3 py-1 text-xs font-black text-emerald-300 ring-1 ring-emerald-300/20"

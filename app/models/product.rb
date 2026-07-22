@@ -1,6 +1,10 @@
 class Product < ApplicationRecord
   include PgSearch::Model
 
+  MAX_PHOTOS = 12
+  MAX_PHOTO_SIZE = 8.megabytes
+  SAFE_PHOTO_CONTENT_TYPES = %w[image/jpeg image/png image/webp].freeze
+
   belongs_to :owner, class_name: "User"
 
   has_many_attached :photos
@@ -31,6 +35,7 @@ class Product < ApplicationRecord
   validates :price_per_day, numericality: { greater_than: 0 }
   validates :address, presence: true, if: :pickup_available?
   validate :at_least_one_fulfillment_method
+  validate :photos_are_safe
 
   pg_search_scope :search_by_keyword,
     against: [:title, :description, :brand, :color, :size, :city],
@@ -87,5 +92,32 @@ class Product < ApplicationRecord
     return if pickup_available? || delivery_available?
 
     errors.add(:base, :fulfillment_method_required)
+  end
+
+  def photos_are_safe
+    attachments = photos.attachments
+
+    if attachments.size > MAX_PHOTOS
+      errors.add(:photos, "must be #{MAX_PHOTOS} images or fewer")
+    end
+
+    attachments.each do |attachment|
+      blob = attachment.blob
+      next unless blob
+
+      if blob.byte_size > MAX_PHOTO_SIZE
+        errors.add(:photos, "must be smaller than #{MAX_PHOTO_SIZE / 1.megabyte}MB each")
+      end
+
+      next if safe_photo_content_types.include?(blob.content_type)
+
+      errors.add(:photos, "must be JPG, PNG, or WebP images")
+    end
+  end
+
+  def safe_photo_content_types
+    return SAFE_PHOTO_CONTENT_TYPES unless Rails.env.development?
+
+    SAFE_PHOTO_CONTENT_TYPES + %w[image/svg+xml]
   end
 end

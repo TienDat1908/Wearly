@@ -15,15 +15,21 @@ module Users
     def handle_oauth_callback(provider)
       I18n.locale = oauth_locale
       auth = request.env["omniauth.auth"]
-      @user = User.from_omniauth(auth)
+      @user = User.find_for_omniauth(auth)
 
-      if @user.persisted?
+      if @user&.persisted?
         flash[:notice] = t("flash.auth.social_login_success", provider: provider_label(provider))
         sign_in_and_redirect @user, event: :authentication
       else
-        redirect_to new_user_session_path, alert: t("flash.auth.social_login_failed")
+        session[:pending_omniauth] = User.pending_omniauth_attributes(auth)
+        redirect_to new_user_registration_path,
+          notice: t("flash.auth.social_signup_required", provider: provider_label(provider))
       end
-    rescue ActiveRecord::RecordInvalid
+    rescue ActiveRecord::RecordInvalid => e
+      Rails.logger.warn(
+        "[OAuth] #{provider} sign in failed: #{e.record.errors.full_messages.to_sentence}"
+      )
+
       redirect_to new_user_session_path, alert: t("flash.auth.social_login_failed")
     end
 

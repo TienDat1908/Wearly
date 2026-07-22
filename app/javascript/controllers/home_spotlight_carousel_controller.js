@@ -29,8 +29,19 @@ export default class extends Controller {
     })
 
     this.dotTargets.forEach((dot, index) => {
-      dot.classList.toggle("bg-pink-500", index === this.index)
-      dot.classList.toggle("bg-white/40", index !== this.index)
+      const active = index === this.index
+      const compactDot = dot.classList.contains("h-2.5")
+
+      if (compactDot) {
+        dot.classList.toggle("bg-pink-500", active)
+        dot.classList.toggle("bg-slate-300", !active)
+        dot.classList.toggle("bg-white/40", false)
+        dot.classList.toggle("w-8", active)
+        dot.classList.toggle("w-2.5", !active)
+      } else {
+        dot.classList.toggle("border-pink-500", active)
+        dot.classList.toggle("border-white", !active)
+      }
     })
 
     if (this.hasCounterTarget) {

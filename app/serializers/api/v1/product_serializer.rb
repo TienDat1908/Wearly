@@ -33,7 +33,7 @@ module Api
           primary_photo_attachment_id: product.cover_photo_attachment_id,
           primary_photo_url: attachment_url(product.cover_photo),
           photo_urls: photo_urls,
-          owner: UserSerializer.new(product.owner, request: request).as_json,
+          owner: UserSerializer.new(product.owner, request: request, public_profile: true).as_json,
           created_at: product.created_at&.iso8601,
           updated_at: product.updated_at&.iso8601
         }

@@ -2,6 +2,7 @@ module Api
   module V1
     class BaseController < ActionController::API
       before_action :set_locale
+      rescue_from ActionController::ParameterMissing, with: :render_bad_request
 
       private
 
@@ -9,7 +10,7 @@ module Api
 
       def authenticate_api_user!
         token = request.authorization.to_s.delete_prefix("Bearer ").presence
-        @current_api_user = User.find_signed(token, purpose: :mobile_auth) if token.present?
+        @current_api_user = find_user_from_token(token)
 
         return if @current_api_user&.active?
 
@@ -25,6 +26,20 @@ module Api
           token: user.signed_id(purpose: :mobile_auth, expires_in: 30.days),
           user: UserSerializer.new(user, request: request).as_json
         }
+      end
+
+      def find_user_from_token(token)
+        return if token.blank?
+
+        User.find_signed(token, purpose: :mobile_auth)
+      rescue ActiveSupport::MessageVerifier::InvalidSignature,
+             ActiveSupport::MessageEncryptor::InvalidMessage,
+             ArgumentError
+        nil
+      end
+
+      def render_bad_request(error)
+        render json: { error: error.message }, status: :bad_request
       end
     end
   end

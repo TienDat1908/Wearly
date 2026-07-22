@@ -49,6 +49,13 @@
         <%= render "devise/shared/social_login", resource_name: resource_name %>
       </div>
 
+      <% if @oauth_signup %>
+        <div class="mb-7 rounded-[1.75rem] border border-pink-100 bg-pink-50 px-5 py-4 text-slate-700">
+          <p class="font-black text-slate-950"><%= t("auth.oauth.complete_signup_title") %></p>
+          <p class="mt-1 text-sm"><%= t("auth.oauth.complete_signup_hint") %></p>
+        </div>
+      <% end %>
+
       <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-6" }) do |f| %>
         <%= render "devise/shared/error_messages", resource: resource %>
 
@@ -68,28 +75,30 @@
 
             <div class="md:col-span-2">
               <%= f.label :email, "Email", class: "block font-black mb-2" %>
-              <%= f.email_field :email, autocomplete: "email", class: "w-full rounded-2xl border-slate-200 bg-white px-5 py-4 focus:border-pink-400 focus:ring-pink-400", placeholder: "you@example.com" %>
+              <%= f.email_field :email, autocomplete: "email", readonly: @oauth_signup, class: "w-full rounded-2xl border-slate-200 #{@oauth_signup ? 'bg-slate-100 text-slate-500' : 'bg-white'} px-5 py-4 focus:border-pink-400 focus:ring-pink-400", placeholder: "you@example.com" %>
             </div>
           </div>
         </section>
 
         <section class="grid lg:grid-cols-2 gap-5">
-          <div class="rounded-[2rem] bg-slate-50 p-5">
-            <h3 class="text-xl font-black"><%= t("profile.password_section") %></h3>
+          <% unless @oauth_signup %>
+            <div class="rounded-[2rem] bg-slate-50 p-5">
+              <h3 class="text-xl font-black"><%= t("profile.password_section") %></h3>
 
-            <div class="mt-5 space-y-4">
-              <div>
-                <%= f.label :password, t("auth.password"), class: "block font-black mb-2" %>
-                <%= f.password_field :password, autocomplete: "new-password", class: "w-full rounded-2xl border-slate-200 bg-white px-5 py-4 focus:border-pink-400 focus:ring-pink-400", placeholder: t("auth.password_placeholder") %>
-                <p class="mt-2 text-xs text-slate-500"><%= t("auth.password_hint") %></p>
-              </div>
+              <div class="mt-5 space-y-4">
+                <div>
+                  <%= f.label :password, t("auth.password"), class: "block font-black mb-2" %>
+                  <%= f.password_field :password, autocomplete: "new-password", class: "w-full rounded-2xl border-slate-200 bg-white px-5 py-4 focus:border-pink-400 focus:ring-pink-400", placeholder: t("auth.password_placeholder") %>
+                  <p class="mt-2 text-xs text-slate-500"><%= t("auth.password_hint") %></p>
+                </div>
 
-              <div>
-                <%= f.label :password_confirmation, t("auth.password_confirmation"), class: "block font-black mb-2" %>
-                <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "w-full rounded-2xl border-slate-200 bg-white px-5 py-4 focus:border-pink-400 focus:ring-pink-400", placeholder: t("auth.password_confirmation_placeholder") %>
+                <div>
+                  <%= f.label :password_confirmation, t("auth.password_confirmation"), class: "block font-black mb-2" %>
+                  <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "w-full rounded-2xl border-slate-200 bg-white px-5 py-4 focus:border-pink-400 focus:ring-pink-400", placeholder: t("auth.password_confirmation_placeholder") %>
+                </div>
               </div>
             </div>
-          </div>
+          <% end %>
 
           <div class="rounded-[2rem] bg-slate-50 p-5">
             <h3 class="text-xl font-black"><%= t("auth.account_type") %></h3>

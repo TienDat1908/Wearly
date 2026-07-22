@@ -245,11 +245,168 @@ label {
   filter: blur(0);
 }
 
+.wearly-orbit-chip {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.72);
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.36);
+  backdrop-filter: blur(16px);
+  animation: wearly-float-chip 7s ease-in-out infinite;
+  animation-delay: var(--float-delay, 0ms);
+}
+
+.wearly-shop-wall {
+  position: relative;
+  height: min(760px, calc(100svh - 96px));
+  min-height: 580px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 7%, #000 93%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 7%, #000 93%, transparent 100%);
+}
+
+.wearly-shop-wall-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  height: 100%;
+}
+
+.wearly-shop-wall-column {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.wearly-shop-wall-track {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+  animation: wearly-shop-wall-up 34s linear infinite;
+}
+
+.wearly-shop-wall-track.is-down {
+  animation-name: wearly-shop-wall-down;
+  animation-duration: 38s;
+}
+
+.wearly-shop-wall-sequence {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 16px;
+}
+
+.wearly-shop-wall-card {
+  display: block;
+  flex: none;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  border-radius: 28px;
+  background: #f8fafc;
+  box-shadow:
+    0 26px 70px rgba(15, 23, 42, 0.14),
+    0 2px 5px rgba(15, 23, 42, 0.06);
+}
+
+.wearly-shop-wall-card:nth-child(3n + 2) {
+  aspect-ratio: 4 / 5.7;
+}
+
+.wearly-shop-wall-card img {
+  display: block;
+  transform: scale(1.01);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.wearly-shop-wall-card:hover img {
+  transform: scale(1.065);
+}
+
+.wearly-shop-wall-columns:hover .wearly-shop-wall-track {
+  animation-play-state: paused;
+}
+
+@keyframes wearly-float-chip {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(var(--chip-rotate, 0deg));
+  }
+
+  50% {
+    transform: translate3d(0, -14px, 0) rotate(var(--chip-rotate, 0deg));
+  }
+}
+
+@keyframes wearly-shop-wall-up {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, -50%, 0);
+  }
+}
+
+@keyframes wearly-shop-wall-down {
+  from {
+    transform: translate3d(0, -50%, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (max-width: 1023px) {
+  .wearly-shop-wall {
+    height: 620px;
+    min-height: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .wearly-shop-wall {
+    height: 470px;
+  }
+
+  .wearly-shop-wall-columns,
+  .wearly-shop-wall-sequence {
+    gap: 10px;
+  }
+
+  .wearly-shop-wall-sequence {
+    padding-bottom: 10px;
+  }
+
+  .wearly-shop-wall-card {
+    border-radius: 18px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] {
     opacity: 1;
     transform: none;
     filter: none;
     transition: none;
+  }
+
+  .wearly-orbit-chip {
+    animation: none;
+  }
+
+  .wearly-shop-wall-track,
+  .wearly-shop-wall-track.is-down {
+    animation: none;
+    transform: none;
+  }
+
+  .wearly-shop-wall-sequence[aria-hidden="true"] {
+    display: none;
   }
 }
