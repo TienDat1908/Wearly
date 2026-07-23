@@ -66,7 +66,6 @@ end
 gem "devise"
 gem "omniauth-facebook"
 gem "omniauth-google-oauth2"
-gem "omniauth-instagram-api"
 gem "omniauth-rails_csrf_protection"
 
 # State machine for booking status

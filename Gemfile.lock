@@ -235,10 +235,6 @@ GEM
       oauth2 (~> 2.0)
       omniauth (~> 2.0)
       omniauth-oauth2 (~> 1.8)
-    omniauth-instagram-api (0.1.0)
-      oauth2 (~> 2.0)
-      omniauth (~> 2.0)
-      omniauth-oauth2 (~> 1.8)
     omniauth-oauth2 (1.9.0)
       oauth2 (>= 2.0.2, < 3)
       omniauth (~> 2.0)
@@ -430,7 +426,6 @@ DEPENDENCIES
   jsbundling-rails
   omniauth-facebook
   omniauth-google-oauth2
-  omniauth-instagram-api
   omniauth-rails_csrf_protection
   pagy
   pg (~> 1.1)

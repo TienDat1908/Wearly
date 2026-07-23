@@ -27,6 +27,7 @@ Rails.application.routes.draw do
         end
       end
 
+      resource :home_spotlight, only: [:show]
       resources :products, only: [:index, :show]
     end
   end

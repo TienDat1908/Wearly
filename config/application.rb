@@ -25,5 +25,6 @@ module Wearly
     # config.eager_load_paths << Rails.root.join("extras")
     config.i18n.available_locales = [:en, :vi]
     config.i18n.default_locale = :en
+    config.hosts << "0bc4-2402-800-63b7-87e7-886b-bab-ac4f-9aad.ngrok-free.app"
   end
 end

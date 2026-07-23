@@ -255,6 +255,23 @@
     </div>
   </section>
 
+  <section class="mx-auto max-w-7xl px-5 py-24">
+    <div class="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end" data-reveal>
+      <div>
+        <p class="font-black uppercase tracking-[0.22em] text-pink-600"><%= t("home.curated") %></p>
+        <h2 class="mt-3 text-5xl font-black tracking-tight text-slate-950"><%= t("home.latest_products") %></h2>
+        <p class="mt-3 text-lg font-semibold text-slate-500"><%= t("home.latest_products_hint") %></p>
+      </div>
+      <%= link_to t("home.view_all"), products_path, class: "inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-3 font-black text-pink-600 shadow-sm transition hover:bg-pink-50" %>
+    </div>
+
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4" data-reveal>
+      <% @featured_products.each do |product| %>
+        <%= render "products/product_card", product: product %>
+      <% end %>
+    </div>
+  </section>
+
   <section class="bg-[#020617] px-5 py-24 text-white">
     <div class="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_0.8fr]">
       <div data-reveal>
@@ -283,20 +300,70 @@
     </div>
   </section>
 
-  <section class="mx-auto max-w-7xl px-5 py-24">
-    <div class="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end" data-reveal>
-      <div>
-        <p class="font-black uppercase tracking-[0.22em] text-pink-600"><%= t("home.curated") %></p>
-        <h2 class="mt-3 text-5xl font-black tracking-tight text-slate-950"><%= t("home.latest_products") %></h2>
-        <p class="mt-3 text-lg font-semibold text-slate-500"><%= t("home.latest_products_hint") %></p>
-      </div>
-      <%= link_to t("home.view_all"), products_path, class: "inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-3 font-black text-pink-600 shadow-sm transition hover:bg-pink-50" %>
-    </div>
+  <section class="relative isolate overflow-hidden bg-white px-5 py-24">
+    <div class="absolute left-0 top-0 -z-10 h-96 w-96 rounded-full bg-pink-100/70 blur-3xl"></div>
+    <div class="absolute bottom-0 right-0 -z-10 h-96 w-96 rounded-full bg-orange-100/70 blur-3xl"></div>
 
-    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4" data-reveal>
-      <% @featured_products.each do |product| %>
-        <%= render "products/product_card", product: product %>
-      <% end %>
+    <div class="mx-auto grid max-w-7xl overflow-hidden rounded-[3rem] border border-slate-200 bg-slate-950 shadow-2xl shadow-slate-200 lg:grid-cols-[0.9fr_1.1fr]" data-reveal>
+      <div class="p-8 text-white sm:p-12 lg:p-16">
+        <p class="font-black uppercase tracking-[0.3em] text-pink-300"><%= t("home.doubts_label") %></p>
+        <h2 class="mt-5 text-5xl font-black leading-[0.92] tracking-[-0.05em] sm:text-7xl">
+          <%= t("home.doubts_title_1") %>
+          <span class="block bg-gradient-to-r from-pink-300 via-orange-200 to-yellow-200 bg-clip-text text-transparent"><%= t("home.doubts_title_2") %></span>
+        </h2>
+        <p class="mt-6 max-w-xl text-lg font-semibold leading-8 text-slate-300"><%= t("home.doubts_subtitle") %></p>
+
+        <div class="mt-8 flex flex-col gap-4 sm:flex-row">
+          <%= link_to products_path, class: "inline-flex items-center justify-center gap-3 rounded-full bg-white px-7 py-4 font-black text-slate-950 transition hover:-translate-y-0.5 hover:bg-pink-50" do %>
+            <%= t("home.doubts_primary_cta") %>
+            <span aria-hidden="true">→</span>
+          <% end %>
+          <%= link_to new_user_registration_path(role: "owner"), class: "inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-7 py-4 font-black text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15" do %>
+            <%= t("home.doubts_secondary_cta") %>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="grid gap-4 border-t border-white/10 bg-white/[0.04] p-8 sm:grid-cols-3 lg:border-l lg:border-t-0 lg:p-10">
+        <% [
+          ["01", t("home.doubts_card_1")],
+          ["02", t("home.doubts_card_2")],
+          ["03", t("home.doubts_card_3")]
+        ].each do |number, text| %>
+          <div class="rounded-[2rem] border border-white/10 bg-white/[0.07] p-6 backdrop-blur">
+            <p class="text-sm font-black text-pink-300"><%= number %></p>
+            <p class="mt-16 text-xl font-black leading-tight text-white"><%= text %></p>
+          </div>
+        <% end %>
+      </div>
     </div>
   </section>
+
+  <footer class="bg-[#111827] px-5 py-16 text-white">
+    <div class="mx-auto max-w-7xl">
+      <div class="flex flex-col gap-8 border-b border-white/10 pb-10 lg:flex-row lg:items-center lg:justify-between">
+        <%= link_to root_path, class: "inline-flex items-center gap-3" do %>
+          <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-500 to-orange-400 text-2xl font-black text-white shadow-xl shadow-pink-900/30">W</span>
+          <span>
+            <span class="block text-2xl font-black"><%= t("app.name") %></span>
+            <span class="block font-semibold text-slate-400"><%= t("app.tagline") %></span>
+          </span>
+        <% end %>
+
+        <nav class="flex flex-wrap gap-6 text-base font-black text-slate-300">
+          <%= link_to t("home.footer_explore"), products_path, class: "transition hover:text-white" %>
+          <%= link_to t("home.footer_privacy"), "https://www.wearly.io/privacy-policy", class: "transition hover:text-white" %>
+          <%= link_to t("home.footer_terms"), "https://www.wearly.io/terms", class: "transition hover:text-white" %>
+        </nav>
+      </div>
+
+      <div class="flex flex-col gap-4 pt-8 text-sm font-semibold text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+        <p><%= t("home.footer_copyright", year: Time.current.year) %></p>
+        <div class="flex gap-5">
+          <%= link_to t("home.footer_privacy"), "https://www.wearly.io/privacy-policy", class: "hover:text-white" %>
+          <%= link_to t("home.footer_terms"), "https://www.wearly.io/terms", class: "hover:text-white" %>
+        </div>
+      </div>
+    </div>
+  </footer>
 </div>
