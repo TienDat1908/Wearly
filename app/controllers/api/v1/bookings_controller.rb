@@ -9,8 +9,10 @@ module Api
           .includes(:owner, product: [photos_attachments: :blob])
           .order(created_at: :desc)
 
+        bookings.find_each(&:expire_if_acceptance_timed_out!)
+
         render json: {
-          bookings: bookings.map { |booking| BookingSerializer.new(booking, request: request).as_json }
+          bookings: bookings.reload.map { |booking| BookingSerializer.new(booking, request: request).as_json }
         }
       end
 
@@ -19,6 +21,7 @@ module Api
           .rentals
           .includes(:owner, product: [photos_attachments: :blob])
           .find(params[:id])
+        booking.expire_if_acceptance_timed_out!
 
         render json: { booking: BookingSerializer.new(booking, request: request).as_json }
       end
@@ -82,6 +85,7 @@ module Api
             status: "pending",
             reason: "booking"
           )
+          Conversations::EnsureBooking.call(booking: booking)
         end
 
         render json: { booking: BookingSerializer.new(booking, request: request).as_json }, status: :created

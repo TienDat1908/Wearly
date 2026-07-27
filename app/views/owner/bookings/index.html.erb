@@ -81,7 +81,11 @@
                     <%= booking_status_label(booking) %>
                   </span>
 
-                  <% if booking.status == "accepted" %>
+                  <% if booking.pending? %>
+                    <div class="mt-2">
+                      <%= acceptance_countdown_badge(booking, role: :owner) %>
+                    </div>
+                  <% elsif booking.status == "accepted" %>
                     <p class="mt-2 text-xs text-slate-400 font-bold">
                       <%= t("owner.bookings.waiting_payment") %>
                     </p>
@@ -89,10 +93,12 @@
                 </td>
 
                 <td class="p-4">
-                  <div class="flex justify-end items-center gap-2">
+                  <div class="flex justify-end items-center gap-2 flex-wrap">
                     <%= link_to t("admin.actions.view"),
                       owner_booking_path(booking),
                       class: "px-4 py-2 rounded-full bg-slate-100 text-slate-900 font-black hover:bg-slate-200" %>
+
+                    <%= booking_chat_button(booking, viewer: current_user, class: "px-4 py-2 rounded-full bg-pink-500 text-white font-black", form: { class: "inline-block" }) %>
 
                     <% if booking.status == "pending" %>
                       <%= button_to t("owner.bookings.accept"),

@@ -1,0 +1,76 @@
+<section
+  class="max-w-3xl mx-auto px-5 py-10"
+  data-controller="chat-room"
+  data-chat-room-conversation-id-value="<%= @conversation.id %>"
+  data-chat-room-current-user-id-value="<%= current_user.id %>"
+  data-chat-room-is-support-value="<%= @conversation.support? %>"
+  data-chat-room-support-label-value="<%= t("conversations.support_title") %>"
+  data-chat-room-system-label-value="<%= t("conversations.system_label") %>"
+  data-chat-room-open-booking-label-value="<%= t("conversations.open_booking") %>"
+  data-chat-room-booking-path-value="<%= conversation_booking_path_for(@conversation, viewer: current_user).to_s %>"
+>
+  <%= link_to "← #{t("conversations.back")}", conversations_path, class: "font-black text-pink-600" %>
+
+  <div class="mt-6 flex items-start justify-between gap-4">
+    <div>
+      <p class="text-xs font-black uppercase tracking-wider text-pink-600">
+        <%= @conversation.support? ? t("conversations.kind_support") : t("conversations.kind_booking") %>
+      </p>
+      <h1 class="mt-2 text-3xl font-black"><%= conversation_title(@conversation, viewer: current_user) %></h1>
+    </div>
+  </div>
+
+  <div
+    class="mt-8 space-y-4 rounded-[2rem] border border-orange-100 bg-white p-5 shadow-sm min-h-[420px]"
+    data-chat-room-target="list"
+  >
+    <% if @messages.any? %>
+      <% @messages.each do |message| %>
+        <% if message.system? %>
+          <div class="flex justify-center" data-message-id="<%= message.id %>" data-system="true">
+            <div class="max-w-[92%] rounded-3xl border border-amber-200 bg-amber-50 px-4 py-3 text-center text-amber-950">
+              <p class="text-[11px] font-black uppercase tracking-wider text-amber-700"><%= t("conversations.system_label") %></p>
+              <p class="mt-2 whitespace-pre-wrap text-sm font-semibold leading-6"><%= message.body %></p>
+              <% booking_href = conversation_booking_path_for(@conversation, viewer: current_user, booking: message.booking) %>
+              <% if booking_href.present? %>
+                <%= link_to t("conversations.open_booking"),
+                      booking_href,
+                      class: "mt-3 inline-flex rounded-full bg-amber-600 px-4 py-2 text-xs font-black text-white" %>
+              <% end %>
+              <p class="mt-2 text-[11px] opacity-60"><%= l(message.created_at, format: :short) %></p>
+            </div>
+          </div>
+        <% else %>
+          <% mine = message.sender_id == current_user.id %>
+          <div class="flex <%= mine ? 'justify-end' : 'justify-start' %>" data-message-id="<%= message.id %>">
+            <div class="max-w-[80%] rounded-3xl px-4 py-3 <%= mine ? 'bg-slate-950 text-white' : 'bg-slate-100 text-slate-900' %>">
+              <p class="text-xs font-black opacity-70">
+                <%= message.sender.admin? && @conversation.support? ? t("conversations.support_title") : (message.sender.full_name.presence || message.sender.email) %>
+              </p>
+              <p class="mt-1 whitespace-pre-wrap font-semibold leading-6"><%= message.body %></p>
+              <p class="mt-2 text-[11px] opacity-60"><%= l(message.created_at, format: :short) %></p>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    <% else %>
+      <p class="text-center text-slate-400 font-bold py-16" data-chat-room-target="empty"><%= t("conversations.no_messages_yet") %></p>
+    <% end %>
+  </div>
+
+  <%= form_with url: messages_conversation_path(@conversation),
+        method: :post,
+        html: {
+          class: "mt-5 flex gap-3",
+          data: { chat_room_target: "form", action: "submit->chat-room#send" }
+        } do %>
+    <%= text_area_tag "message[body]",
+          nil,
+          rows: 2,
+          required: true,
+          placeholder: t("conversations.message_placeholder"),
+          class: "flex-1 rounded-3xl border border-slate-200 px-4 py-3 font-semibold focus:border-pink-400 focus:outline-none",
+          data: { chat_room_target: "input" } %>
+    <%= submit_tag t("conversations.send"), class: "px-6 py-3 rounded-full bg-pink-500 text-white font-black self-end cursor-pointer" %>
+  <% end %>
+</section>

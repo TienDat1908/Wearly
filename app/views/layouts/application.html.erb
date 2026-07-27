@@ -31,7 +31,8 @@
             <%= link_to t("nav.explore"), products_path, class: "px-4 py-2.5 rounded-full transition #{current_page?(products_path) ? 'bg-slate-950 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'}" %>
 
             <% if user_signed_in? %>
-              <%= link_to t("nav.my_rentals"), bookings_path, class: "px-4 py-2.5 rounded-full transition #{current_page?(bookings_path) ? 'bg-slate-950 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'}" %>
+              <%= link_to t("nav.my_rentals"), bookings_path, class: "px-4 py-2.5 rounded-full transition #{controller_name == 'bookings' && controller.class.module_parent_name.blank? ? 'bg-slate-950 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'}" %>
+              <%= link_to t("nav.messages"), conversations_path, class: "px-4 py-2.5 rounded-full transition #{controller_name == 'conversations' ? 'bg-slate-950 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'}" %>
 
               <% if current_user.owner? %>
                 <details class="relative group">
@@ -117,6 +118,7 @@
 
               <% if user_signed_in? %>
                 <%= link_to t("nav.my_rentals"), bookings_path, class: "block rounded-2xl px-4 py-3 font-black #{current_page?(bookings_path) ? 'bg-slate-950 text-white' : 'text-slate-700 hover:bg-pink-50 hover:text-pink-600'}" %>
+                <%= link_to t("nav.messages"), conversations_path, class: "block rounded-2xl px-4 py-3 font-black #{controller_name == 'conversations' ? 'bg-slate-950 text-white' : 'text-slate-700 hover:bg-pink-50 hover:text-pink-600'}" %>
 
                 <% if current_user.owner? %>
                   <%= link_to owner_bookings_path, class: "flex items-center justify-between gap-3 rounded-2xl px-4 py-3 font-black text-slate-700 hover:bg-pink-50 hover:text-pink-600" do %>

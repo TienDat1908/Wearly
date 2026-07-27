@@ -61,6 +61,11 @@
             <span><%= t("admin.nav.payouts") %></span>
           <% end %>
 
+          <%= link_to admin_conversations_path, class: "flex items-center gap-3 px-4 py-3 rounded-xl transition #{controller_name == 'conversations' ? 'bg-white text-slate-950 shadow-lg shadow-black/20' : 'text-slate-300 hover:bg-white/10 hover:text-white'}" do %>
+            <span class="w-6 text-center">💬</span>
+            <span><%= t("admin.nav.conversations") %></span>
+          <% end %>
+
           <p class="px-4 pt-5 pb-2 text-[11px] font-black uppercase tracking-widest text-slate-500"><%= t("admin.nav.system") %></p>
 
           <%= link_to edit_admin_account_path, class: "flex items-center gap-3 px-4 py-3 rounded-xl transition #{controller_name == 'accounts' ? 'bg-white text-slate-950 shadow-lg shadow-black/20' : 'text-slate-300 hover:bg-white/10 hover:text-white'}" do %>

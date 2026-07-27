@@ -27,7 +27,9 @@ module Api
           product: ProductSerializer.new(booking.product, request: request).as_json,
           owner: UserSerializer.new(booking.owner, request: request).as_json,
           renter: UserSerializer.new(booking.renter, request: request).as_json,
-          created_at: booking.created_at&.iso8601
+          created_at: booking.created_at&.iso8601,
+          acceptance_deadline_at: booking.acceptance_deadline&.iso8601,
+          cancel_reason: booking.cancel_reason
         }
       end
 

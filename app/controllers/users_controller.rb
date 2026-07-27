@@ -12,6 +12,7 @@ class UsersController < ApplicationController
     return if current_user.id == user.id
 
     Booking
+      .where(status: Booking::CHATTABLE_STATUSES)
       .where(
         "(renter_id = :current_user_id AND owner_id = :user_id) OR (renter_id = :user_id AND owner_id = :current_user_id)",
         current_user_id: current_user.id,

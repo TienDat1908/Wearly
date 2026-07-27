@@ -45,6 +45,8 @@
                 <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-black">
                   <%= t("bookings.rental_days_count", count: booking.rental_days.to_i) %>
                 </span>
+
+                <%= acceptance_countdown_badge(booking, role: :renter) %>
               </div>
 
               <%= link_to booking_path(booking), class: "block mt-3" do %>
@@ -86,6 +88,7 @@
 
               <div class="mt-5 flex md:flex-col gap-2">
                 <%= link_to t("admin.actions.view"), booking_path(booking), class: "px-5 py-3 rounded-full bg-slate-950 text-white font-black text-center" %>
+                <%= booking_chat_button(booking, viewer: current_user, class: "w-full px-5 py-3 rounded-full bg-pink-500 text-white font-black") %>
 
                 <% if %w[pending accepted].include?(booking.status) %>
                   <%= button_to t("bookings.cancel"), cancel_booking_path(booking), method: :patch, class: "w-full px-5 py-3 rounded-full bg-red-50 text-red-600 font-black" %>

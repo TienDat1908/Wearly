@@ -1,0 +1,49 @@
+<section
+  class="max-w-3xl mx-auto px-5 py-10"
+  data-controller="chat-room"
+  data-chat-room-conversation-id-value="<%= @conversation.id %>"
+  data-chat-room-current-user-id-value="<%= current_user.id %>"
+  data-chat-room-is-support-value="true"
+  data-chat-room-support-label-value="<%= t("conversations.support_title") %>"
+>
+  <%= link_to "← #{t("admin.conversations.back")}", admin_conversations_path, class: "font-black text-pink-600" %>
+
+  <% user = @conversation.participants.first %>
+  <h1 class="mt-6 text-3xl font-black"><%= t("admin.conversations.with_user", name: (user&.full_name.presence || user&.email)) %></h1>
+
+  <div
+    class="mt-8 space-y-4 rounded-[2rem] border border-orange-100 bg-white p-5 shadow-sm min-h-[420px]"
+    data-chat-room-target="list"
+  >
+    <% if @messages.any? %>
+      <% @messages.each do |message| %>
+        <% mine = message.sender_id == current_user.id || message.sender.admin? %>
+        <div class="flex <%= mine ? 'justify-end' : 'justify-start' %>" data-message-id="<%= message.id %>">
+          <div class="max-w-[80%] rounded-3xl px-4 py-3 <%= mine ? 'bg-slate-950 text-white' : 'bg-slate-100 text-slate-900' %>">
+            <p class="text-xs font-black opacity-70"><%= message.sender.full_name.presence || message.sender.email %></p>
+            <p class="mt-1 whitespace-pre-wrap font-semibold leading-6"><%= message.body %></p>
+            <p class="mt-2 text-[11px] opacity-60"><%= l(message.created_at, format: :short) %></p>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <p class="text-center text-slate-400 font-bold py-16" data-chat-room-target="empty"><%= t("conversations.no_messages_yet") %></p>
+    <% end %>
+  </div>
+
+  <%= form_with url: messages_admin_conversation_path(@conversation),
+        method: :post,
+        html: {
+          class: "mt-5 flex gap-3",
+          data: { chat_room_target: "form", action: "submit->chat-room#send" }
+        } do %>
+    <%= text_area_tag "message[body]",
+          nil,
+          rows: 2,
+          required: true,
+          placeholder: t("conversations.message_placeholder"),
+          class: "flex-1 rounded-3xl border border-slate-200 px-4 py-3 font-semibold focus:border-pink-400 focus:outline-none",
+          data: { chat_room_target: "input" } %>
+    <%= submit_tag t("conversations.send"), class: "px-6 py-3 rounded-full bg-pink-500 text-white font-black self-end cursor-pointer" %>
+  <% end %>
+</section>

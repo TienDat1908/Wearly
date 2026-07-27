@@ -3,6 +3,9 @@ class Booking < ApplicationRecord
 
   OWNER_PLATFORM_FEE_RATE = 15
   RENTER_SERVICE_FEE_RATE = 5
+  OWNER_ACCEPTANCE_WINDOW = 1.hour
+  CANCEL_REASON_ACCEPTANCE_TIMEOUT = "owner_acceptance_timeout"
+  CHATTABLE_STATUSES = %w[pending accepted paid picked_up completed].freeze
 
   belongs_to :product
   belongs_to :owner, class_name: "User"
@@ -18,7 +21,12 @@ class Booking < ApplicationRecord
   validate :end_time_after_start_time
   validate :pickup_method_supported_by_product
 
+  after_create_commit :enqueue_acceptance_expiry_job, if: :pending?
+
   scope :revenue_recognized, -> { where(status: ["paid", "picked_up", "completed"]) }
+  scope :pending_acceptance_expired, lambda {
+    pending.where(created_at: ..OWNER_ACCEPTANCE_WINDOW.ago)
+  }
 
   def self.price_breakdown(product:, start_time:, end_time:)
     rental_days = (end_time.to_date - start_time.to_date).to_i + 1
@@ -101,6 +109,44 @@ class Booking < ApplicationRecord
     sum(:deposit_amount).to_i
   end
 
+  def acceptance_deadline
+    created_at + OWNER_ACCEPTANCE_WINDOW
+  end
+
+  def acceptance_expired?
+    pending? && Time.current >= acceptance_deadline
+  end
+
+  def acceptance_timed_out?
+    cancelled? && cancel_reason == CANCEL_REASON_ACCEPTANCE_TIMEOUT
+  end
+
+  def chattable?
+    CHATTABLE_STATUSES.include?(status)
+  end
+
+  def expire_if_acceptance_timed_out!
+    return self unless pending?
+
+    with_lock do
+      reload
+      return self unless acceptance_expired?
+
+      cancel!
+      update!(
+        cancelled_at: Time.current,
+        cancel_reason: CANCEL_REASON_ACCEPTANCE_TIMEOUT
+      )
+      product_reservation&.update!(status: "cancelled")
+    end
+
+    self
+  end
+
+  def self.expire_stale_pending!
+    pending_acceptance_expired.find_each(&:expire_if_acceptance_timed_out!)
+  end
+
   aasm column: :status do
     state :pending, initial: true
     state :accepted
@@ -136,6 +182,12 @@ class Booking < ApplicationRecord
   end
 
   private
+
+  def enqueue_acceptance_expiry_job
+    ExpirePendingBookingJob
+      .set(wait_until: acceptance_deadline)
+      .perform_later(id)
+  end
 
   def end_time_after_start_time
     return if start_time.blank? || end_time.blank?

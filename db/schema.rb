@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_22_040000) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_24_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -81,6 +81,30 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_22_040000) do
     t.index ["status"], name: "index_bookings_on_status"
   end
 
+  create_table "conversation_participants", force: :cascade do |t|
+    t.bigint "conversation_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "last_read_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["conversation_id", "user_id"], name: "index_conversation_participants_uniqueness", unique: true
+    t.index ["conversation_id"], name: "index_conversation_participants_on_conversation_id"
+    t.index ["user_id", "conversation_id"], name: "index_conversation_participants_on_user_and_conversation"
+    t.index ["user_id"], name: "index_conversation_participants_on_user_id"
+  end
+
+  create_table "conversations", force: :cascade do |t|
+    t.string "kind", null: false
+    t.string "subject"
+    t.datetime "last_message_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "pair_key"
+    t.index ["kind"], name: "index_conversations_on_kind"
+    t.index ["last_message_at"], name: "index_conversations_on_last_message_at"
+    t.index ["pair_key"], name: "index_conversations_on_pair_key_unique", unique: true, where: "(((kind)::text = 'booking'::text) AND (pair_key IS NOT NULL))"
+  end
+
   create_table "disputes", force: :cascade do |t|
     t.bigint "booking_id", null: false
     t.bigint "opened_by_id"
@@ -108,6 +132,21 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_22_040000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["product_id"], name: "index_home_spotlights_on_product_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.bigint "conversation_id", null: false
+    t.bigint "sender_id", null: false
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "system", default: false, null: false
+    t.bigint "booking_id"
+    t.index ["booking_id"], name: "index_messages_on_booking_id"
+    t.index ["conversation_id", "created_at"], name: "index_messages_on_conversation_id_and_created_at"
+    t.index ["conversation_id", "system"], name: "index_messages_on_conversation_id_and_system"
+    t.index ["conversation_id"], name: "index_messages_on_conversation_id"
+    t.index ["sender_id"], name: "index_messages_on_sender_id"
   end
 
   create_table "payments", force: :cascade do |t|
@@ -302,10 +341,15 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_22_040000) do
   add_foreign_key "bookings", "products"
   add_foreign_key "bookings", "users", column: "owner_id"
   add_foreign_key "bookings", "users", column: "renter_id"
+  add_foreign_key "conversation_participants", "conversations"
+  add_foreign_key "conversation_participants", "users"
   add_foreign_key "disputes", "bookings"
   add_foreign_key "disputes", "users", column: "opened_by_id"
   add_foreign_key "disputes", "users", column: "resolved_by_id"
   add_foreign_key "home_spotlights", "products"
+  add_foreign_key "messages", "bookings", on_delete: :nullify
+  add_foreign_key "messages", "conversations"
+  add_foreign_key "messages", "users", column: "sender_id"
   add_foreign_key "payments", "bookings"
   add_foreign_key "payments", "users", column: "payer_id"
   add_foreign_key "payouts", "bookings"

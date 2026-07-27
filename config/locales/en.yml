@@ -6,6 +6,7 @@ en:
   nav:
     explore: "Explore"
     my_rentals: "My rentals"
+    messages: "Messages"
     list_item: "List an item"
     sign_in: "Sign in"
     sign_up: "Sign up"
@@ -136,6 +137,12 @@ en:
     footer_privacy: "Privacy Policy"
     footer_terms: "Terms of use"
     footer_copyright: "© %{year} Wearly. All rights reserved."
+    support_label: "Need help?"
+    support_title: "Contact Wearly support"
+    support_subtitle: "Renters and owners can reach us when a booking, payment, or listing goes wrong."
+    support_email_label: "Email"
+    support_phone_label: "Phone"
+    support_chat_cta: "Chat with support"
     lender_label: "For owners"
     lender_title: "Turn your wardrobe into income."
     lender_subtitle: "List outfits, cameras, lenses, and accessories. Accept the requests you like and track payout from your owner dashboard."
@@ -272,8 +279,17 @@ en:
     payment_completed: "Payment completed"
     payment_completed_hint: "Your payment has been received. The platform fee is now recorded."
     waiting_owner_approval: "Waiting for owner approval"
-    waiting_owner_approval_hint: "The owner needs to accept this rental request before you can pay."
+    waiting_owner_approval_hint: "The owner has 1 hour to accept. If they don't respond, this request is cancelled automatically."
     owner_accepted: "Owner accepted your request"
+    acceptance_window: "Owner must respond within 1 hour"
+    acceptance_remaining_renter: "Owner must respond in"
+    acceptance_remaining_owner: "Respond within"
+    acceptance_countdown_expired: "Time is up — cancelling"
+    acceptance_countdown_loading: "…"
+    countdown_hours_short: "h"
+    countdown_minutes_short: "m"
+    countdown_seconds_short: "s"
+    auto_cancelled_timeout: "Cancelled automatically because the owner did not respond within 1 hour"
     pay_to_confirm_hint: "Please pay to confirm this booking."
     renter_service_fee: "Service fee"
     rejected: "Rejected"
@@ -349,6 +365,34 @@ en:
     view_owner: "View owner"
     view_renter: "View renter"
 
+  conversations:
+    title: "Messages"
+    index_title: "Your conversations"
+    index_subtitle: "Chat with Wearly support or keep one thread with each rental partner."
+    empty_title: "No conversations yet"
+    empty_subtitle: "Start with Wearly support, or open chat from a rental request."
+    chat_support: "Chat with support"
+    back: "Back to messages"
+    kind_support: "Support"
+    kind_booking: "Rental partner"
+    support_title: "Wearly Support"
+    booking_chat: "Booking chat"
+    no_messages_yet: "No messages yet. Say hello."
+    message_placeholder: "Write a message…"
+    send: "Send"
+    open_chat: "Open chat"
+    chat_with_owner: "Chat with owner"
+    chat_with_renter: "Chat with renter"
+    chat_about_booking: "Chat about this rental"
+    chat_unavailable_hint: "Chat opens once you have an active rental request with this person."
+    system_label: "Wearly"
+    open_booking: "Open booking"
+    system:
+      booking_requested: |
+        New rental request for "%{product}".
+        %{renter} wants %{start} → %{end}.
+        Review and accept/reject here: %{path}
+
   admin:
     title: "Admin Panel"
     nav:
@@ -359,6 +403,7 @@ en:
       home_spotlights: "Home Spotlight"
       bookings: "Bookings"
       payouts: "Payouts"
+      conversations: "Support chats"
       account: "Account"
       back_to_site: "Back to site"
       workspace: "Workspace"
@@ -511,6 +556,16 @@ en:
         pending: "Pending"
         paid: "Paid"
         failed: "Failed"
+    conversations:
+      title: "Support"
+      index_title: "Support chats"
+      index_subtitle: "Reply to users who contacted Wearly support."
+      empty_title: "No support chats yet"
+      back: "Back to support chats"
+      user: "User"
+      preview: "Latest message"
+      updated: "Updated"
+      with_user: "Chat with %{name}"
     account:
       title: "Admin account"
       heading: "Account settings"
@@ -557,6 +612,7 @@ en:
       failed: "Could not create booking."
       unavailable: "This item is not available for the selected time."
       cancelled: "Your booking has been cancelled."
+      acceptance_expired: "This request expired because it was not accepted within 1 hour."
       cannot_rent_own_product: "You cannot rent your own item."
       accepted: "Booking has been accepted."
       rejected: "Booking has been rejected."
@@ -566,6 +622,11 @@ en:
       must_be_paid_first: "This booking must be paid before it can be completed."
       received: "The item receipt has been confirmed."
       cannot_complete_yet: "The item can only be completed after the renter confirms receipt and the rental period has ended."
+
+    conversations:
+      forbidden: "You cannot open this conversation."
+      message_invalid: "Please enter a valid message."
+      booking_chat_unavailable: "Chat is only available for active rental requests."
 
     admin:
       users:

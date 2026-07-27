@@ -6,6 +6,7 @@ vi:
   nav:
     explore: "Khám phá"
     my_rentals: "Đơn thuê"
+    messages: "Tin nhắn"
     list_item: "Đăng đồ"
     sign_in: "Đăng nhập"
     sign_up: "Đăng ký"
@@ -136,6 +137,12 @@ vi:
     footer_privacy: "Privacy Policy"
     footer_terms: "Terms of use"
     footer_copyright: "© %{year} Wearly. All rights reserved."
+    support_label: "Cần hỗ trợ?"
+    support_title: "Liên hệ Wearly support"
+    support_subtitle: "Người thuê và người cho thuê có thể liên hệ khi đơn thuê, thanh toán hoặc tin đăng gặp vấn đề."
+    support_email_label: "Email"
+    support_phone_label: "Điện thoại"
+    support_chat_cta: "Chat với support"
     lender_label: "Cho người đăng"
     lender_title: "Biến tủ đồ thành thu nhập."
     lender_subtitle: "Đăng outfit, máy ảnh, lens và phụ kiện. Chọn đơn muốn nhận và theo dõi payout trong dashboard người đăng."
@@ -272,8 +279,17 @@ vi:
     payment_completed: "Đã thanh toán"
     payment_completed_hint: "Thanh toán đã được ghi nhận. Phí sàn bắt đầu được tính."
     waiting_owner_approval: "Đang chờ người đăng xác nhận"
-    waiting_owner_approval_hint: "Người đăng cần xác nhận yêu cầu thuê trước khi bạn có thể thanh toán."
+    waiting_owner_approval_hint: "Chủ có 1 giờ để xác nhận. Nếu không phản hồi, yêu cầu sẽ tự động bị hủy."
     owner_accepted: "Người đăng đã xác nhận yêu cầu"
+    acceptance_window: "Chủ cần phản hồi trong vòng 1 giờ"
+    acceptance_remaining_renter: "Chủ còn"
+    acceptance_remaining_owner: "Bạn còn"
+    acceptance_countdown_expired: "Hết giờ — đang hủy"
+    acceptance_countdown_loading: "…"
+    countdown_hours_short: " giờ"
+    countdown_minutes_short: " phút"
+    countdown_seconds_short: " giây"
+    auto_cancelled_timeout: "Đã tự động hủy vì chủ không xác nhận trong vòng 1 giờ"
     pay_to_confirm_hint: "Vui lòng thanh toán để xác nhận đơn thuê."
     renter_service_fee: "Phí dịch vụ"
     rejected: "Đã bị từ chối"
@@ -349,6 +365,34 @@ vi:
     view_owner: "Xem người đăng"
     view_renter: "Xem người thuê"
 
+  conversations:
+    title: "Tin nhắn"
+    index_title: "Hội thoại của bạn"
+    index_subtitle: "Chat với Wearly support hoặc một hội thoại chung với từng đối tác thuê."
+    empty_title: "Chưa có hội thoại"
+    empty_subtitle: "Bắt đầu với Wearly support, hoặc mở chat từ yêu cầu thuê."
+    chat_support: "Chat với support"
+    back: "Quay lại tin nhắn"
+    kind_support: "Support"
+    kind_booking: "Đối tác thuê"
+    support_title: "Wearly Support"
+    booking_chat: "Chat đơn thuê"
+    no_messages_yet: "Chưa có tin nhắn. Hãy chào nhau."
+    message_placeholder: "Nhập tin nhắn…"
+    send: "Gửi"
+    open_chat: "Mở chat"
+    chat_with_owner: "Chat với chủ"
+    chat_with_renter: "Chat với người thuê"
+    chat_about_booking: "Chat về đơn thuê này"
+    chat_unavailable_hint: "Chat mở khi bạn đã có yêu cầu thuê đang active với người này."
+    system_label: "Wearly"
+    open_booking: "Xem đơn thuê"
+    system:
+      booking_requested: |
+        Có yêu cầu thuê mới cho "%{product}".
+        %{renter} muốn thuê %{start} → %{end}.
+        Xem và chấp nhận/từ chối tại: %{path}
+
   admin:
     title: "Trang quản trị"
     nav:
@@ -359,6 +403,7 @@ vi:
       home_spotlights: "Spotlight trang chủ"
       bookings: "Đơn thuê"
       payouts: "Payout"
+      conversations: "Chat support"
       account: "Tài khoản"
       back_to_site: "Về trang chính"
       workspace: "Workspace"
@@ -511,6 +556,16 @@ vi:
         pending: "Đang chờ"
         paid: "Đã trả"
         failed: "Thất bại"
+    conversations:
+      title: "Support"
+      index_title: "Chat support"
+      index_subtitle: "Trả lời người dùng đã liên hệ Wearly support."
+      empty_title: "Chưa có chat support"
+      back: "Quay lại chat support"
+      user: "Người dùng"
+      preview: "Tin mới nhất"
+      updated: "Cập nhật"
+      with_user: "Chat với %{name}"
     account:
       title: "Tài khoản admin"
       heading: "Cài đặt tài khoản"
@@ -557,6 +612,7 @@ vi:
       failed: "Không thể tạo đơn thuê."
       unavailable: "Món đồ này không còn trống trong thời gian bạn chọn."
       cancelled: "Đã hủy đơn thuê."
+      acceptance_expired: "Yêu cầu đã hết hạn vì chủ không xác nhận trong vòng 1 giờ."
       cannot_rent_own_product: "Bạn không thể thuê món đồ của chính mình."
       accepted: "Đã xác nhận đơn thuê."
       rejected: "Đã từ chối đơn thuê."
@@ -566,6 +622,11 @@ vi:
       must_be_paid_first: "Đơn thuê cần được thanh toán trước khi hoàn tất."
       received: "Đã xác nhận nhận đồ."
       cannot_complete_yet: "Chỉ có thể hoàn tất sau khi người thuê xác nhận nhận đồ và kỳ thuê đã kết thúc."
+
+    conversations:
+      forbidden: "Bạn không thể mở hội thoại này."
+      message_invalid: "Vui lòng nhập tin nhắn hợp lệ."
+      booking_chat_unavailable: "Chat chỉ dùng cho yêu cầu thuê đang active."
 
     admin:
       users:

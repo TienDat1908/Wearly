@@ -1,0 +1,39 @@
+<section class="max-w-7xl mx-auto px-5 py-10">
+  <div class="mb-8">
+    <p class="text-sm font-black uppercase tracking-wider text-pink-600"><%= t("admin.conversations.title") %></p>
+    <h1 class="mt-2 text-4xl font-black"><%= t("admin.conversations.index_title") %></h1>
+    <p class="mt-2 text-slate-500"><%= t("admin.conversations.index_subtitle") %></p>
+  </div>
+
+  <% if @conversations.any? %>
+    <div class="bg-white rounded-[2rem] border border-orange-100 overflow-hidden shadow-sm">
+      <table class="w-full text-left">
+        <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+          <tr>
+            <th class="p-4"><%= t("admin.conversations.user") %></th>
+            <th class="p-4"><%= t("admin.conversations.preview") %></th>
+            <th class="p-4"><%= t("admin.conversations.updated") %></th>
+            <th class="p-4 text-right"><%= t("admin.actions.actions") %></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          <% @conversations.each do |conversation| %>
+            <% user = conversation.participants.first %>
+            <tr class="hover:bg-pink-50/40">
+              <td class="p-4 font-black"><%= user&.full_name.presence || user&.email || "-" %></td>
+              <td class="p-4 text-slate-600"><%= conversation.messages.max_by(&:created_at)&.body.to_s.truncate(80).presence || t("conversations.no_messages_yet") %></td>
+              <td class="p-4 text-sm text-slate-500"><%= l(conversation.last_message_at || conversation.created_at, format: :short) %></td>
+              <td class="p-4 text-right">
+                <%= link_to t("admin.actions.view"), admin_conversation_path(conversation), class: "px-4 py-2 rounded-full bg-slate-950 text-white font-black" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="bg-white rounded-[2rem] p-10 text-center border border-orange-100">
+      <h2 class="text-2xl font-black"><%= t("admin.conversations.empty_title") %></h2>
+    </div>
+  <% end %>
+</section>

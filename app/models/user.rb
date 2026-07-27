@@ -15,6 +15,9 @@ class User < ApplicationRecord
   has_many :products, foreign_key: :owner_id, dependent: :destroy
   has_many :rentals, class_name: "Booking", foreign_key: :renter_id, dependent: :destroy
   has_many :owner_bookings, class_name: "Booking", foreign_key: :owner_id, dependent: :destroy
+  has_many :conversation_participants, dependent: :destroy
+  has_many :conversations, through: :conversation_participants
+  has_many :sent_messages, class_name: "Message", foreign_key: :sender_id, dependent: :restrict_with_error
 
   enum :role, {
     renter: "renter",

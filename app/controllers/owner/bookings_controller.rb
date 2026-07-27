@@ -2,21 +2,26 @@ module Owner
   class BookingsController < ApplicationController
     before_action :authenticate_user!
     before_action :require_owner!
-    before_action :set_booking, only: [:show, :accept, :reject, :complete]
+    before_action :set_booking, only: [:show, :accept, :reject, :complete, :chat]
 
     def index
       @bookings = current_user
         .owner_bookings
         .includes(:product, renter: { avatar_attachment: :blob })
         .order(created_at: :desc)
+
+      @bookings.pending.find_each(&:expire_if_acceptance_timed_out!)
+      @bookings = @bookings.reload
     end
 
     def show
     end
 
     def accept
+      @booking.expire_if_acceptance_timed_out!
+
       unless @booking.pending?
-        redirect_to owner_booking_path(@booking), alert: t("flash.bookings.invalid_status")
+        redirect_to owner_booking_path(@booking), alert: acceptance_blocked_alert
         return
       end
 
@@ -24,14 +29,17 @@ module Owner
         @booking.accept!
         @booking.update!(accepted_at: Time.current)
         @booking.product_reservation&.update!(status: "confirmed")
+        Conversations::EnsureBooking.call(booking: @booking)
       end
 
       redirect_to owner_bookings_path, notice: t("flash.bookings.accepted")
     end
 
     def reject
+      @booking.expire_if_acceptance_timed_out!
+
       unless @booking.pending?
-        redirect_to owner_booking_path(@booking), alert: t("flash.bookings.invalid_status")
+        redirect_to owner_booking_path(@booking), alert: acceptance_blocked_alert
         return
       end
 
@@ -66,6 +74,16 @@ module Owner
       redirect_to owner_bookings_path, notice: t("flash.bookings.completed")
     end
 
+    def chat
+      unless @booking.chattable?
+        redirect_to owner_booking_path(@booking), alert: t("flash.conversations.booking_chat_unavailable")
+        return
+      end
+
+      conversation = Conversations::EnsureBooking.call(booking: @booking)
+      redirect_to conversation_path(conversation)
+    end
+
     private
 
     def set_booking
@@ -73,6 +91,15 @@ module Owner
         .owner_bookings
         .includes(:product, renter: { avatar_attachment: :blob })
         .find(params[:id])
+      @booking.expire_if_acceptance_timed_out!
+    end
+
+    def acceptance_blocked_alert
+      if @booking.acceptance_timed_out?
+        t("flash.bookings.acceptance_expired")
+      else
+        t("flash.bookings.invalid_status")
+      end
     end
   end
 end

@@ -6,6 +6,9 @@ class BookingsController < ApplicationController
       .rentals
       .includes(:owner, product: [photos_attachments: :blob])
       .order(created_at: :desc)
+
+    @bookings.pending.find_each(&:expire_if_acceptance_timed_out!)
+    @bookings = @bookings.reload
   end
 
   def show
@@ -13,6 +16,7 @@ class BookingsController < ApplicationController
       .rentals
       .includes(:owner, product: [photos_attachments: :blob])
       .find(params[:id])
+    @booking.expire_if_acceptance_timed_out!
   end
 
   def new
@@ -97,6 +101,7 @@ class BookingsController < ApplicationController
         status: "pending",
         reason: "booking"
       )
+      Conversations::EnsureBooking.call(booking: @booking)
     end
 
     unless @booking.persisted?
@@ -168,7 +173,22 @@ class BookingsController < ApplicationController
     redirect_to booking_path(@booking), notice: t("flash.bookings.received")
   end
 
+  def chat
+    @booking = current_user.rentals.find(params[:id])
+    open_booking_chat!(@booking)
+  end
+
   private
+
+  def open_booking_chat!(booking)
+    unless booking.chattable?
+      redirect_to booking_path(booking), alert: t("flash.conversations.booking_chat_unavailable")
+      return
+    end
+
+    conversation = Conversations::EnsureBooking.call(booking: booking)
+    redirect_to conversation_path(conversation)
+  end
 
   def booking_params
     params.require(:booking).permit(
