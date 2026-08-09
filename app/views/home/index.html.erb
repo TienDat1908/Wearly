@@ -1,141 +1,168 @@
-<% spotlight_images = Array(@home_spotlight&.display_images).first(5) %>
+<% spotlight_images = Array(@home_spotlight&.runway_images).first(5) %>
 <% shop_showcase_columns = @shop_showcase_columns.presence || [[], [], []] %>
+<%
+  hero_editorial = "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=2200&q=80"
+  hero_cards = [
+    "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=80",
+    "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=80",
+    "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=900&q=80",
+    "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=900&q=80"
+  ]
+  occasion_panels = [
+    [t("home.occasion_wedding"), "from-pink-600/80 to-rose-900/70", "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80"],
+    [t("home.occasion_photoshoot"), "from-fuchsia-700/75 to-slate-950/70", "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=1200&q=80"],
+    [t("home.occasion_travel"), "from-sky-700/70 to-slate-950/65", "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80"],
+    [t("home.occasion_party"), "from-orange-600/75 to-pink-900/70", "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80"]
+  ]
+%>
 
-<div data-controller="reveal" class="overflow-hidden bg-white text-slate-950">
+<div data-controller="reveal" class="home-editorial overflow-hidden bg-[#07040c] text-white">
+  <%# —— 1. Immersive fashion hero —— %>
+  <section class="home-hero relative isolate min-h-[calc(100svh-76px)] overflow-hidden">
+    <div class="home-hero-stage" aria-hidden="true">
+      <div class="home-hero-mesh"></div>
+      <div class="home-hero-photo">
+        <img src="<%= hero_editorial %>" alt="" class="home-hero-photo-img" loading="eager" decoding="async">
+      </div>
+      <div class="home-hero-cards">
+        <% hero_cards.each_with_index do |url, index| %>
+          <figure class="home-hero-card home-hero-card--<%= index + 1 %>">
+            <img src="<%= url %>" alt="" loading="lazy" decoding="async">
+          </figure>
+        <% end %>
+      </div>
+      <div class="home-hero-orb home-hero-orb--pink"></div>
+      <div class="home-hero-orb home-hero-orb--orange"></div>
+      <div class="home-hero-veil"></div>
+    </div>
+
+    <div class="relative z-10 mx-auto flex min-h-[calc(100svh-76px)] max-w-5xl flex-col items-center justify-center px-5 py-20 text-center">
+      <p class="text-[11px] font-black uppercase tracking-[0.32em] text-pink-200/90" data-reveal>
+        <%= t("app.name") %>
+      </p>
+      <h1 class="mt-5 max-w-4xl text-[3.1rem] font-black leading-[0.95] tracking-[-0.055em] text-white drop-shadow-lg sm:text-6xl lg:text-7xl" data-reveal style="--reveal-delay: 80ms">
+        <%= t("home.hero_title") %>
+      </h1>
+      <p class="mt-6 max-w-2xl text-base font-medium leading-7 text-white/80 sm:text-lg sm:leading-8" data-reveal style="--reveal-delay: 140ms">
+        <%= t("home.hero_subtitle") %>
+      </p>
+
+      <div class="mt-9 flex flex-col items-center gap-3 sm:flex-row" data-reveal style="--reveal-delay: 200ms">
+        <%= link_to products_path, class: "inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-sky-400 via-pink-500 to-orange-400 px-8 py-4 text-base font-black text-white shadow-2xl shadow-pink-950/50 transition hover:brightness-110" do %>
+          <%= t("home.explore_now") %>
+          <span aria-hidden="true">→</span>
+        <% end %>
+        <%= link_to t("home.list_your_item"),
+          user_signed_in? && current_user.owner? ? owner_products_path : new_user_registration_path(role: "owner"),
+          class: "inline-flex rounded-full border border-white/30 bg-white/10 px-8 py-4 text-base font-black text-white backdrop-blur transition hover:bg-white/20" %>
+      </div>
+    </div>
+  </section>
+
+  <%# —— 2. Spotlight runway (syve-style stage) —— %>
   <% if @home_spotlight.present? && spotlight_images.any? %>
-    <section class="relative isolate overflow-hidden bg-[#fbf7f2] px-5 py-10 lg:py-16">
-      <div class="absolute inset-x-0 top-24 -z-10 h-px bg-pink-200/70"></div>
-      <div class="absolute inset-x-0 bottom-12 -z-10 h-px bg-pink-100/80"></div>
-      <div class="absolute left-[-10rem] top-1/2 -z-10 h-96 w-96 -translate-y-1/2 rounded-full bg-orange-200/35 blur-3xl"></div>
-      <div class="absolute right-[-10rem] top-10 -z-10 h-[34rem] w-[34rem] rounded-full bg-pink-200/45 blur-3xl"></div>
+    <% spin_enabled = @home_spotlight.spin_enabled? %>
+    <% frame_count = @home_spotlight.spin_frame_count.to_i %>
+    <section class="home-runway home-runway--cutouts <%= "home-runway--spin" if spin_enabled %>"
+             data-controller="home-spotlight-runway"
+             data-home-spotlight-runway-spin-frame-count-value="<%= frame_count %>"
+             data-home-spotlight-runway-tilt-hint-value="<%= t("home.runway_drag_hint") %>"
+             data-home-spotlight-runway-spin-hint-value="<%= t("home.runway_spin_hint") %>"
+             data-reveal>
+      <div class="home-runway-atmosphere" aria-hidden="true"></div>
 
-      <div class="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.88fr_1.12fr]">
-        <div class="relative z-10" data-reveal>
-          <div class="flex flex-wrap gap-3">
-            <span class="inline-flex rounded-full border border-pink-200 bg-white/80 px-4 py-2 text-xs font-black text-pink-600 shadow-sm backdrop-blur">♡ <%= t("home.trend_board_label") %></span>
-            <span class="inline-flex rounded-full border border-pink-200 bg-white/80 px-4 py-2 text-xs font-black text-pink-600 shadow-sm backdrop-blur">↗ <%= @home_spotlight.eyebrow %></span>
-          </div>
+      <div class="home-runway-stage" data-home-spotlight-runway-target="stage">
+        <header class="home-runway-header">
+          <p class="home-runway-header-kicker"><%= @home_spotlight.eyebrow.presence || t("home.trend_board_label") %></p>
+          <p class="home-runway-header-index"
+             data-home-spotlight-runway-target="counter"
+             data-total="<%= spotlight_images.size %>">01 / <%= format("%02d", spotlight_images.size) %></p>
+        </header>
 
-          <h2 class="mt-7 max-w-3xl text-[3.4rem] font-black leading-[0.9] tracking-[-0.06em] text-slate-950 sm:text-[4.6rem] lg:text-[5.25rem]">
-            <%= @home_spotlight.title %>
-          </h2>
+        <div class="home-runway-track"
+             data-action="pointerdown->home-spotlight-runway#startDrag pointermove->home-spotlight-runway#drag pointerup->home-spotlight-runway#endDrag pointercancel->home-spotlight-runway#endDrag">
+          <div class="home-runway-floor" aria-hidden="true"></div>
 
-          <% if @home_spotlight.subtitle.present? %>
-            <p class="mt-6 max-w-2xl text-lg font-semibold leading-8 text-slate-600">
-              <%= @home_spotlight.subtitle %>
-            </p>
+          <% spotlight_images.each_with_index do |image, index| %>
+            <button type="button"
+                    class="home-runway-item <%= "is-active" if index.zero? %>"
+                    data-home-spotlight-runway-target="item"
+                    data-action="click->home-spotlight-runway#select"
+                    data-index="<%= index %>"
+                    aria-label="<%= t("home.spotlight_go_to", number: index + 1) %>"
+                    aria-pressed="<%= index.zero? %>">
+              <span class="home-runway-orbit" data-home-spotlight-runway-target="orbit">
+                <% if spin_enabled %>
+                  <span class="home-runway-spin-window" data-home-spotlight-runway-target="window">
+                    <%= image_tag image,
+                      class: "home-runway-spin-strip",
+                      alt: "#{@home_spotlight.title} — #{index + 1}",
+                      draggable: false,
+                      style: "--frames: #{frame_count}; --frame: 0;",
+                      data: { home_spotlight_runway_target: "strip" } %>
+                  </span>
+                <% else %>
+                  <span class="home-runway-figure" data-home-spotlight-runway-target="figure">
+                    <%= image_tag image,
+                      class: "home-runway-img",
+                      alt: "#{@home_spotlight.title} — #{index + 1}",
+                      draggable: false %>
+                  </span>
+                <% end %>
+              </span>
+            </button>
           <% end %>
+        </div>
 
-          <div class="mt-8 flex flex-wrap items-center gap-5">
-            <%= link_to products_path, class: "inline-flex items-center justify-center gap-3 rounded-2xl bg-pink-500 px-7 py-4 text-lg font-black text-white shadow-2xl shadow-pink-200 transition hover:-translate-y-0.5 hover:bg-pink-600" do %>
-              <%= t("home.explore_now") %>
-              <span aria-hidden="true">→</span>
+        <footer class="home-runway-dock">
+          <div class="home-runway-meta">
+            <h2 class="home-runway-title"><%= @home_spotlight.title %></h2>
+            <% if @home_spotlight.subtitle.present? %>
+              <p class="home-runway-copy"><%= @home_spotlight.subtitle %></p>
             <% end %>
-
-            <p class="flex items-center gap-2 text-sm font-bold text-slate-500">
-              <span class="text-pink-500">✓</span>
-              <%= t("home.trend_board_hint") %>
+            <p class="home-runway-hint" data-home-spotlight-runway-target="hint">
+              <%= spin_enabled ? t("home.runway_spin_hint") : t("home.runway_drag_hint") %>
             </p>
           </div>
-        </div>
-
-        <div class="relative w-full justify-self-center lg:justify-self-end" data-controller="home-spotlight-carousel" data-reveal style="--reveal-delay: 120ms">
-          <div class="grid items-center gap-4 sm:grid-cols-[minmax(0,1fr)_96px]">
-            <div class="relative overflow-hidden rounded-[2.35rem] border border-white bg-white/70 p-4 shadow-[0_34px_90px_rgba(236,72,153,0.18)] backdrop-blur">
-              <div class="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-white shadow-inner sm:aspect-[5/6] lg:aspect-[4/5]">
-                <% spotlight_images.each_with_index do |image, index| %>
-                  <figure class="absolute inset-0 <%= "hidden" unless index.zero? %>" data-home-spotlight-carousel-target="slide">
-                    <%= image_tag image, class: "h-full w-full object-contain", alt: "#{@home_spotlight.title} — #{index + 1}" %>
-                  </figure>
-                <% end %>
-
-                <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-slate-950/25 to-transparent"></div>
-                <div class="absolute bottom-4 left-4 z-10 rounded-full bg-slate-950/90 px-3 py-1.5 text-sm font-black text-white backdrop-blur" data-home-spotlight-carousel-target="counter">1 / <%= spotlight_images.size %></div>
-
-                <% if spotlight_images.many? %>
-                  <button type="button" class="absolute left-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-xl font-black text-slate-950 shadow-xl transition hover:bg-pink-50" data-action="home-spotlight-carousel#previous" aria-label="<%= t("home.trend_previous") %>">
-                    <span aria-hidden="true">‹</span>
-                  </button>
-                  <button type="button" class="absolute right-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-pink-500 text-xl font-black text-white shadow-xl shadow-pink-200 transition hover:bg-pink-600" data-action="home-spotlight-carousel#next" aria-label="<%= t("home.trend_next") %>">
-                    <span aria-hidden="true">›</span>
-                  </button>
-                <% end %>
-              </div>
-            </div>
-
-            <% if spotlight_images.many? %>
-              <div class="hidden flex-col gap-3 sm:flex">
-                <% spotlight_images.each_with_index do |image, index| %>
-                  <button type="button"
-                    class="aspect-[4/5] overflow-hidden rounded-2xl border-4 bg-white p-1 shadow-lg transition hover:-translate-x-1 <%= index.zero? ? "border-pink-500" : "border-white" %>"
-                    data-home-spotlight-carousel-target="dot"
-                    data-action="home-spotlight-carousel#go"
-                    data-index="<%= index %>"
-                    aria-label="<%= t("home.spotlight_go_to", number: index + 1) %>">
-                    <%= image_tag image, class: "h-full w-full rounded-xl object-cover", alt: "" %>
-                  </button>
-                <% end %>
-              </div>
-
-              <div class="mt-4 flex items-center justify-center gap-2 sm:hidden">
-                <% spotlight_images.each_index do |index| %>
-                  <button type="button"
-                    class="h-2.5 rounded-full transition-all <%= index.zero? ? "w-8 bg-pink-500" : "w-2.5 bg-slate-300" %>"
-                    data-home-spotlight-carousel-target="dot"
-                    data-action="home-spotlight-carousel#go"
-                    data-index="<%= index %>"
-                    aria-label="<%= t("home.spotlight_go_to", number: index + 1) %>"></button>
-                <% end %>
-              </div>
-            <% end %>
-          </div>
-        </div>
+          <%= link_to products_path, class: "home-runway-cta" do %>
+            <span><%= t("home.explore_now") %></span>
+            <span class="home-runway-cta-arrow" aria-hidden="true">→</span>
+          <% end %>
+        </footer>
       </div>
     </section>
   <% end %>
 
-  <section class="relative isolate overflow-hidden bg-[linear-gradient(110deg,#fff9e9_0%,#ffffff_43%,#fff0f8_100%)]">
-    <div class="absolute -left-32 bottom-0 -z-10 h-96 w-96 rounded-full bg-yellow-200/50 blur-3xl"></div>
-    <div class="absolute -right-24 top-10 -z-10 h-[32rem] w-[32rem] rounded-full bg-pink-200/55 blur-3xl"></div>
+  <%# —— 3. Moodboard + live shop wall —— %>
+  <section class="relative isolate overflow-hidden border-t border-white/10 bg-[#120814] px-5 py-20 lg:py-28">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(236,72,153,0.18),transparent_40%),radial-gradient(ellipse_at_90%_80%,rgba(251,146,60,0.14),transparent_45%)]"></div>
 
-    <div class="mx-auto grid min-h-[calc(100svh-96px)] max-w-7xl items-center gap-12 px-5 py-12 lg:grid-cols-[0.92fr_1.08fr] lg:py-0">
-      <div class="relative z-10 py-10" data-reveal>
-        <p class="text-sm font-black uppercase tracking-[0.28em] text-slate-500"><%= t("home.moodboard_label") %></p>
-        <h1 class="mt-8 max-w-3xl text-[3.65rem] font-black leading-[0.91] tracking-[-0.06em] text-slate-950 sm:text-[4.8rem] lg:text-[5.45rem]">
+    <div class="relative mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[0.95fr_1.05fr]">
+      <div data-reveal>
+        <p class="text-[11px] font-black uppercase tracking-[0.28em] text-pink-300"><%= t("home.moodboard_label") %></p>
+        <h2 class="mt-5 max-w-xl text-4xl font-black leading-[0.95] tracking-[-0.045em] text-white sm:text-5xl lg:text-6xl">
           <%= t("home.moodboard_title_before") %>
-          <span class="bg-gradient-to-r from-pink-500 via-orange-500 to-yellow-500 bg-clip-text font-serif italic tracking-[-0.03em] text-transparent"><%= t("home.moodboard_title_accent") %></span>
+          <span class="bg-gradient-to-r from-pink-300 via-orange-300 to-yellow-200 bg-clip-text italic text-transparent"><%= t("home.moodboard_title_accent") %></span>
           <%= t("home.moodboard_title_after") %>
-        </h1>
-        <p class="mt-8 max-w-2xl text-lg font-semibold leading-8 text-slate-600 lg:text-xl lg:leading-9">
+        </h2>
+        <p class="mt-6 max-w-lg text-base font-medium leading-7 text-white/70 sm:text-lg sm:leading-8">
           <%= t("home.moodboard_subtitle") %>
         </p>
-
-        <div class="mt-8 flex flex-wrap gap-3">
-          <% [
-            ["🟡", t("home.mood_chip_1")],
-            ["🌸", t("home.mood_chip_2")],
-            ["☀️", t("home.mood_chip_3")],
-            ["⚪", t("home.mood_chip_4")],
-            ["🟠", t("home.mood_chip_5")]
-          ].each do |dot, label| %>
-            <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-sm font-black text-slate-600 shadow-sm backdrop-blur">
-              <span><%= dot %></span>
-              <%= label %>
-            </span>
+        <div class="mt-8 flex flex-wrap gap-2.5">
+          <% [t("home.mood_chip_1"), t("home.mood_chip_2"), t("home.mood_chip_3"), t("home.mood_chip_4"), t("home.mood_chip_5")].each do |label| %>
+            <span class="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-bold text-white/75 backdrop-blur"><%= label %></span>
           <% end %>
         </div>
-
         <div class="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-          <%= link_to products_path, class: "inline-flex items-center justify-center gap-3 rounded-2xl bg-slate-950 px-7 py-4 text-lg font-black text-white shadow-2xl shadow-slate-300 transition hover:-translate-y-0.5" do %>
-            <%= t("home.moodboard_cta") %>
-            <span aria-hidden="true">→</span>
+          <%= link_to products_path, class: "inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 font-black text-slate-950 transition hover:bg-pink-100" do %>
+            <%= t("home.moodboard_cta") %> <span aria-hidden="true">→</span>
           <% end %>
-          <p class="max-w-xs font-bold leading-6 text-slate-500"><%= t("home.moodboard_note") %></p>
+          <p class="max-w-xs text-sm font-semibold text-white/50"><%= t("home.moodboard_note") %></p>
         </div>
       </div>
 
-      <div class="relative lg:h-[calc(100svh-96px)]" data-reveal style="--reveal-delay: 100ms">
-        <div class="wearly-shop-wall" aria-label="<%= t("home.shop_wall_label") %>">
+      <div class="relative lg:h-[min(720px,calc(100svh-120px))]" data-reveal style="--reveal-delay: 100ms">
+        <div class="wearly-shop-wall home-shop-wall" aria-label="<%= t("home.shop_wall_label") %>">
           <% if shop_showcase_columns.flatten.any? %>
             <div class="wearly-shop-wall-columns">
               <% shop_showcase_columns.each_with_index do |products, column_index| %>
@@ -163,9 +190,9 @@
             </div>
           <% else %>
             <div class="grid h-full grid-cols-3 gap-3 py-8">
-              <% 9.times do |index| %>
-                <div class="flex aspect-[4/5] items-center justify-center rounded-[1.75rem] border border-white bg-gradient-to-br from-pink-100 via-orange-50 to-yellow-100 text-4xl shadow-xl shadow-pink-100/50">
-                  <%= ["👗", "📸", "✨", "💍", "👜", "🕶️"][index % 6] %>
+              <% hero_cards.cycle.take(9).each do |url| %>
+                <div class="aspect-[4/5] overflow-hidden rounded-[1.75rem] border border-white/20 shadow-xl">
+                  <img src="<%= url %>" alt="" class="h-full w-full object-cover" loading="lazy">
                 </div>
               <% end %>
             </div>
@@ -175,79 +202,28 @@
     </div>
   </section>
 
-  <section class="relative isolate min-h-[calc(100vh-96px)] overflow-hidden bg-[#020617] text-white">
-    <div class="absolute inset-0 -z-30 bg-[radial-gradient(circle_at_50%_40%,rgba(29,78,216,0.42),transparent_28rem),radial-gradient(circle_at_50%_60%,rgba(236,72,153,0.16),transparent_38rem),linear-gradient(180deg,#020617_0%,#020617_46%,#000000_100%)]"></div>
-    <div class="absolute inset-x-0 top-0 -z-20 h-56 bg-gradient-to-b from-white/10 to-transparent"></div>
-    <div class="absolute inset-0 -z-10 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:72px_72px] opacity-30"></div>
-
-    <div class="pointer-events-none absolute inset-0 hidden lg:block">
-      <% [
-        [t("home.hero_chip_1"), "left-[23%] top-[18%] rotate-[-3deg]"],
-        [t("home.hero_chip_2"), "right-[18%] top-[17%] rotate-[5deg]"],
-        [t("home.hero_chip_3"), "left-[14%] top-[46%] rotate-[4deg]"],
-        [t("home.hero_chip_4"), "right-[13%] top-[42%] rotate-[-5deg]"],
-        [t("home.hero_chip_5"), "left-[30%] bottom-[20%] rotate-[-6deg]"],
-        [t("home.hero_chip_6"), "right-[28%] bottom-[18%] rotate-[4deg]"]
-      ].each_with_index do |(label, position), index| %>
-        <div class="wearly-orbit-chip absolute <%= position %>" style="--float-delay: <%= index * 180 %>ms">
-          <%= label %>
-        </div>
-      <% end %>
-    </div>
-
-    <div class="mx-auto flex min-h-[calc(100vh-96px)] max-w-7xl flex-col items-center justify-center px-5 py-20 text-center">
-      <p class="mb-8 inline-flex rounded-full border border-white/10 bg-white/10 px-5 py-2 text-xs font-black uppercase tracking-[0.28em] text-slate-300 shadow-2xl shadow-blue-950/40 backdrop-blur" data-reveal>
-        <%= t("home.hero_badge") %>
-      </p>
-
-      <h1 class="max-w-6xl text-[4.5rem] font-black leading-[0.86] tracking-[-0.075em] text-white md:text-[6.8rem] lg:text-[8.5rem]" data-reveal style="--reveal-delay: 80ms">
-        <%= t("home.hero_title") %>
-      </h1>
-
-      <p class="mt-8 max-w-3xl text-lg font-semibold leading-8 text-slate-300 md:text-2xl md:leading-10" data-reveal style="--reveal-delay: 160ms">
-        <%= t("home.hero_subtitle") %>
-      </p>
-
-      <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row" data-reveal style="--reveal-delay: 240ms">
-        <%= link_to products_path, class: "inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 text-lg font-black text-slate-950 shadow-2xl shadow-blue-950/50 transition hover:-translate-y-0.5 hover:bg-pink-50" do %>
-          <%= t("home.explore_now") %>
-          <span class="text-2xl leading-none">→</span>
-        <% end %>
-
-        <%= link_to t("home.list_your_item"), user_signed_in? && current_user.owner? ? owner_products_path : new_user_registration_path(role: "owner"), class: "inline-flex rounded-full border border-white/15 bg-white/10 px-8 py-4 text-lg font-black text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15" %>
-      </div>
-
-      <div class="mt-12 flex flex-wrap items-center justify-center gap-3" data-reveal style="--reveal-delay: 320ms">
-        <% Product.product_types.keys.first(6).each do |type| %>
-          <%= link_to type.humanize, products_path(product_type: type), class: "rounded-full border border-white/10 bg-white/[0.06] px-5 py-2.5 text-sm font-black text-slate-300 backdrop-blur transition hover:border-pink-300/60 hover:bg-pink-500/10 hover:text-white" %>
-        <% end %>
-      </div>
-    </div>
-  </section>
-
-  <section class="bg-white px-5 py-24">
+  <%# —— 4. Occasions —— %>
+  <section class="relative border-t border-white/10 bg-[#0a0710] px-5 py-20 lg:py-24">
     <div class="mx-auto max-w-7xl">
-      <div class="mb-12 grid gap-8 lg:grid-cols-[0.85fr_1fr]" data-reveal>
+      <div class="mb-12 grid gap-6 lg:grid-cols-[1fr_0.85fr] lg:items-end" data-reveal>
         <div>
-          <p class="font-black uppercase tracking-[0.24em] text-pink-600"><%= t("home.occasions_label") %></p>
-          <h2 class="mt-4 text-5xl font-black leading-none tracking-[-0.04em] text-slate-950 md:text-7xl"><%= t("home.occasions_title") %></h2>
+          <p class="text-[11px] font-black uppercase tracking-[0.28em] text-pink-300"><%= t("home.occasions_label") %></p>
+          <h2 class="mt-4 text-4xl font-black leading-[0.95] tracking-[-0.04em] text-white sm:text-5xl lg:text-6xl"><%= t("home.occasions_title") %></h2>
         </div>
-        <p class="self-end text-xl font-semibold leading-9 text-slate-500"><%= t("home.occasions_subtitle") %></p>
+        <p class="text-base font-medium leading-7 text-white/65 sm:text-lg"><%= t("home.occasions_subtitle") %></p>
       </div>
 
-      <div class="grid gap-5 md:grid-cols-4">
-        <% [
-          ["💍", t("home.occasion_wedding"), "from-pink-500 to-rose-400"],
-          ["📸", t("home.occasion_photoshoot"), "from-violet-500 to-fuchsia-400"],
-          ["✈️", t("home.occasion_travel"), "from-sky-500 to-cyan-400"],
-          ["🥂", t("home.occasion_party"), "from-orange-500 to-yellow-400"]
-        ].each_with_index do |(icon, label, gradient), index| %>
-          <%= link_to products_path(q: label), class: "group relative min-h-72 overflow-hidden rounded-[2.5rem] border border-slate-100 bg-slate-50 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-2xl hover:shadow-pink-100", data: { reveal: true }, style: "--reveal-delay: #{index * 80}ms" do %>
-            <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t <%= gradient %> opacity-20 transition group-hover:opacity-35"></div>
-            <div class="relative">
-              <div class="flex h-16 w-16 items-center justify-center rounded-3xl bg-slate-950 text-3xl text-white shadow-xl"><%= icon %></div>
-              <h3 class="mt-24 text-3xl font-black leading-tight text-slate-950"><%= label %></h3>
-              <p class="mt-3 text-sm font-black uppercase tracking-wide text-slate-500"><%= t("home.occasion_cta") %> →</p>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <% occasion_panels.each_with_index do |(label, gradient, image_url), index| %>
+          <%= link_to products_path(q: label),
+            class: "home-occasion group relative min-h-[22rem] overflow-hidden rounded-[1.75rem]",
+            data: { reveal: true },
+            style: "--reveal-delay: #{index * 70}ms" do %>
+            <img src="<%= image_url %>" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-t <%= gradient %>"></div>
+            <div class="relative flex h-full min-h-[22rem] flex-col justify-end p-6">
+              <h3 class="text-2xl font-black leading-tight text-white"><%= label %></h3>
+              <p class="mt-2 text-xs font-black uppercase tracking-[0.18em] text-white/80"><%= t("home.occasion_cta") %> →</p>
             </div>
           <% end %>
         <% end %>
@@ -255,144 +231,137 @@
     </div>
   </section>
 
-  <section class="mx-auto max-w-7xl px-5 py-24">
-    <div class="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end" data-reveal>
-      <div>
-        <p class="font-black uppercase tracking-[0.22em] text-pink-600"><%= t("home.curated") %></p>
-        <h2 class="mt-3 text-5xl font-black tracking-tight text-slate-950"><%= t("home.latest_products") %></h2>
-        <p class="mt-3 text-lg font-semibold text-slate-500"><%= t("home.latest_products_hint") %></p>
+  <%# —— 5. Latest listings —— %>
+  <section class="relative border-t border-white/10 bg-[#f7f2ec] px-5 py-20 text-slate-950 lg:py-24">
+    <div class="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#0a0710] to-transparent opacity-90"></div>
+    <div class="relative mx-auto max-w-7xl">
+      <div class="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end" data-reveal>
+        <div>
+          <p class="text-[11px] font-black uppercase tracking-[0.28em] text-pink-600"><%= t("home.curated") %></p>
+          <h2 class="mt-3 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl"><%= t("home.latest_products") %></h2>
+          <p class="mt-3 max-w-xl text-base font-semibold text-slate-500"><%= t("home.latest_products_hint") %></p>
+        </div>
+        <%= link_to t("home.view_all"), products_path, class: "inline-flex items-center justify-center rounded-full bg-slate-950 px-6 py-3 font-black text-white transition hover:bg-pink-600" %>
       </div>
-      <%= link_to t("home.view_all"), products_path, class: "inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-3 font-black text-pink-600 shadow-sm transition hover:bg-pink-50" %>
-    </div>
 
-    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4" data-reveal>
-      <% @featured_products.each do |product| %>
-        <%= render "products/product_card", product: product %>
-      <% end %>
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4" data-reveal>
+        <% @featured_products.each do |product| %>
+          <%= render "products/product_card", product: product %>
+        <% end %>
+      </div>
     </div>
   </section>
 
-  <section class="bg-[#020617] px-5 py-24 text-white">
-    <div class="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_0.8fr]">
+  <%# —— 6. Trust —— %>
+  <section class="relative overflow-hidden border-t border-white/10 bg-[#07040c] px-5 py-20 text-white lg:py-24">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_10%_30%,rgba(236,72,153,0.22),transparent_40%),radial-gradient(ellipse_at_90%_70%,rgba(56,189,248,0.12),transparent_40%)]"></div>
+    <div class="relative mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
       <div data-reveal>
-        <p class="font-black uppercase tracking-[0.24em] text-pink-300"><%= t("home.trust_label") %></p>
-        <h2 class="mt-4 max-w-4xl text-5xl font-black leading-[0.95] tracking-[-0.045em] md:text-7xl"><%= t("home.trust_title") %></h2>
-        <p class="mt-6 max-w-3xl text-xl font-semibold leading-9 text-slate-300"><%= t("home.trust_subtitle") %></p>
+        <p class="text-[11px] font-black uppercase tracking-[0.28em] text-pink-300"><%= t("home.trust_label") %></p>
+        <h2 class="mt-4 max-w-xl text-4xl font-black leading-[0.95] tracking-[-0.045em] sm:text-5xl lg:text-6xl"><%= t("home.trust_title") %></h2>
+        <p class="mt-6 max-w-xl text-base font-medium leading-7 text-white/70 sm:text-lg"><%= t("home.trust_subtitle") %></p>
       </div>
 
-      <div class="grid gap-4" data-reveal style="--reveal-delay: 120ms">
+      <div class="grid gap-3" data-reveal style="--reveal-delay: 100ms">
         <% [
-          ["🧾", t("home.trust_payments"), t("home.trust_payments_desc")],
-          ["🛡️", t("home.trust_deposit"), t("home.trust_deposit_desc")],
-          ["👤", t("home.trust_profiles"), t("home.trust_profiles_desc")]
-        ].each do |icon, title, desc| %>
-          <div class="rounded-[2rem] border border-white/10 bg-white/[0.07] p-6 backdrop-blur">
-            <div class="flex gap-4">
-              <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white text-2xl"><%= icon %></span>
-              <div>
-                <h3 class="text-xl font-black"><%= title %></h3>
-                <p class="mt-2 font-semibold leading-7 text-slate-300"><%= desc %></p>
-              </div>
-            </div>
+          [t("home.trust_payments"), t("home.trust_payments_desc")],
+          [t("home.trust_deposit"), t("home.trust_deposit_desc")],
+          [t("home.trust_profiles"), t("home.trust_profiles_desc")]
+        ].each do |title, desc| %>
+          <div class="rounded-[1.5rem] border border-white/12 bg-white/[0.06] p-5 backdrop-blur transition hover:border-pink-300/40 hover:bg-white/[0.1]">
+            <h3 class="text-lg font-black text-white"><%= title %></h3>
+            <p class="mt-2 text-sm font-medium leading-6 text-white/65"><%= desc %></p>
           </div>
         <% end %>
       </div>
     </div>
   </section>
 
-  <section class="relative isolate overflow-hidden bg-white px-5 py-24">
-    <div class="absolute left-0 top-0 -z-10 h-96 w-96 rounded-full bg-pink-100/70 blur-3xl"></div>
-    <div class="absolute bottom-0 right-0 -z-10 h-96 w-96 rounded-full bg-orange-100/70 blur-3xl"></div>
+  <%# —— 7. Doubts / final CTA —— %>
+  <section class="relative isolate overflow-hidden border-t border-white/10 px-5 py-20 lg:py-24">
+    <div class="absolute inset-0">
+      <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=2200&q=80" alt="" class="h-full w-full object-cover" loading="lazy">
+      <div class="absolute inset-0 bg-gradient-to-r from-[#07040c]/95 via-[#07040c]/80 to-[#07040c]/55"></div>
+    </div>
 
-    <div class="mx-auto grid max-w-7xl overflow-hidden rounded-[3rem] border border-slate-200 bg-slate-950 shadow-2xl shadow-slate-200 lg:grid-cols-[0.9fr_1.1fr]" data-reveal>
-      <div class="p-8 text-white sm:p-12 lg:p-16">
-        <p class="font-black uppercase tracking-[0.3em] text-pink-300"><%= t("home.doubts_label") %></p>
-        <h2 class="mt-5 text-5xl font-black leading-[0.92] tracking-[-0.05em] sm:text-7xl">
+    <div class="relative mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+      <div data-reveal>
+        <p class="text-[11px] font-black uppercase tracking-[0.28em] text-pink-300"><%= t("home.doubts_label") %></p>
+        <h2 class="mt-4 text-4xl font-black leading-[0.95] tracking-[-0.045em] text-white sm:text-5xl lg:text-6xl">
           <%= t("home.doubts_title_1") %>
-          <span class="block bg-gradient-to-r from-pink-300 via-orange-200 to-yellow-200 bg-clip-text text-transparent"><%= t("home.doubts_title_2") %></span>
+          <span class="mt-2 block bg-gradient-to-r from-pink-300 via-orange-200 to-yellow-200 bg-clip-text text-transparent"><%= t("home.doubts_title_2") %></span>
         </h2>
-        <p class="mt-6 max-w-xl text-lg font-semibold leading-8 text-slate-300"><%= t("home.doubts_subtitle") %></p>
-
-        <div class="mt-8 flex flex-col gap-4 sm:flex-row">
-          <%= link_to products_path, class: "inline-flex items-center justify-center gap-3 rounded-full bg-white px-7 py-4 font-black text-slate-950 transition hover:-translate-y-0.5 hover:bg-pink-50" do %>
-            <%= t("home.doubts_primary_cta") %>
-            <span aria-hidden="true">→</span>
+        <p class="mt-5 max-w-xl text-base font-medium leading-7 text-white/75"><%= t("home.doubts_subtitle") %></p>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <%= link_to products_path, class: "inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-sky-400 via-pink-500 to-orange-400 px-7 py-3.5 font-black text-white shadow-xl transition hover:brightness-110" do %>
+            <%= t("home.doubts_primary_cta") %> <span aria-hidden="true">→</span>
           <% end %>
-          <%= link_to new_user_registration_path(role: "owner"), class: "inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-7 py-4 font-black text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15" do %>
+          <%= link_to new_user_registration_path(role: "owner"), class: "inline-flex items-center justify-center rounded-full border border-white/25 bg-white/10 px-7 py-3.5 font-black text-white backdrop-blur transition hover:bg-white/20" do %>
             <%= t("home.doubts_secondary_cta") %>
           <% end %>
         </div>
       </div>
 
-      <div class="grid gap-4 border-t border-white/10 bg-white/[0.04] p-8 sm:grid-cols-3 lg:border-l lg:border-t-0 lg:p-10">
+      <div class="grid gap-3 sm:grid-cols-3 lg:grid-cols-1" data-reveal style="--reveal-delay: 100ms">
         <% [
           ["01", t("home.doubts_card_1")],
           ["02", t("home.doubts_card_2")],
           ["03", t("home.doubts_card_3")]
         ].each do |number, text| %>
-          <div class="rounded-[2rem] border border-white/10 bg-white/[0.07] p-6 backdrop-blur">
-            <p class="text-sm font-black text-pink-300"><%= number %></p>
-            <p class="mt-16 text-xl font-black leading-tight text-white"><%= text %></p>
+          <div class="rounded-[1.35rem] border border-white/15 bg-black/35 p-5 backdrop-blur-md">
+            <p class="text-xs font-black text-pink-300"><%= number %></p>
+            <p class="mt-3 text-base font-bold leading-snug text-white"><%= text %></p>
           </div>
         <% end %>
       </div>
     </div>
   </section>
 
-  <section class="bg-slate-50 px-5 py-16">
-    <div class="mx-auto max-w-7xl rounded-[2.5rem] border border-orange-100 bg-white p-8 shadow-sm sm:p-10" data-reveal>
-      <p class="text-sm font-black uppercase tracking-[0.25em] text-pink-600"><%= t("home.support_label") %></p>
-      <h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl"><%= t("home.support_title") %></h2>
-      <p class="mt-3 max-w-2xl text-base font-semibold leading-7 text-slate-500"><%= t("home.support_subtitle") %></p>
+  <%# —— 8. Support —— %>
+  <section class="border-t border-white/10 bg-[#0c0814] px-5 py-16">
+    <div class="mx-auto max-w-7xl rounded-[2rem] border border-white/12 bg-white/[0.04] p-8 backdrop-blur sm:p-10" data-reveal>
+      <p class="text-[11px] font-black uppercase tracking-[0.28em] text-pink-300"><%= t("home.support_label") %></p>
+      <h2 class="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl"><%= t("home.support_title") %></h2>
+      <p class="mt-3 max-w-2xl text-base font-medium leading-7 text-white/65"><%= t("home.support_subtitle") %></p>
 
       <div class="mt-8 grid gap-4 sm:grid-cols-2">
-        <a href="mailto:<%= WearlySupport::EMAIL %>" class="rounded-[1.75rem] border border-slate-200 bg-slate-50 p-6 transition hover:border-pink-200 hover:bg-pink-50/60">
-          <p class="text-xs font-black uppercase tracking-wider text-slate-400"><%= t("home.support_email_label") %></p>
-          <p class="mt-2 text-xl font-black text-pink-600"><%= WearlySupport::EMAIL %></p>
+        <a href="mailto:<%= WearlySupport::EMAIL %>" class="rounded-[1.35rem] border border-white/12 bg-white/[0.05] p-6 transition hover:border-pink-300/40 hover:bg-pink-500/10">
+          <p class="text-xs font-black uppercase tracking-wider text-white/45"><%= t("home.support_email_label") %></p>
+          <p class="mt-2 text-xl font-black text-pink-300"><%= WearlySupport::EMAIL %></p>
         </a>
-
-        <a href="tel:<%= WearlySupport::PHONE_TEL %>" class="rounded-[1.75rem] border border-slate-200 bg-slate-50 p-6 transition hover:border-pink-200 hover:bg-pink-50/60">
-          <p class="text-xs font-black uppercase tracking-wider text-slate-400"><%= t("home.support_phone_label") %></p>
-          <p class="mt-2 text-xl font-black text-pink-600"><%= WearlySupport::PHONE %></p>
+        <a href="tel:<%= WearlySupport::PHONE_TEL %>" class="rounded-[1.35rem] border border-white/12 bg-white/[0.05] p-6 transition hover:border-pink-300/40 hover:bg-pink-500/10">
+          <p class="text-xs font-black uppercase tracking-wider text-white/45"><%= t("home.support_phone_label") %></p>
+          <p class="mt-2 text-xl font-black text-pink-300"><%= WearlySupport::PHONE %></p>
         </a>
       </div>
 
-      <% if user_signed_in? %>
-        <div class="mt-6">
-          <%= button_to t("home.support_chat_cta"),
-            support_conversations_path,
-            method: :post,
-            class: "inline-flex px-6 py-3 rounded-full bg-slate-950 text-white font-black" %>
-        </div>
-      <% else %>
-        <div class="mt-6">
-          <%= link_to t("home.support_chat_cta"),
-            new_user_session_path,
-            class: "inline-flex px-6 py-3 rounded-full bg-slate-950 text-white font-black" %>
-        </div>
-      <% end %>
+      <div class="mt-6">
+        <% if user_signed_in? %>
+          <%= button_to t("home.support_chat_cta"), support_conversations_path, method: :post, class: "inline-flex cursor-pointer rounded-full bg-gradient-to-r from-pink-500 to-orange-400 px-6 py-3 font-black text-white" %>
+        <% else %>
+          <%= link_to t("home.support_chat_cta"), new_user_session_path, class: "inline-flex rounded-full bg-gradient-to-r from-pink-500 to-orange-400 px-6 py-3 font-black text-white" %>
+        <% end %>
+      </div>
     </div>
   </section>
 
-  <footer class="bg-[#111827] px-5 py-16 text-white">
+  <footer class="border-t border-white/10 bg-[#050308] px-5 py-14 text-white">
     <div class="mx-auto max-w-7xl">
       <div class="flex flex-col gap-8 border-b border-white/10 pb-10 lg:flex-row lg:items-center lg:justify-between">
         <%= link_to root_path, class: "inline-flex items-center gap-3" do %>
-          <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-500 to-orange-400 text-2xl font-black text-white shadow-xl shadow-pink-900/30">W</span>
+          <span class="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-pink-500 to-orange-400 text-xl font-black text-white shadow-lg shadow-pink-900/40">W</span>
           <span>
-            <span class="block text-2xl font-black"><%= t("app.name") %></span>
-            <span class="block font-semibold text-slate-400"><%= t("app.tagline") %></span>
+            <span class="block text-xl font-black"><%= t("app.name") %></span>
+            <span class="block text-sm font-semibold text-white/50"><%= t("app.tagline") %></span>
           </span>
         <% end %>
-
-        <nav class="flex flex-wrap gap-6 text-base font-black text-slate-300">
+        <nav class="flex flex-wrap gap-6 text-sm font-black text-white/60">
           <%= link_to t("home.footer_explore"), products_path, class: "transition hover:text-white" %>
           <%= link_to t("home.footer_privacy"), "https://www.wearly.io/privacy-policy", class: "transition hover:text-white" %>
           <%= link_to t("home.footer_terms"), "https://www.wearly.io/terms", class: "transition hover:text-white" %>
         </nav>
       </div>
-
-      <div class="flex flex-col gap-4 pt-8 text-sm font-semibold text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex flex-col gap-4 pt-8 text-sm font-semibold text-white/40 sm:flex-row sm:items-center sm:justify-between">
         <p><%= t("home.footer_copyright", year: Time.current.year) %></p>
         <div class="flex gap-5">
           <%= link_to t("home.footer_privacy"), "https://www.wearly.io/privacy-policy", class: "hover:text-white" %>

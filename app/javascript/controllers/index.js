@@ -25,8 +25,14 @@ application.register("home-spotlight-preview", HomeSpotlightPreviewController)
 import HomeSpotlightCarouselController from "./home_spotlight_carousel_controller"
 application.register("home-spotlight-carousel", HomeSpotlightCarouselController)
 
+import HomeSpotlightRunwayController from "./home_spotlight_runway_controller"
+application.register("home-spotlight-runway", HomeSpotlightRunwayController)
+
 import AcceptanceCountdownController from "./acceptance_countdown_controller"
 application.register("acceptance-countdown", AcceptanceCountdownController)
 
 import ChatRoomController from "./chat_room_controller"
 application.register("chat-room", ChatRoomController)
+
+import AvailabilityCalendarController from "./availability_calendar_controller"
+application.register("availability-calendar", AvailabilityCalendarController)

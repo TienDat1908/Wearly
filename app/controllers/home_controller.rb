@@ -26,7 +26,11 @@ class HomeController < ApplicationController
       @shop_showcase_columns[index % 3] << product
     end
 
-    @home_spotlight = HomeSpotlight.with_attached_images.with_attached_image.active.first
+    @home_spotlight = HomeSpotlight
+      .with_attached_images
+      .with_attached_image
+      .active
+      .first
     @active_products_count = Product.active.count
   end
 end

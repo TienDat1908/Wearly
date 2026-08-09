@@ -1,162 +1,162 @@
-<section class="max-w-5xl mx-auto px-5 py-10">
-  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+<section class="wearly-page max-w-5xl">
+  <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
     <div>
-      <p class="text-pink-600 font-black uppercase tracking-wide"><%= t("profile.title") %></p>
-      <h1 class="mt-2 text-4xl md:text-5xl font-black tracking-tight"><%= t("profile.heading") %></h1>
-      <p class="mt-3 text-slate-500"><%= t("profile.subtitle") %></p>
+      <p class="wearly-eyebrow"><%= t("profile.title") %></p>
+      <h1 class="wearly-title"><%= t("profile.heading") %></h1>
+      <p class="wearly-subtitle"><%= t("profile.subtitle") %></p>
     </div>
   </div>
 
-  <div class="mt-8 bg-white rounded-[2.5rem] p-6 md:p-8 shadow-xl shadow-pink-100 border border-orange-100">
+  <div class="wearly-panel mt-8 p-6 md:p-8">
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, multipart: true, class: "space-y-8" }) do |f| %>
-      <%= render "devise/shared/error_messages", resource: resource %>
+      <%= render "devise/shared/error_messages", resource: resource, dark: true %>
 
-      <div class="flex flex-col sm:flex-row sm:items-center gap-5">
-        <div class="w-24 h-24 rounded-[2rem] overflow-hidden bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center font-black text-3xl shadow-lg shadow-pink-200">
+      <div class="flex flex-col gap-5 sm:flex-row sm:items-center">
+        <div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-[2rem] bg-gradient-to-br from-pink-500 to-orange-400 text-3xl font-black text-white shadow-lg shadow-pink-900/40">
           <% if resource.avatar.attached? %>
-            <%= image_tag resource.avatar, class: "w-full h-full object-cover" %>
+            <%= image_tag resource.avatar, class: "h-full w-full object-cover" %>
           <% else %>
             <%= resource.full_name.to_s.first.presence || resource.email.to_s.first.upcase %>
           <% end %>
         </div>
 
         <div class="flex-1">
-          <%= f.label :avatar, t("profile.avatar"), class: "block font-black mb-2" %>
-          <%= f.file_field :avatar, accept: "image/png,image/jpeg,image/webp", class: "w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3" %>
-          <p class="mt-2 text-sm text-slate-500"><%= t("profile.avatar_hint") %></p>
+          <%= f.label :avatar, t("profile.avatar"), class: "mb-2 block font-black" %>
+          <%= f.file_field :avatar, accept: "image/png,image/jpeg,image/webp" %>
+          <p class="mt-2 text-sm text-white/55"><%= t("profile.avatar_hint") %></p>
         </div>
       </div>
 
       <div>
-        <h2 class="text-xl font-black"><%= t("profile.personal_info") %></h2>
-        <div class="mt-5 grid md:grid-cols-2 gap-5">
+        <h2 class="text-xl font-black text-white"><%= t("profile.personal_info") %></h2>
+        <div class="mt-5 grid gap-5 md:grid-cols-2">
           <div>
-            <%= f.label :full_name, t("auth.full_name"), class: "block font-black mb-2" %>
-            <%= f.text_field :full_name, autocomplete: "name", class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
+            <%= f.label :full_name, t("auth.full_name"), class: "mb-2 block font-black" %>
+            <%= f.text_field :full_name, autocomplete: "name" %>
           </div>
 
           <div>
-            <%= f.label :phone, t("auth.phone"), class: "block font-black mb-2" %>
-            <%= f.telephone_field :phone, autocomplete: "tel", class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
+            <%= f.label :phone, t("auth.phone"), class: "mb-2 block font-black" %>
+            <%= f.telephone_field :phone, autocomplete: "tel" %>
           </div>
 
           <div>
-            <%= f.label :email, "Email", class: "block font-black mb-2" %>
-            <%= f.email_field :email, autocomplete: "email", class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
+            <%= f.label :email, t("auth_extra.email"), class: "mb-2 block font-black" %>
+            <%= f.email_field :email, autocomplete: "email" %>
           </div>
 
           <div>
-            <%= f.label :preferred_locale, t("auth.language"), class: "block font-black mb-2" %>
-            <%= f.select :preferred_locale, [["English", "en"], ["Tiếng Việt", "vi"]], {}, class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
+            <%= f.label :preferred_locale, t("auth.language"), class: "mb-2 block font-black" %>
+            <%= f.select :preferred_locale, [["English", "en"], ["Tiếng Việt", "vi"]] %>
           </div>
         </div>
       </div>
 
       <div>
-        <h2 class="text-xl font-black"><%= t("profile.address_info") %></h2>
-        <div class="mt-5 grid md:grid-cols-3 gap-5">
+        <h2 class="text-xl font-black text-white"><%= t("profile.address_info") %></h2>
+        <div class="mt-5 grid gap-5 md:grid-cols-3">
           <div class="md:col-span-3">
-            <%= f.label :address, t("admin.users.address"), class: "block font-black mb-2" %>
-            <%= f.text_area :address, rows: 3, class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
+            <%= f.label :address, t("admin.users.address"), class: "mb-2 block font-black" %>
+            <%= f.text_area :address, rows: 3 %>
           </div>
 
           <div>
-            <%= f.label :ward, t("products.form.ward"), class: "block font-black mb-2" %>
-            <%= f.text_field :ward, class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
+            <%= f.label :ward, t("products.form.ward"), class: "mb-2 block font-black" %>
+            <%= f.text_field :ward %>
           </div>
 
           <div>
-            <%= f.label :district, t("products.form.district"), class: "block font-black mb-2" %>
-            <%= f.text_field :district, class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
+            <%= f.label :district, t("products.form.district"), class: "mb-2 block font-black" %>
+            <%= f.text_field :district %>
           </div>
 
           <div>
-            <%= f.label :city, t("products.form.city"), class: "block font-black mb-2" %>
-            <%= f.text_field :city, class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
+            <%= f.label :city, t("products.form.city"), class: "mb-2 block font-black" %>
+            <%= f.text_field :city %>
           </div>
         </div>
       </div>
 
       <div>
-        <h2 class="text-xl font-black"><%= t("profile.social_info") %></h2>
-        <p class="mt-2 text-sm text-slate-500"><%= t("profile.social_hint") %></p>
+        <h2 class="text-xl font-black text-white"><%= t("profile.social_info") %></h2>
+        <p class="mt-2 text-sm text-white/55"><%= t("profile.social_hint") %></p>
 
-        <div class="mt-5 grid md:grid-cols-2 gap-5">
+        <div class="mt-5 grid gap-5 md:grid-cols-2">
           <div>
-            <%= f.label :facebook_url, t("profile.facebook_url"), class: "block font-black mb-2" %>
-            <%= f.url_field :facebook_url, placeholder: "https://facebook.com/your-page", class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
+            <%= f.label :facebook_url, t("profile.facebook_url"), class: "mb-2 block font-black" %>
+            <%= f.url_field :facebook_url, placeholder: "https://facebook.com/your-page" %>
           </div>
 
           <div>
-            <%= f.label :instagram_url, t("profile.instagram_url"), class: "block font-black mb-2" %>
-            <%= f.url_field :instagram_url, placeholder: "https://instagram.com/your-handle", class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
+            <%= f.label :instagram_url, t("profile.instagram_url"), class: "mb-2 block font-black" %>
+            <%= f.url_field :instagram_url, placeholder: "https://instagram.com/your-handle" %>
           </div>
 
           <div>
-            <%= f.label :tiktok_url, t("profile.tiktok_url"), class: "block font-black mb-2" %>
-            <%= f.url_field :tiktok_url, placeholder: "https://tiktok.com/@your-handle", class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
+            <%= f.label :tiktok_url, t("profile.tiktok_url"), class: "mb-2 block font-black" %>
+            <%= f.url_field :tiktok_url, placeholder: "https://tiktok.com/@your-handle" %>
           </div>
 
           <div>
-            <%= f.label :zalo_url, t("profile.zalo_url"), class: "block font-black mb-2" %>
-            <%= f.url_field :zalo_url, placeholder: "https://zalo.me/your-phone", class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
+            <%= f.label :zalo_url, t("profile.zalo_url"), class: "mb-2 block font-black" %>
+            <%= f.url_field :zalo_url, placeholder: "https://zalo.me/your-phone" %>
           </div>
 
           <div class="md:col-span-2">
-            <%= f.label :website_url, t("profile.website_url"), class: "block font-black mb-2" %>
-            <%= f.url_field :website_url, placeholder: "https://your-website.com", class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
+            <%= f.label :website_url, t("profile.website_url"), class: "mb-2 block font-black" %>
+            <%= f.url_field :website_url, placeholder: "https://your-website.com" %>
           </div>
         </div>
       </div>
 
       <% if resource.owner? || resource.admin? %>
         <div>
-          <h2 class="text-xl font-black"><%= t("profile.owner_info") %></h2>
-          <div class="mt-5 grid md:grid-cols-2 gap-5">
+          <h2 class="text-xl font-black text-white"><%= t("profile.owner_info") %></h2>
+          <div class="mt-5 grid gap-5 md:grid-cols-2">
             <div>
-              <%= f.label :bank_name, t("profile.bank_name"), class: "block font-black mb-2" %>
-              <%= f.text_field :bank_name, class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
+              <%= f.label :bank_name, t("profile.bank_name"), class: "mb-2 block font-black" %>
+              <%= f.text_field :bank_name %>
             </div>
 
             <div>
-              <%= f.label :bank_account_name, t("profile.bank_account_name"), class: "block font-black mb-2" %>
-              <%= f.text_field :bank_account_name, class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
+              <%= f.label :bank_account_name, t("profile.bank_account_name"), class: "mb-2 block font-black" %>
+              <%= f.text_field :bank_account_name %>
             </div>
 
             <div class="md:col-span-2">
-              <%= f.label :bank_account_number, t("profile.bank_account_number"), class: "block font-black mb-2" %>
-              <%= f.text_field :bank_account_number, class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
+              <%= f.label :bank_account_number, t("profile.bank_account_number"), class: "mb-2 block font-black" %>
+              <%= f.text_field :bank_account_number %>
             </div>
           </div>
         </div>
       <% end %>
 
       <div>
-        <h2 class="text-xl font-black"><%= t("profile.password_section") %></h2>
-        <p class="mt-2 text-sm text-slate-500"><%= t("profile.password_hint") %></p>
+        <h2 class="text-xl font-black text-white"><%= t("profile.password_section") %></h2>
+        <p class="mt-2 text-sm text-white/55"><%= t("profile.password_hint") %></p>
 
-        <div class="mt-5 grid md:grid-cols-2 gap-5">
+        <div class="mt-5 grid gap-5 md:grid-cols-2">
           <div>
-            <%= f.label :password, t("auth.password"), class: "block font-black mb-2" %>
-            <%= f.password_field :password, autocomplete: "new-password", class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
+            <%= f.label :password, t("auth.password"), class: "mb-2 block font-black" %>
+            <%= f.password_field :password, autocomplete: "new-password" %>
           </div>
 
           <div>
-            <%= f.label :password_confirmation, t("auth.password_confirmation"), class: "block font-black mb-2" %>
-            <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
+            <%= f.label :password_confirmation, t("auth.password_confirmation"), class: "mb-2 block font-black" %>
+            <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
           </div>
 
           <div class="md:col-span-2">
-            <%= f.label :current_password, t("profile.current_password"), class: "block font-black mb-2" %>
-            <%= f.password_field :current_password, autocomplete: "current-password", class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400" %>
-            <p class="mt-2 text-sm text-slate-500"><%= t("profile.current_password_hint") %></p>
+            <%= f.label :current_password, t("profile.current_password"), class: "mb-2 block font-black" %>
+            <%= f.password_field :current_password, autocomplete: "current-password" %>
+            <p class="mt-2 text-sm text-white/55"><%= t("profile.current_password_hint") %></p>
           </div>
         </div>
       </div>
 
-      <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between border-t border-slate-100 pt-6">
-        <%= link_to t("profile.back"), root_path, class: "font-black text-slate-500 hover:text-pink-600" %>
-        <%= f.submit t("profile.save"), class: "px-8 py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-orange-400 text-white font-black shadow-xl shadow-pink-200 cursor-pointer" %>
+      <div class="flex flex-col gap-3 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <%= link_to t("profile.back"), root_path, class: "font-black text-white/55 hover:text-pink-200" %>
+        <%= f.submit t("profile.save"), class: "wearly-btn wearly-btn-primary cursor-pointer px-8" %>
       </div>
     <% end %>
   </div>

@@ -1,27 +1,49 @@
-<section class="min-h-[calc(100vh-92px)] flex items-center justify-center px-5 py-12">
-  <div class="w-full max-w-lg bg-white rounded-[2.5rem] p-6 md:p-8 shadow-2xl shadow-pink-100 border border-orange-100">
-    <div class="text-center mb-8">
-      <div class="mx-auto w-16 h-16 rounded-3xl bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center font-black text-2xl shadow-lg shadow-pink-200">
-        W
-      </div>
+<% content_for :auth_immersive, flush: true do %>1<% end %>
 
-      <h2 class="mt-5 text-3xl font-black"><%= t("auth.forgot_password_title") %></h2>
-      <p class="mt-2 text-slate-500"><%= t("auth.forgot_password_subtitle") %></p>
+<section class="auth-immersive">
+  <%= render "devise/shared/auth_stage" %>
+
+  <%= link_to root_path, class: "absolute left-5 top-5 z-20 inline-flex items-center gap-2 text-sm font-black text-white/90 transition hover:text-white" do %>
+    <span class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-pink-500 to-orange-400 font-black shadow-lg shadow-pink-500/30">W</span>
+    <span class="hidden sm:inline"><%= t("app.name") %></span>
+  <% end %>
+
+  <% if notice.present? || alert.present? %>
+    <div class="absolute inset-x-0 top-5 z-20 mx-auto w-full max-w-md px-5">
+      <% if notice.present? %>
+        <div class="rounded-2xl border border-emerald-300/30 bg-emerald-500/20 px-4 py-3 text-sm font-semibold text-emerald-50 backdrop-blur"><%= notice %></div>
+      <% end %>
+      <% if alert.present? %>
+        <div class="mt-2 rounded-2xl border border-rose-300/30 bg-rose-500/20 px-4 py-3 text-sm font-semibold text-rose-50 backdrop-blur"><%= alert %></div>
+      <% end %>
     </div>
+  <% end %>
 
-    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "space-y-5" }) do |f| %>
-      <%= render "devise/shared/error_messages", resource: resource %>
+  <div class="relative z-10 flex h-full items-center justify-center px-5">
+    <div class="auth-panel">
+      <p class="text-[11px] font-black uppercase tracking-[0.28em] text-pink-200"><%= t("app.name") %></p>
+      <h1 class="mt-3 text-[2rem] font-black leading-[1.08] tracking-tight text-white sm:text-[2.2rem]">
+        <%= t("auth.forgot_password_title") %>
+      </h1>
+      <p class="mx-auto mt-3 max-w-sm text-sm font-medium leading-6 text-white/80">
+        <%= t("auth.forgot_password_subtitle") %>
+      </p>
 
-      <div>
-        <%= f.label :email, "Email", class: "block font-black mb-2" %>
-        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full rounded-2xl border-slate-200 bg-slate-50 px-4 py-3 focus:border-pink-400 focus:ring-pink-400", placeholder: "you@example.com" %>
-      </div>
+      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "mt-7 space-y-4 text-left" }) do |f| %>
+        <%= render "devise/shared/error_messages", resource: resource, dark: true %>
 
-      <%= f.submit t("auth.send_reset_instructions"), class: "w-full py-4 rounded-2xl bg-slate-950 text-white font-black shadow-xl shadow-slate-200 hover:-translate-y-0.5 transition" %>
-    <% end %>
+        <div>
+          <%= f.label :email, t("auth_extra.email"), class: "mb-2 block text-xs font-bold uppercase tracking-[0.16em]" %>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: t("auth_extra.email_placeholder") %>
+        </div>
 
-    <div class="mt-6 text-center">
-      <%= link_to t("auth.back_to_sign_in"), new_session_path(resource_name), class: "font-black text-pink-600 hover:text-pink-700" %>
+        <%= f.submit t("auth.send_reset_instructions"),
+          class: "mt-1 w-full cursor-pointer rounded-full bg-gradient-to-r from-sky-400 via-pink-500 to-orange-400 py-3.5 text-sm font-black lowercase tracking-[0.2em] text-white shadow-xl shadow-pink-950/40 transition hover:brightness-110" %>
+      <% end %>
+
+      <p class="mt-6 text-sm text-white/75">
+        <%= link_to t("auth.back_to_sign_in"), new_session_path(resource_name), class: "font-black text-white underline decoration-pink-300/70 underline-offset-4 hover:text-pink-200" %>
+      </p>
     </div>
   </div>
 </section>

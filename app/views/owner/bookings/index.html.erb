@@ -1,25 +1,17 @@
-<section class="max-w-7xl mx-auto px-5 py-10">
-  <div class="flex items-end justify-between mb-8">
+<section class="wearly-page">
+  <div class="mb-8 flex items-end justify-between">
     <div>
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-100 text-pink-700 text-sm font-black">
-        🧾 <%= t("owner.bookings.title") %>
-      </div>
-
-      <h1 class="mt-4 text-4xl md:text-5xl font-black tracking-tight">
-        <%= t("owner.bookings.index_title") %>
-      </h1>
-
-      <p class="mt-2 text-slate-500">
-        <%= t("owner.bookings.index_subtitle") %>
-      </p>
+      <p class="wearly-eyebrow"><%= t("owner.bookings.title") %></p>
+      <h1 class="wearly-title"><%= t("owner.bookings.index_title") %></h1>
+      <p class="wearly-subtitle"><%= t("owner.bookings.index_subtitle") %></p>
     </div>
   </div>
 
   <% if @bookings.any? %>
-    <div class="bg-white rounded-[2rem] shadow-sm border border-orange-100 overflow-hidden">
+    <div class="wearly-panel overflow-hidden">
       <div class="overflow-x-auto">
-        <table class="w-full text-left min-w-[900px]">
-          <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+        <table class="w-full min-w-[900px] text-left">
+          <thead class="bg-white/5 text-xs uppercase tracking-wider text-white/50">
             <tr>
               <th class="p-4"><%= t("admin.bookings.product") %></th>
               <th class="p-4"><%= t("admin.bookings.renter") %></th>
@@ -29,30 +21,30 @@
             </tr>
           </thead>
 
-          <tbody class="divide-y divide-slate-100">
+          <tbody class="divide-y divide-white/10">
             <% @bookings.each do |booking| %>
-              <tr class="hover:bg-pink-50/50">
+              <tr class="transition hover:bg-white/[0.04]">
                 <td class="p-4">
-                  <p class="font-black"><%= booking.product.title %></p>
-                  <p class="text-sm text-slate-500">
+                  <p class="font-black text-white"><%= booking.product.title %></p>
+                  <p class="text-sm text-white/50">
                     <%= booking.start_time ? l(booking.start_time, format: :short) : "-" %>
                     →
                     <%= booking.end_time ? l(booking.end_time, format: :short) : "-" %>
                   </p>
                 </td>
 
-                <td class="p-4 text-slate-600">
+                <td class="p-4 text-white/70">
                   <%= link_to (booking.renter.full_name.presence || booking.renter.email),
                     user_path(booking.renter),
-                    class: "font-black text-pink-600 hover:text-pink-700" %>
+                    class: "font-black text-pink-200 hover:text-white" %>
                 </td>
 
                 <td class="p-4">
-                  <p class="font-black text-pink-600">
+                  <p class="font-black text-pink-300">
                     <%= number_to_currency(booking.owner_earning_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %>
                   </p>
 
-                  <p class="text-xs text-slate-400 font-bold">
+                  <p class="text-xs font-bold text-white/40">
                     <%= t("admin.bookings.owner_payout") %>
                   </p>
                 </td>
@@ -61,23 +53,23 @@
                   <% status_class =
                     case booking.status
                     when "pending"
-                      "bg-orange-50 text-orange-600"
+                      "bg-orange-500/15 text-orange-200"
                     when "accepted"
-                      "bg-blue-50 text-blue-600"
+                      "bg-sky-500/15 text-sky-200"
                     when "paid"
-                      "bg-green-50 text-green-600"
+                      "bg-emerald-500/15 text-emerald-200"
                     when "picked_up"
-                      "bg-blue-50 text-blue-600"
+                      "bg-sky-500/15 text-sky-200"
                     when "completed"
-                      "bg-emerald-50 text-emerald-600"
+                      "bg-emerald-500/15 text-emerald-200"
                     when "rejected", "cancelled"
-                      "bg-red-50 text-red-600"
+                      "bg-rose-500/15 text-rose-200"
                     else
-                      "bg-slate-100 text-slate-600"
+                      "bg-white/10 text-white/70"
                     end
                   %>
 
-                  <span class="px-3 py-1 rounded-full text-xs font-black <%= status_class %>">
+                  <span class="rounded-full px-3 py-1 text-xs font-black <%= status_class %>">
                     <%= booking_status_label(booking) %>
                   </span>
 
@@ -86,38 +78,38 @@
                       <%= acceptance_countdown_badge(booking, role: :owner) %>
                     </div>
                   <% elsif booking.status == "accepted" %>
-                    <p class="mt-2 text-xs text-slate-400 font-bold">
+                    <p class="mt-2 text-xs font-bold text-white/40">
                       <%= t("owner.bookings.waiting_payment") %>
                     </p>
                   <% end %>
                 </td>
 
                 <td class="p-4">
-                  <div class="flex justify-end items-center gap-2 flex-wrap">
+                  <div class="flex flex-wrap items-center justify-end gap-2">
                     <%= link_to t("admin.actions.view"),
                       owner_booking_path(booking),
-                      class: "px-4 py-2 rounded-full bg-slate-100 text-slate-900 font-black hover:bg-slate-200" %>
+                      class: "rounded-full border border-white/15 bg-white/10 px-4 py-2 font-black text-white hover:bg-white/15" %>
 
-                    <%= booking_chat_button(booking, viewer: current_user, class: "px-4 py-2 rounded-full bg-pink-500 text-white font-black", form: { class: "inline-block" }) %>
+                    <%= booking_chat_button(booking, viewer: current_user, class: "rounded-full bg-pink-500 px-4 py-2 font-black text-white", form: { class: "inline-block" }) %>
 
                     <% if booking.status == "pending" %>
                       <%= button_to t("owner.bookings.accept"),
                         accept_owner_booking_path(booking),
                         method: :patch,
                         form: { class: "inline-block" },
-                        class: "px-4 py-2 rounded-full bg-green-500 text-white font-black hover:bg-green-600" %>
+                        class: "cursor-pointer rounded-full bg-emerald-500 px-4 py-2 font-black text-white hover:bg-emerald-600" %>
 
                       <%= button_to t("owner.bookings.reject"),
                         reject_owner_booking_path(booking),
                         method: :patch,
                         form: { class: "inline-block" },
-                        class: "px-4 py-2 rounded-full bg-red-500 text-white font-black hover:bg-red-600" %>
+                        class: "cursor-pointer rounded-full bg-rose-500 px-4 py-2 font-black text-white hover:bg-rose-600" %>
                     <% elsif booking.completable? %>
                       <%= button_to t("owner.bookings.complete"),
                         complete_owner_booking_path(booking),
                         method: :patch,
                         form: { class: "inline-block" },
-                        class: "px-4 py-2 rounded-full bg-pink-500 text-white font-black hover:bg-pink-600" %>
+                        class: "cursor-pointer rounded-full bg-pink-500 px-4 py-2 font-black text-white hover:bg-pink-600" %>
                     <% end %>
                   </div>
                 </td>
@@ -128,13 +120,13 @@
       </div>
     </div>
   <% else %>
-    <div class="bg-white rounded-[2rem] p-10 text-center shadow-sm border border-orange-100">
-      <div class="mx-auto w-20 h-20 rounded-[2rem] bg-gradient-to-br from-pink-100 to-orange-100 flex items-center justify-center text-4xl">
+    <div class="wearly-panel p-10 text-center">
+      <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-[2rem] bg-gradient-to-br from-pink-500/30 to-orange-400/20 text-4xl">
         🧾
       </div>
 
-      <h2 class="mt-5 text-3xl font-black"><%= t("owner.bookings.empty_title") %></h2>
-      <p class="mt-2 text-slate-500"><%= t("owner.bookings.empty_subtitle") %></p>
+      <h2 class="mt-5 text-3xl font-black text-white"><%= t("owner.bookings.empty_title") %></h2>
+      <p class="mt-2 text-white/55"><%= t("owner.bookings.empty_subtitle") %></p>
     </div>
   <% end %>
 </section>

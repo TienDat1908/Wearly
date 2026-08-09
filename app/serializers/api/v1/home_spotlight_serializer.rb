@@ -16,7 +16,10 @@ module Api
           subtitle: home_spotlight.subtitle,
           active: home_spotlight.active?,
           position: home_spotlight.position,
+          spin_frame_count: home_spotlight.spin_frame_count.to_i,
+          spin_enabled: home_spotlight.spin_enabled?,
           image_urls: image_urls,
+          runway_image_urls: runway_image_urls,
           created_at: home_spotlight.created_at&.iso8601,
           updated_at: home_spotlight.updated_at&.iso8601
         }
@@ -27,7 +30,15 @@ module Api
       attr_reader :home_spotlight, :request
 
       def image_urls
-        home_spotlight.display_images.first(HomeSpotlight::MAX_IMAGES).map do |attachment|
+        urls_for(home_spotlight.display_images)
+      end
+
+      def runway_image_urls
+        urls_for(home_spotlight.runway_images)
+      end
+
+      def urls_for(attachments)
+        attachments.first(HomeSpotlight::MAX_IMAGES).map do |attachment|
           request.base_url + rails_blob_path(attachment, only_path: true)
         end
       end

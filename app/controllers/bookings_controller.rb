@@ -28,6 +28,9 @@ class BookingsController < ApplicationController
     end
 
     @booking = Booking.new
+    from = Date.current.beginning_of_month
+    to = (Date.current + 2.months).end_of_month
+    @busy = Products::BusyRanges.call(product: @product, from: from, to: to).busy
   end
 
   def create

@@ -5,43 +5,60 @@
 
 <% stacked = local_assigns.fetch(:stacked, false) %>
 <% compact = local_assigns.fetch(:compact, false) %>
+<% variant = local_assigns.fetch(:variant, :default) %>
+<% icons_only = local_assigns.fetch(:icons_only, false) %>
 
 <% provider_icons = {
-  "google" => '<svg viewBox="0 0 24 24" class="w-6 h-6 shrink-0" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09Z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23Z"/><path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.84Z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06L5.84 9.9C6.71 7.3 9.14 5.38 12 5.38Z"/></svg>',
-  "facebook" => '<svg viewBox="0 0 24 24" class="w-6 h-6 shrink-0" aria-hidden="true"><path fill="#1877F2" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.97H15.83c-1.491 0-1.956.932-1.956 1.887v2.263h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073Z"/></svg>'
+  "google" => '<svg viewBox="0 0 24 24" class="w-5 h-5 shrink-0" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09Z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23Z"/><path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.84Z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06L5.84 9.9C6.71 7.3 9.14 5.38 12 5.38Z"/></svg>',
+  "facebook" => '<svg viewBox="0 0 24 24" class="w-5 h-5 shrink-0" aria-hidden="true"><path fill="#1877F2" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.97H15.83c-1.491 0-1.956.932-1.956 1.887v2.263h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073Z"/></svg>'
 } %>
 
-<div class="<%= compact ? "space-y-3" : "space-y-4" %>">
-  <div class="relative">
-    <div class="absolute inset-0 flex items-center">
-      <div class="w-full border-t border-slate-200"></div>
-    </div>
-
-    <div class="relative flex justify-center text-[11px] uppercase tracking-[0.22em] font-black">
-      <span class="bg-white px-4 text-slate-400"><%= t("auth.oauth.or_continue_with") %></span>
-    </div>
-  </div>
-
-  <div class="grid <%= stacked ? "grid-cols-1" : "sm:grid-cols-2" %> <%= compact ? "gap-2.5" : "gap-3" %>">
+<% if icons_only || variant == :ghost %>
+  <div class="flex items-center justify-center gap-3">
     <% providers.each do |provider, icon_key| %>
       <% oauth_path = public_send("#{resource_name}_#{provider}_omniauth_authorize_path", locale: I18n.locale) %>
-
       <%= button_to oauth_path,
         method: :post,
         data: { turbo: false },
-        class: "group w-full overflow-hidden rounded-2xl border border-slate-200 bg-white #{stacked ? (compact ? "px-4 py-2.5" : "px-5 py-3.5") : "px-4 py-3"} font-black text-slate-800 hover:-translate-y-0.5 hover:border-pink-200 hover:shadow-xl hover:shadow-pink-100 transition" do %>
-        <span class="flex items-center <%= stacked ? "justify-start" : "justify-center" %> gap-3 min-w-0">
-          <span class="<%= stacked ? (compact ? "w-9 h-9" : "w-11 h-11") : "w-9 h-9" %> shrink-0 rounded-2xl bg-white border border-slate-100 flex items-center justify-center shadow-sm ring-1 ring-slate-100 group-hover:ring-pink-100 transition">
-            <%= provider_icons[icon_key].html_safe %>
-          </span>
-          <% if stacked %>
-            <span class="truncate"><%= t("auth.oauth.continue_with", provider: t("auth.oauth.providers.#{provider}")) %></span>
-          <% else %>
-            <span class="hidden md:inline truncate"><%= t("auth.oauth.providers.#{provider}") %></span>
-            <span class="md:hidden truncate"><%= t("auth.oauth.continue_with", provider: t("auth.oauth.providers.#{provider}")) %></span>
-          <% end %>
-        </span>
+        title: t("auth.oauth.continue_with", provider: t("auth.oauth.providers.#{provider}")),
+        class: "inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur transition hover:border-white/50 hover:bg-white/20" do %>
+        <%= provider_icons[icon_key].html_safe %>
       <% end %>
     <% end %>
   </div>
-</div>
+<% else %>
+  <div class="<%= compact ? "space-y-3" : "space-y-4" %>">
+    <div class="relative">
+      <div class="absolute inset-0 flex items-center">
+        <div class="w-full border-t border-slate-200"></div>
+      </div>
+
+      <div class="relative flex justify-center text-[11px] uppercase tracking-[0.22em] font-black">
+        <span class="bg-white px-4 text-slate-400"><%= t("auth.oauth.or_continue_with") %></span>
+      </div>
+    </div>
+
+    <div class="grid <%= stacked ? "grid-cols-1" : "sm:grid-cols-2" %> <%= compact ? "gap-2.5" : "gap-3" %>">
+      <% providers.each do |provider, icon_key| %>
+        <% oauth_path = public_send("#{resource_name}_#{provider}_omniauth_authorize_path", locale: I18n.locale) %>
+
+        <%= button_to oauth_path,
+          method: :post,
+          data: { turbo: false },
+          class: "group w-full overflow-hidden rounded-2xl border border-slate-200 bg-white #{stacked ? (compact ? "px-4 py-2.5" : "px-5 py-3.5") : "px-4 py-3"} font-black text-slate-800 hover:-translate-y-0.5 hover:border-pink-200 hover:shadow-xl hover:shadow-pink-100 transition" do %>
+          <span class="flex items-center <%= stacked ? "justify-start" : "justify-center" %> gap-3 min-w-0">
+            <span class="<%= stacked ? (compact ? "w-9 h-9" : "w-11 h-11") : "w-9 h-9" %> shrink-0 rounded-2xl bg-white border border-slate-100 flex items-center justify-center shadow-sm ring-1 ring-slate-100 group-hover:ring-pink-100 transition">
+              <%= provider_icons[icon_key].html_safe %>
+            </span>
+            <% if stacked %>
+              <span class="truncate"><%= t("auth.oauth.continue_with", provider: t("auth.oauth.providers.#{provider}")) %></span>
+            <% else %>
+              <span class="hidden md:inline truncate"><%= t("auth.oauth.providers.#{provider}") %></span>
+              <span class="md:hidden truncate"><%= t("auth.oauth.continue_with", provider: t("auth.oauth.providers.#{provider}")) %></span>
+            <% end %>
+          </span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

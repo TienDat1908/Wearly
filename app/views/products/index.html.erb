@@ -1,20 +1,18 @@
-<section class="max-w-7xl mx-auto px-5 py-10">
-  <div class="mb-8">
-    <h1 class="text-4xl font-black"><%= t("products.index_title") %></h1>
-    <p class="mt-2 text-slate-500"><%= t("products.index_subtitle") %></p>
-  </div>
+<section class="wearly-page">
+  <p class="wearly-eyebrow"><%= t("app.name") %></p>
+  <h1 class="wearly-title"><%= t("products.index_title") %></h1>
+  <p class="wearly-subtitle"><%= t("products.index_subtitle") %></p>
 
-  <%= form_with url: products_path, method: :get, local: true, class: "bg-white rounded-[2rem] p-4 shadow-sm mb-8 grid md:grid-cols-4 gap-3" do %>
-    <%= text_field_tag :q, params[:q], placeholder: t("products.search_placeholder"), class: "md:col-span-2 rounded-2xl border-slate-200" %>
+  <%= form_with url: products_path, method: :get, local: true, class: "wearly-panel mt-8 grid gap-3 p-4 md:grid-cols-4" do %>
+    <%= text_field_tag :q, params[:q], placeholder: t("products.search_placeholder"), class: "md:col-span-2" %>
 
     <%= select_tag :product_type,
-      options_for_select([[t("products.all_types"), ""]] + Product.product_types.keys.map { |type| [type.humanize, type] }, params[:product_type]),
-      class: "rounded-2xl border-slate-200" %>
+      options_for_select(product_type_options(include_blank: true), params[:product_type]) %>
 
-    <%= submit_tag t("products.search"), class: "rounded-2xl bg-slate-950 text-white font-black" %>
+    <%= submit_tag t("products.search"), class: "wearly-btn wearly-btn-primary w-full cursor-pointer" %>
   <% end %>
 
-  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
     <% @products.each do |product| %>
       <%= render "product_card", product: product %>
     <% end %>

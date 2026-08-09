@@ -1,0 +1,33 @@
+<%# Curated fashion editorial imagery (Unsplash) — not product catalog photos %>
+<%
+  hero_url = "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=2000&q=80"
+  card_urls = [
+    "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=80",
+    "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=80",
+    "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=900&q=80",
+    "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=900&q=80"
+  ]
+%>
+
+<div class="auth-stage" aria-hidden="true">
+  <div class="auth-stage-mesh"></div>
+
+  <div class="auth-stage-hero">
+    <img src="<%= hero_url %>" alt="" class="auth-stage-hero-img" loading="eager" decoding="async">
+  </div>
+
+  <div class="auth-stage-cards">
+    <% card_urls.each_with_index do |url, index| %>
+      <figure class="auth-stage-card auth-stage-card--<%= index + 1 %>">
+        <img src="<%= url %>" alt="" loading="lazy" decoding="async">
+      </figure>
+    <% end %>
+  </div>
+
+  <div class="auth-stage-orb auth-stage-orb--pink"></div>
+  <div class="auth-stage-orb auth-stage-orb--orange"></div>
+  <div class="auth-stage-orb auth-stage-orb--sky"></div>
+
+  <div class="auth-stage-veil"></div>
+  <div class="auth-stage-grain"></div>
+</div>

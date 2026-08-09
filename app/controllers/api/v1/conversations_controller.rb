@@ -8,7 +8,7 @@ module Api
       def index
         conversations = Conversation
           .visible_to(current_api_user)
-          .includes(:booking, :participants, :messages)
+          .includes(:participants, :messages)
           .recent_first
 
         render json: {

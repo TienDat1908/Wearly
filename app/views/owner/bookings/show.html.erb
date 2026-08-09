@@ -1,97 +1,97 @@
-<section class="max-w-7xl mx-auto px-5 py-10">
-  <%= link_to "← #{t("owner.bookings.back")}", owner_bookings_path, class: "font-black text-pink-600" %>
+<section class="wearly-page">
+  <%= link_to "← #{t("owner.bookings.back")}", owner_bookings_path, class: "font-black text-pink-200 hover:text-white" %>
 
-  <div class="mt-6 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+  <div class="mt-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
     <div>
-      <span class="inline-flex px-4 py-2 rounded-full bg-pink-50 text-pink-600 text-xs font-black uppercase"><%= booking_status_label(@booking) %></span>
-      <h1 class="mt-4 text-4xl font-black"><%= @booking.product.title %></h1>
-      <p class="mt-2 text-slate-500"><%= t("bookings.booking_reference") %> #<%= @booking.id %></p>
+      <span class="inline-flex rounded-full bg-pink-500/15 px-4 py-2 text-xs font-black uppercase text-pink-200"><%= booking_status_label(@booking) %></span>
+      <h1 class="wearly-title"><%= @booking.product.title %></h1>
+      <p class="wearly-subtitle"><%= t("bookings.booking_reference") %> #<%= @booking.id %></p>
     </div>
   </div>
 
-  <div class="mt-8 grid lg:grid-cols-3 gap-6 items-start">
-    <div class="lg:col-span-2 space-y-6">
-      <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-orange-100">
-        <h2 class="text-xl font-black"><%= t("owner.bookings.renter_details") %></h2>
-        <div class="mt-5 grid md:grid-cols-2 gap-4">
-          <div class="rounded-2xl bg-slate-50 p-5">
-            <p class="text-slate-500 font-bold"><%= t("admin.bookings.renter") %></p>
+  <div class="mt-8 grid items-start gap-6 lg:grid-cols-3">
+    <div class="space-y-6 lg:col-span-2">
+      <div class="wearly-panel p-6">
+        <h2 class="text-xl font-black text-white"><%= t("owner.bookings.renter_details") %></h2>
+        <div class="mt-5 grid gap-4 md:grid-cols-2">
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <p class="font-bold text-white/50"><%= t("admin.bookings.renter") %></p>
             <%= link_to (@booking.renter.full_name.presence || @booking.renter.email),
               user_path(@booking.renter),
-              class: "mt-2 block font-black text-pink-600 hover:text-pink-700" %>
+              class: "mt-2 block font-black text-pink-200 hover:text-white" %>
           </div>
-          <div class="rounded-2xl bg-slate-50 p-5">
-            <p class="text-slate-500 font-bold"><%= t("admin.users.phone") %></p>
-            <p class="mt-2 font-black"><%= @booking.renter.phone.presence || "-" %></p>
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <p class="font-bold text-white/50"><%= t("admin.users.phone") %></p>
+            <p class="mt-2 font-black text-white"><%= @booking.renter.phone.presence || "-" %></p>
           </div>
         </div>
       </div>
 
-      <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-orange-100">
-        <h2 class="text-xl font-black"><%= t("bookings.schedule_and_delivery") %></h2>
-        <div class="mt-5 grid md:grid-cols-2 gap-4">
-          <div class="rounded-2xl bg-slate-50 p-5">
-            <p class="text-slate-500 font-bold"><%= t("bookings.start_time") %></p>
-            <p class="mt-2 font-black"><%= l(@booking.start_time, format: :long) %></p>
+      <div class="wearly-panel p-6">
+        <h2 class="text-xl font-black text-white"><%= t("bookings.schedule_and_delivery") %></h2>
+        <div class="mt-5 grid gap-4 md:grid-cols-2">
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <p class="font-bold text-white/50"><%= t("bookings.start_time") %></p>
+            <p class="mt-2 font-black text-white"><%= l(@booking.start_time, format: :long) %></p>
           </div>
-          <div class="rounded-2xl bg-slate-50 p-5">
-            <p class="text-slate-500 font-bold"><%= t("bookings.end_time") %></p>
-            <p class="mt-2 font-black"><%= l(@booking.end_time, format: :long) %></p>
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <p class="font-bold text-white/50"><%= t("bookings.end_time") %></p>
+            <p class="mt-2 font-black text-white"><%= l(@booking.end_time, format: :long) %></p>
           </div>
-          <div class="rounded-2xl bg-pink-50 p-5 md:col-span-2">
-            <p class="text-pink-600 font-bold"><%= pickup_method_label(@booking) %> · <%= booking_location_label(@booking) %></p>
-            <p class="mt-2 font-black"><%= @booking.pickup_address %></p>
+          <div class="rounded-2xl border border-pink-400/20 bg-pink-500/10 p-5 md:col-span-2">
+            <p class="font-bold text-pink-200"><%= pickup_method_label(@booking) %> · <%= booking_location_label(@booking) %></p>
+            <p class="mt-2 font-black text-white"><%= @booking.pickup_address %></p>
           </div>
         </div>
       </div>
     </div>
 
-    <aside class="bg-slate-950 text-white rounded-[2rem] p-6 shadow-sm lg:sticky lg:top-28">
-      <h2 class="text-xl font-black"><%= t("owner.bookings.earnings_summary") %></h2>
+    <aside class="wearly-panel sticky top-28 p-6 lg:top-28">
+      <h2 class="text-xl font-black text-white"><%= t("owner.bookings.earnings_summary") %></h2>
       <div class="mt-5 space-y-4">
         <div class="flex justify-between gap-4">
-          <span class="text-slate-300"><%= t("admin.bookings.rental_amount") %></span>
-          <span class="font-black"><%= number_to_currency(@booking.rental_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
+          <span class="text-white/55"><%= t("admin.bookings.rental_amount") %></span>
+          <span class="font-black text-white"><%= number_to_currency(@booking.rental_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
         </div>
         <div class="flex justify-between gap-4">
-          <span class="text-slate-300"><%= t("products.cleaning_fee") %></span>
-          <span class="font-black"><%= number_to_currency(@booking.cleaning_fee.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
+          <span class="text-white/55"><%= t("products.cleaning_fee") %></span>
+          <span class="font-black text-white"><%= number_to_currency(@booking.cleaning_fee.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
         </div>
-        <div class="flex justify-between gap-4 text-red-300">
+        <div class="flex justify-between gap-4 text-rose-300">
           <span><%= t("admin.dashboard.platform_fee") %> (<%= @booking.platform_fee_rate.to_i %>%)</span>
           <span class="font-black">−<%= number_to_currency(@booking.platform_fee_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
         </div>
-        <div class="pt-5 border-t border-white/10 flex justify-between gap-4">
-          <span class="text-slate-300"><%= t("admin.bookings.owner_payout") %></span>
+        <div class="flex justify-between gap-4 border-t border-white/10 pt-5">
+          <span class="text-white/55"><%= t("admin.bookings.owner_payout") %></span>
           <span class="text-2xl font-black text-pink-300"><%= number_to_currency(@booking.owner_earning_amount.to_i, unit: "₫", precision: 0, format: "%n %u") %></span>
         </div>
-        <div class="rounded-2xl bg-white/10 p-4 text-sm text-slate-300">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/65">
           <%= t("owner.bookings.deposit_held_hint", amount: number_to_currency(@booking.deposit_amount.to_i, unit: "₫", precision: 0, format: "%n %u")) %>
         </div>
 
-        <div class="pt-2 space-y-3">
+        <div class="space-y-3 pt-2">
           <% if @booking.pending? %>
             <div class="flex justify-center">
               <%= acceptance_countdown_badge(@booking, role: :owner) %>
             </div>
-            <%= button_to t("owner.bookings.accept"), accept_owner_booking_path(@booking), method: :patch, class: "w-full py-3 rounded-2xl bg-green-500 text-white font-black" %>
-            <%= button_to t("owner.bookings.reject"), reject_owner_booking_path(@booking), method: :patch, class: "w-full py-3 rounded-2xl bg-red-500 text-white font-black" %>
-            <%= button_to t("conversations.chat_with_renter"), chat_owner_booking_path(@booking), method: :post, class: "w-full py-3 rounded-2xl bg-white text-slate-950 font-black" %>
+            <%= button_to t("owner.bookings.accept"), accept_owner_booking_path(@booking), method: :patch, class: "w-full cursor-pointer rounded-2xl bg-emerald-500 py-3 font-black text-white" %>
+            <%= button_to t("owner.bookings.reject"), reject_owner_booking_path(@booking), method: :patch, class: "w-full cursor-pointer rounded-2xl bg-rose-500 py-3 font-black text-white" %>
+            <%= button_to t("conversations.chat_with_renter"), chat_owner_booking_path(@booking), method: :post, class: "wearly-btn wearly-btn-ghost w-full cursor-pointer" %>
           <% elsif @booking.accepted? %>
-            <div class="w-full py-4 rounded-2xl bg-white/10 text-slate-300 text-center font-black"><%= t("owner.bookings.waiting_payment") %></div>
-            <%= button_to t("conversations.chat_with_renter"), chat_owner_booking_path(@booking), method: :post, class: "w-full py-3 rounded-2xl bg-white text-slate-950 font-black" %>
+            <div class="w-full rounded-2xl bg-white/10 py-4 text-center font-black text-white/70"><%= t("owner.bookings.waiting_payment") %></div>
+            <%= button_to t("conversations.chat_with_renter"), chat_owner_booking_path(@booking), method: :post, class: "wearly-btn wearly-btn-ghost w-full cursor-pointer" %>
           <% elsif @booking.paid? %>
-            <div class="w-full py-4 rounded-2xl bg-white/10 text-slate-300 text-center font-black"><%= t("owner.bookings.waiting_renter_receipt") %></div>
-            <%= button_to t("conversations.chat_with_renter"), chat_owner_booking_path(@booking), method: :post, class: "w-full py-3 rounded-2xl bg-white text-slate-950 font-black" %>
+            <div class="w-full rounded-2xl bg-white/10 py-4 text-center font-black text-white/70"><%= t("owner.bookings.waiting_renter_receipt") %></div>
+            <%= button_to t("conversations.chat_with_renter"), chat_owner_booking_path(@booking), method: :post, class: "wearly-btn wearly-btn-ghost w-full cursor-pointer" %>
           <% elsif @booking.picked_up? && @booking.rental_period_ended? %>
-            <%= button_to t("owner.bookings.confirm_return"), complete_owner_booking_path(@booking), method: :patch, class: "w-full py-3 rounded-2xl bg-pink-500 text-white font-black" %>
-            <%= button_to t("conversations.chat_with_renter"), chat_owner_booking_path(@booking), method: :post, class: "w-full py-3 rounded-2xl bg-white text-slate-950 font-black" %>
+            <%= button_to t("owner.bookings.confirm_return"), complete_owner_booking_path(@booking), method: :patch, class: "wearly-btn wearly-btn-primary w-full cursor-pointer" %>
+            <%= button_to t("conversations.chat_with_renter"), chat_owner_booking_path(@booking), method: :post, class: "wearly-btn wearly-btn-ghost w-full cursor-pointer" %>
           <% elsif @booking.picked_up? %>
-            <div class="w-full py-4 rounded-2xl bg-blue-500/10 text-blue-300 text-center font-black"><%= t("owner.bookings.rental_in_progress") %></div>
-            <%= button_to t("conversations.chat_with_renter"), chat_owner_booking_path(@booking), method: :post, class: "w-full py-3 rounded-2xl bg-white text-slate-950 font-black" %>
+            <div class="w-full rounded-2xl bg-sky-500/10 py-4 text-center font-black text-sky-200"><%= t("owner.bookings.rental_in_progress") %></div>
+            <%= button_to t("conversations.chat_with_renter"), chat_owner_booking_path(@booking), method: :post, class: "wearly-btn wearly-btn-ghost w-full cursor-pointer" %>
           <% elsif @booking.completed? %>
-            <div class="w-full py-4 rounded-2xl bg-green-500/10 text-green-300 text-center font-black"><%= t("owner.bookings.completed_waiting_payout") %></div>
-            <%= button_to t("conversations.chat_with_renter"), chat_owner_booking_path(@booking), method: :post, class: "w-full py-3 rounded-2xl bg-white text-slate-950 font-black" %>
+            <div class="w-full rounded-2xl bg-emerald-500/10 py-4 text-center font-black text-emerald-200"><%= t("owner.bookings.completed_waiting_payout") %></div>
+            <%= button_to t("conversations.chat_with_renter"), chat_owner_booking_path(@booking), method: :post, class: "wearly-btn wearly-btn-ghost w-full cursor-pointer" %>
           <% end %>
         </div>
       </div>

@@ -30,6 +30,11 @@ Rails.application.routes.draw do
         collection do
           post :price_preview
         end
+        member do
+          patch :cancel
+          patch :pay
+          patch :confirm_received
+        end
       end
 
       resources :conversations, only: [:index, :show] do
@@ -42,8 +47,25 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :users, only: [:show]
+
+      namespace :owner do
+        resources :products, only: [:index, :show, :create, :update, :destroy] do
+          resources :blocked_dates, only: [:index, :create, :destroy], controller: "product_blocked_dates"
+        end
+        resources :bookings, only: [:index, :show] do
+          member do
+            patch :accept
+            patch :reject
+            patch :complete
+          end
+        end
+      end
+
       resource :home_spotlight, only: [:show]
-      resources :products, only: [:index, :show]
+      resources :products, only: [:index, :show] do
+        resource :availability, only: [:show], controller: "product_availabilities"
+      end
     end
   end
 
@@ -78,7 +100,10 @@ Rails.application.routes.draw do
     end
 
     namespace :owner do
-      resources :products
+      resources :products do
+        resource :availability, only: [:show], controller: "product_availabilities"
+        resources :blocked_dates, only: [:create, :destroy], controller: "product_blocked_dates"
+      end
 
       resources :bookings, only: [:index, :show] do
         member do

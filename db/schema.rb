@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_24_130000) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_09_124500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -131,6 +131,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_24_130000) do
     t.integer "position", default: 1, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "model_generation_status", default: "idle", null: false
+    t.text "model_generation_error"
+    t.datetime "model_generation_started_at"
+    t.datetime "model_generation_finished_at"
+    t.integer "spin_frame_count", default: 1, null: false
     t.index ["product_id"], name: "index_home_spotlights_on_product_id"
   end
 
@@ -178,6 +183,17 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_24_130000) do
     t.index ["booking_id"], name: "index_payouts_on_booking_id"
     t.index ["owner_id"], name: "index_payouts_on_owner_id"
     t.index ["status"], name: "index_payouts_on_status"
+  end
+
+  create_table "product_blocked_dates", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.date "start_on", null: false
+    t.date "end_on", null: false
+    t.string "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id", "start_on", "end_on"], name: "index_product_blocked_dates_on_product_and_range"
+    t.index ["product_id"], name: "index_product_blocked_dates_on_product_id"
   end
 
   create_table "product_condition_reports", force: :cascade do |t|
@@ -354,6 +370,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_24_130000) do
   add_foreign_key "payments", "users", column: "payer_id"
   add_foreign_key "payouts", "bookings"
   add_foreign_key "payouts", "users", column: "owner_id"
+  add_foreign_key "product_blocked_dates", "products"
   add_foreign_key "product_condition_reports", "bookings"
   add_foreign_key "product_condition_reports", "products"
   add_foreign_key "product_condition_reports", "users"

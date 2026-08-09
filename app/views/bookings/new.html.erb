@@ -1,34 +1,35 @@
-<section class="max-w-4xl mx-auto px-5 py-10">
-  <h1 class="text-4xl font-black mb-6"><%= t("bookings.new_title") %></h1>
+<section class="wearly-page max-w-4xl">
+  <p class="wearly-eyebrow"><%= t("bookings.my_bookings") %></p>
+  <h1 class="wearly-title"><%= t("bookings.new_title") %></h1>
 
-  <div class="bg-white rounded-[2rem] p-6 shadow-sm">
-    <h2 class="text-2xl font-black"><%= @product.title %></h2>
+  <div class="wearly-panel mt-8 p-6">
+    <h2 class="text-2xl font-black text-white"><%= @product.title %></h2>
 
-    <p class="text-pink-600 font-black mt-2">
+    <p class="mt-2 font-black text-pink-300">
       <%= number_to_currency(@product.price_per_day, unit: "₫", precision: 0, format: "%n %u") %>
     </p>
 
-    <%= link_to user_path(@product.owner), class: "mt-5 flex items-center gap-3 rounded-2xl bg-slate-50 p-4 hover:bg-pink-50 transition" do %>
-      <div class="w-12 h-12 rounded-2xl overflow-hidden bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center font-black">
+    <%= link_to user_path(@product.owner), class: "mt-5 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 transition hover:bg-white/10" do %>
+      <div class="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-pink-500 to-orange-400 font-black text-white">
         <% if @product.owner.avatar.attached? %>
-          <%= image_tag @product.owner.avatar, class: "w-full h-full object-cover" %>
+          <%= image_tag @product.owner.avatar, class: "h-full w-full object-cover" %>
         <% else %>
           <%= @product.owner.full_name.to_s.first.presence || "O" %>
         <% end %>
       </div>
 
       <div>
-        <p class="text-sm text-slate-500 font-bold"><%= t("profiles.owner_profile") %></p>
-        <p class="font-black text-slate-950"><%= @product.owner.full_name.presence || @product.owner.email %></p>
+        <p class="text-sm font-bold text-white/50"><%= t("profiles.owner_profile") %></p>
+        <p class="font-black text-white"><%= @product.owner.full_name.presence || @product.owner.email %></p>
       </div>
     <% end %>
 
-    <%= form_with model: @booking, url: bookings_path, local: true, class: "mt-6 space-y-5", data: { controller: "pickup-method" } do |f| %>
+    <%= form_with model: @booking, url: bookings_path, local: true, class: "mt-6 space-y-5", data: { controller: "pickup-method availability-calendar", availability_calendar_mode_value: "renter", availability_calendar_busy_value: @busy.to_json } do |f| %>
       <% if @booking.errors.any? %>
-        <div class="rounded-2xl bg-red-50 text-red-700 p-4">
-          <p class="font-black mb-2"><%= t("bookings.validation_failed") %></p>
+        <div class="rounded-2xl border border-rose-300/35 bg-rose-500/20 p-4 text-rose-50">
+          <p class="mb-2 font-black"><%= t("bookings.validation_failed") %></p>
 
-          <ul class="list-disc pl-5 text-sm font-semibold space-y-1">
+          <ul class="list-disc space-y-1 pl-5 text-sm font-semibold">
             <% @booking.errors.full_messages.each do |message| %>
               <li><%= message %></li>
             <% end %>
@@ -37,16 +38,37 @@
       <% end %>
 
       <%= f.hidden_field :product_id, value: @product.id %>
+      <%= f.hidden_field :start_time, data: { availability_calendar_target: "startTime" } %>
+      <%= f.hidden_field :end_time, data: { availability_calendar_target: "endTime" } %>
 
-      <div class="grid md:grid-cols-2 gap-4">
-        <div>
-          <%= f.label :start_time, t("bookings.start_time"), class: "font-black" %>
-          <%= f.datetime_local_field :start_time, required: true, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+      <div class="rounded-[1.75rem] border border-white/10 bg-white/5 p-5">
+        <div class="mb-4 flex items-center justify-between gap-3">
+          <button type="button" class="h-10 w-10 rounded-full border border-white/15 bg-white/10 font-black text-white" data-action="availability-calendar#previousMonth">‹</button>
+          <p class="text-lg font-black text-white" data-availability-calendar-target="label"></p>
+          <button type="button" class="h-10 w-10 rounded-full border border-white/15 bg-white/10 font-black text-white" data-action="availability-calendar#nextMonth">›</button>
         </div>
 
-        <div>
-          <%= f.label :end_time, t("bookings.end_time"), class: "font-black" %>
-          <%= f.datetime_local_field :end_time, required: true, class: "mt-2 w-full rounded-2xl border-slate-200" %>
+        <div class="mb-2 grid grid-cols-7 gap-2 text-center text-[11px] font-black uppercase tracking-wide text-white/40">
+          <% weekday_labels_short.each do |day| %>
+            <span><%= day %></span>
+          <% end %>
+        </div>
+        <div class="grid grid-cols-7 gap-2" data-availability-calendar-target="grid"></div>
+
+        <div class="mt-4 grid gap-3 sm:grid-cols-2">
+          <div>
+            <label class="font-black"><%= t("bookings.start_time") %></label>
+            <input type="date" required class="mt-2 w-full" data-availability-calendar-target="startOn">
+          </div>
+          <div>
+            <label class="font-black"><%= t("bookings.end_time") %></label>
+            <input type="date" required class="mt-2 w-full" data-availability-calendar-target="endOn">
+          </div>
+        </div>
+        <p class="mt-3 text-sm font-semibold text-white/55" data-availability-calendar-target="hint" data-busy-message="<%= t("bookings.range_unavailable") %>"></p>
+        <div class="mt-4 flex flex-wrap gap-4 text-sm font-bold text-white/70">
+          <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-orange-300"></span><%= t("owner.availability.legend_booking") %></span>
+          <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-slate-300"></span><%= t("owner.availability.legend_block") %></span>
         </div>
       </div>
 
@@ -55,13 +77,13 @@
         <%= f.select :pickup_method,
           @product.available_pickup_methods.map { |method| [t("bookings.#{method}"), method] },
           {},
-          class: "mt-2 w-full rounded-2xl border-slate-200",
+          class: "mt-2 w-full",
           data: { pickup_method_target: "select", action: "change->pickup-method#toggle" } %>
       </div>
 
-      <div class="rounded-2xl bg-slate-50 p-5" data-pickup-method-target="selfPickup">
-        <p class="font-black"><%= t("bookings.self_pickup_address") %></p>
-        <p class="mt-2 text-slate-600"><%= @product.pickup_location.presence || t("bookings.address_unavailable") %></p>
+      <div class="rounded-2xl border border-white/10 bg-white/5 p-5" data-pickup-method-target="selfPickup">
+        <p class="font-black text-white"><%= t("bookings.self_pickup_address") %></p>
+        <p class="mt-2 text-white/65"><%= @product.pickup_location.presence || t("bookings.address_unavailable") %></p>
       </div>
 
       <div hidden data-pickup-method-target="delivery">
@@ -69,11 +91,11 @@
         <%= f.text_area :pickup_address,
           rows: 3,
           placeholder: t("bookings.delivery_address_placeholder"),
-          class: "mt-2 w-full rounded-2xl border-slate-200",
+          class: "mt-2 w-full",
           data: { pickup_method_target: "deliveryAddress" } %>
       </div>
 
-      <%= f.submit t("bookings.submit"), class: "w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-orange-400 text-white font-black shadow-lg shadow-pink-200" %>
+      <%= f.submit t("bookings.submit"), class: "wearly-btn wearly-btn-primary w-full cursor-pointer" %>
     <% end %>
   </div>
 </section>

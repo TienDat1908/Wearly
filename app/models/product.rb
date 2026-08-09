@@ -11,6 +11,7 @@ class Product < ApplicationRecord
 
   has_many :bookings, dependent: :restrict_with_error
   has_many :product_reservations, dependent: :restrict_with_error
+  has_many :product_blocked_dates, dependent: :destroy
   has_many :reviews, dependent: :destroy
 
   enum :status, {
@@ -43,11 +44,26 @@ class Product < ApplicationRecord
       tsearch: { prefix: true }
     }
 
+  # Day-level availability: inclusive rental dates must not overlap
+  # pending/confirmed reservations or owner blocked dates.
   def available_for?(start_time, end_time)
-    product_reservations
-      .where(status: ["pending", "confirmed"])
-      .where("start_time < ? AND end_time > ?", end_time, start_time)
-      .none?
+    return false if start_time.blank? || end_time.blank? || end_time.to_date < start_time.to_date
+
+    range_start = start_time.to_date
+    range_end = end_time.to_date
+
+    reservation_conflict = product_reservations
+      .where(status: %w[pending confirmed])
+      .where(
+        "start_time < ? AND end_time >= ?",
+        (range_end + 1).beginning_of_day,
+        range_start.beginning_of_day
+      )
+      .exists?
+
+    return false if reservation_conflict
+
+    product_blocked_dates.overlapping(range_start, range_end).none?
   end
 
   def available_pickup_methods

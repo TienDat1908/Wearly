@@ -7,7 +7,7 @@ class ConversationsController < ApplicationController
   def index
     @conversations = Conversation
       .visible_to(current_user)
-      .includes(:booking, :participants, messages: :sender)
+      .includes(:participants, messages: :sender)
       .recent_first
   end
 

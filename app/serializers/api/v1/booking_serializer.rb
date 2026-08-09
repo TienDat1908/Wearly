@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 module Api
   module V1
     class BookingSerializer
-      def initialize(booking, request:)
+      def initialize(booking, request:, viewer: nil)
         @booking = booking
         @request = request
+        @viewer = viewer
       end
 
       def as_json
@@ -24,18 +27,63 @@ module Api
           pickup_method: booking.pickup_method,
           pickup_address: booking.pickup_address,
           return_address: booking.return_address,
+          payment_status: booking.payment&.status,
+          paid_successfully: booking.paid_successfully?,
+          chattable: booking.chattable?,
+          completable: booking.completable?,
           product: ProductSerializer.new(booking.product, request: request).as_json,
-          owner: UserSerializer.new(booking.owner, request: request).as_json,
-          renter: UserSerializer.new(booking.renter, request: request).as_json,
+          owner: UserSerializer.new(booking.owner, request: request, public_profile: true).as_json,
+          renter: UserSerializer.new(booking.renter, request: request, public_profile: true).as_json,
           created_at: booking.created_at&.iso8601,
           acceptance_deadline_at: booking.acceptance_deadline&.iso8601,
-          cancel_reason: booking.cancel_reason
+          cancel_reason: booking.cancel_reason,
+          actions: actions_for_viewer
         }
       end
 
       private
 
-      attr_reader :booking, :request
+      attr_reader :booking, :request, :viewer
+
+      def actions_for_viewer
+        return default_actions if viewer.blank?
+
+        if viewer.id == booking.renter_id
+          {
+            cancel: booking.pending? || booking.accepted?,
+            pay: booking.accepted?,
+            confirm_received: booking.paid? && booking.paid_successfully?,
+            chat: booking.chattable?,
+            accept: false,
+            reject: false,
+            complete: false
+          }
+        elsif viewer.id == booking.owner_id
+          {
+            cancel: false,
+            pay: false,
+            confirm_received: false,
+            chat: booking.chattable?,
+            accept: booking.pending?,
+            reject: booking.pending?,
+            complete: booking.completable?
+          }
+        else
+          default_actions
+        end
+      end
+
+      def default_actions
+        {
+          cancel: false,
+          pay: false,
+          confirm_received: false,
+          chat: false,
+          accept: false,
+          reject: false,
+          complete: false
+        }
+      end
     end
   end
 end

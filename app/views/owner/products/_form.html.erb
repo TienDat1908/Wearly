@@ -1,7 +1,7 @@
-<%= form_with model: [:owner, product], local: true, class: "bg-white rounded-[2.5rem] p-6 md:p-8 shadow-2xl shadow-pink-100 border border-orange-100 space-y-8" do |f| %>
+<%= form_with model: [:owner, product], local: true, class: "wearly-panel space-y-8 p-6 md:p-8" do |f| %>
   <% if product.errors.any? %>
-    <div class="rounded-2xl bg-red-50 text-red-700 p-4">
-      <p class="font-black mb-2"><%= pluralize(product.errors.count, "error") %> prevented this item from being saved:</p>
+    <div class="rounded-2xl border border-rose-300/35 bg-rose-500/20 p-4 text-rose-50">
+      <p class="mb-2 font-black"><%= pluralize(product.errors.count, "error") %> prevented this item from being saved:</p>
       <ul class="list-disc pl-5 text-sm font-semibold">
         <% product.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -11,105 +11,105 @@
   <% end %>
 
   <div>
-    <h2 class="text-2xl font-black"><%= t("products.form.basic_info") %></h2>
-    <p class="mt-1 text-slate-500"><%= t("products.form.basic_info_hint") %></p>
+    <h2 class="text-2xl font-black text-white"><%= t("products.form.basic_info") %></h2>
+    <p class="mt-1 text-white/55"><%= t("products.form.basic_info_hint") %></p>
   </div>
 
   <div class="grid gap-5">
     <div>
-      <%= f.label :title, t("products.form.title"), class: "block font-black mb-2" %>
-      <%= f.text_field :title, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100", placeholder: "Pink satin party dress" %>
+      <%= f.label :title, t("products.form.title"), class: "mb-2 block font-black" %>
+      <%= f.text_field :title, placeholder: "Pink satin party dress" %>
     </div>
 
-    <div class="grid md:grid-cols-3 gap-5">
+    <div class="grid gap-5 md:grid-cols-3">
       <div>
-        <%= f.label :product_type, t("products.form.type"), class: "block font-black mb-2" %>
-        <%= f.select :product_type, Product.product_types.keys.map { |type| [type.humanize, type] }, {}, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100" %>
+        <%= f.label :product_type, t("products.form.type"), class: "mb-2 block font-black" %>
+        <%= f.select :product_type, product_type_options %>
       </div>
 
       <div>
-        <%= f.label :size, t("products.form.size"), class: "block font-black mb-2" %>
-        <%= f.text_field :size, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100", placeholder: "S / M / L" %>
+        <%= f.label :size, t("products.form.size"), class: "mb-2 block font-black" %>
+        <%= f.text_field :size, placeholder: "S / M / L" %>
       </div>
 
       <div>
-        <%= f.label :color, t("products.form.color"), class: "block font-black mb-2" %>
-        <%= f.text_field :color, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100", placeholder: "Pink, black, white..." %>
+        <%= f.label :color, t("products.form.color"), class: "mb-2 block font-black" %>
+        <%= f.text_field :color, placeholder: "Pink, black, white..." %>
       </div>
     </div>
 
     <div>
-      <%= f.label :description, t("products.form.description"), class: "block font-black mb-2" %>
-      <%= f.text_area :description, rows: 6, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100", placeholder: "Describe material, condition, fit, and best occasions..." %>
+      <%= f.label :description, t("products.form.description"), class: "mb-2 block font-black" %>
+      <%= f.text_area :description, rows: 6, placeholder: "Describe material, condition, fit, and best occasions..." %>
     </div>
   </div>
 
-  <div class="border-t border-slate-100 pt-8">
-    <h2 class="text-2xl font-black"><%= t("products.form.pricing") %></h2>
-    <p class="mt-1 text-slate-500"><%= t("products.form.pricing_hint") %></p>
+  <div class="border-t border-white/10 pt-8">
+    <h2 class="text-2xl font-black text-white"><%= t("products.form.pricing") %></h2>
+    <p class="mt-1 text-white/55"><%= t("products.form.pricing_hint") %></p>
   </div>
 
-  <div class="grid md:grid-cols-3 gap-5">
+  <div class="grid gap-5 md:grid-cols-3">
     <div>
-      <%= f.label :price_per_day, t("products.form.price_per_day"), class: "block font-black mb-2" %>
-      <%= f.number_field :price_per_day, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100", placeholder: "250000" %>
-    </div>
-
-    <div>
-      <%= f.label :deposit_amount, t("products.form.deposit_amount"), class: "block font-black mb-2" %>
-      <%= f.number_field :deposit_amount, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100", placeholder: "800000" %>
+      <%= f.label :price_per_day, t("products.form.price_per_day"), class: "mb-2 block font-black" %>
+      <%= f.number_field :price_per_day, placeholder: "250000" %>
     </div>
 
     <div>
-      <%= f.label :cleaning_fee, t("products.form.cleaning_fee"), class: "block font-black mb-2" %>
-      <%= f.number_field :cleaning_fee, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100", placeholder: "80000" %>
+      <%= f.label :deposit_amount, t("products.form.deposit_amount"), class: "mb-2 block font-black" %>
+      <%= f.number_field :deposit_amount, placeholder: "800000" %>
+    </div>
+
+    <div>
+      <%= f.label :cleaning_fee, t("products.form.cleaning_fee"), class: "mb-2 block font-black" %>
+      <%= f.number_field :cleaning_fee, placeholder: "80000" %>
     </div>
   </div>
 
-  <div class="border-t border-slate-100 pt-8">
-    <h2 class="text-2xl font-black"><%= t("products.form.fulfillment") %></h2>
-    <p class="mt-1 text-slate-500"><%= t("products.form.fulfillment_hint") %></p>
+  <div class="border-t border-white/10 pt-8">
+    <h2 class="text-2xl font-black text-white"><%= t("products.form.fulfillment") %></h2>
+    <p class="mt-1 text-white/55"><%= t("products.form.fulfillment_hint") %></p>
   </div>
 
-  <div class="grid md:grid-cols-2 gap-5">
-    <label class="flex items-center gap-3 rounded-2xl bg-slate-50 p-4 font-black">
-      <%= f.check_box :pickup_available, class: "rounded border-slate-300 text-pink-500 focus:ring-pink-400" %>
+  <div class="grid gap-5 md:grid-cols-2">
+    <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 font-black text-white">
+      <%= f.check_box :pickup_available, class: "rounded border-white/40 bg-transparent text-pink-500 focus:ring-pink-400" %>
       <%= t("products.form.pickup_available") %>
     </label>
 
-    <label class="flex items-center gap-3 rounded-2xl bg-slate-50 p-4 font-black">
-      <%= f.check_box :delivery_available, class: "rounded border-slate-300 text-pink-500 focus:ring-pink-400" %>
+    <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 font-black text-white">
+      <%= f.check_box :delivery_available, class: "rounded border-white/40 bg-transparent text-pink-500 focus:ring-pink-400" %>
       <%= t("products.form.delivery_available") %>
     </label>
   </div>
 
   <div class="grid gap-5">
     <div>
-      <%= f.label :address, t("products.form.pickup_address"), class: "block font-black mb-2" %>
-      <%= f.text_area :address, rows: 3, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100" %>
+      <%= f.label :address, t("products.form.pickup_address"), class: "mb-2 block font-black" %>
+      <%= f.text_area :address, rows: 3 %>
     </div>
 
-    <div class="grid md:grid-cols-3 gap-5">
+    <div class="grid gap-5 md:grid-cols-3">
       <div>
-        <%= f.label :ward, t("products.form.ward"), class: "block font-black mb-2" %>
-        <%= f.text_field :ward, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100" %>
+        <%= f.label :ward, t("products.form.ward"), class: "mb-2 block font-black" %>
+        <%= f.text_field :ward %>
       </div>
 
       <div>
-        <%= f.label :district, t("products.form.district"), class: "block font-black mb-2" %>
-        <%= f.text_field :district, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100" %>
+        <%= f.label :district, t("products.form.district"), class: "mb-2 block font-black" %>
+        <%= f.text_field :district %>
       </div>
 
       <div>
-        <%= f.label :city, t("products.form.city"), class: "block font-black mb-2" %>
-        <%= f.text_field :city, class: "block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100" %>
+        <%= f.label :city, t("products.form.city"), class: "mb-2 block font-black" %>
+        <%= f.text_field :city %>
       </div>
     </div>
   </div>
 
-  <div class="border-t border-slate-100 pt-8">
-    <h2 class="text-2xl font-black"><%= t("products.form.photos") %></h2>
-    <p class="mt-1 text-slate-500"><%= t("products.form.photos_hint") %></p>
+  <div class="border-t border-white/10 pt-8">
+    <h2 class="text-2xl font-black text-white"><%= t("products.form.photos") %></h2>
+    <p class="mt-1 text-white/55"><%= t("products.form.photos_hint") %></p>
   </div>
 
   <div
@@ -122,18 +122,18 @@
     class="space-y-5">
     <%= hidden_field_tag "product[primary_photo_index]", nil, data: { photo_picker_target: "primaryIndex" } %>
 
-    <label class="group block cursor-pointer rounded-[2rem] border-2 border-dashed border-pink-300 bg-gradient-to-br from-pink-50 to-orange-50 p-5 transition hover:-translate-y-0.5 hover:border-pink-400 hover:shadow-xl hover:shadow-pink-100">
+    <label class="group block cursor-pointer rounded-[2rem] border-2 border-dashed border-pink-400/40 bg-pink-500/10 p-5 transition hover:-translate-y-0.5 hover:border-pink-400 hover:bg-pink-500/15">
       <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <div class="text-xl font-black text-slate-950"><%= t("products.form.upload_many_photos") %></div>
-          <p class="mt-1 text-sm font-bold text-slate-500"><%= t("products.form.upload_many_photos_hint") %></p>
+          <div class="text-xl font-black text-white"><%= t("products.form.upload_many_photos") %></div>
+          <p class="mt-1 text-sm font-bold text-white/55"><%= t("products.form.upload_many_photos_hint") %></p>
         </div>
 
         <div class="flex flex-wrap items-center gap-3">
-          <span class="rounded-full bg-slate-950 px-5 py-3 text-sm font-black text-white shadow-lg shadow-slate-200 transition group-hover:bg-pink-500">
+          <span class="rounded-full bg-gradient-to-r from-sky-400 via-pink-500 to-orange-400 px-5 py-3 text-sm font-black text-white shadow-lg shadow-pink-900/40 transition group-hover:brightness-110">
             <%= t("products.form.choose_photos") %>
           </span>
-          <span data-photo-picker-target="summary" class="rounded-full bg-white px-4 py-3 text-sm font-black text-slate-600 shadow-sm">
+          <span data-photo-picker-target="summary" class="rounded-full border border-white/15 bg-white/10 px-4 py-3 text-sm font-black text-white/70">
             <%= t("products.form.no_photos_selected") %>
           </span>
         </div>
@@ -148,27 +148,27 @@
         },
         class: "sr-only" %>
 
-      <p class="mt-4 text-sm font-bold text-slate-500">
+      <p class="mt-4 text-sm font-bold text-white/55">
         <%= t("products.form.new_photos_cover_hint") %>
       </p>
     </label>
 
-    <div data-photo-picker-target="preview" hidden class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+    <div data-photo-picker-target="preview" hidden class="grid grid-cols-2 gap-4 md:grid-cols-4"></div>
 
     <% if product.persisted? && product.photos.attached? %>
-      <div class="rounded-[2rem] bg-slate-50 p-5">
+      <div class="rounded-[2rem] border border-white/10 bg-white/5 p-5">
         <div class="flex items-start justify-between gap-4">
           <div>
-            <h3 class="text-xl font-black"><%= t("products.form.primary_photo") %></h3>
-            <p class="mt-1 text-sm font-semibold text-slate-500"><%= t("products.form.primary_photo_hint") %></p>
+            <h3 class="text-xl font-black text-white"><%= t("products.form.primary_photo") %></h3>
+            <p class="mt-1 text-sm font-semibold text-white/55"><%= t("products.form.primary_photo_hint") %></p>
           </div>
 
-          <span class="rounded-full bg-pink-100 px-3 py-1 text-xs font-black text-pink-600">
+          <span class="rounded-full bg-pink-500/15 px-3 py-1 text-xs font-black text-pink-200">
             <%= product.photos.count %> photos
           </span>
         </div>
 
-        <div class="mt-5 grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="mt-5 grid grid-cols-2 gap-4 md:grid-cols-4">
           <% product.photos.each do |photo| %>
             <label class="group cursor-pointer">
               <%= f.radio_button :primary_photo_attachment_id,
@@ -176,8 +176,8 @@
                 checked: product.cover_photo_attachment_id == photo.id,
                 class: "peer sr-only" %>
 
-              <div class="relative overflow-hidden rounded-[1.5rem] border-4 border-transparent bg-white shadow-sm peer-checked:border-pink-500 peer-checked:shadow-xl peer-checked:shadow-pink-100 transition">
-                <%= image_tag photo, class: "aspect-[4/5] w-full object-cover group-hover:scale-105 transition duration-500" %>
+              <div class="relative overflow-hidden rounded-[1.5rem] border-4 border-transparent bg-[#f7f2ec] shadow-sm transition peer-checked:border-pink-500 peer-checked:shadow-xl peer-checked:shadow-pink-900/40">
+                <%= image_tag photo, class: "aspect-[4/5] w-full object-cover transition duration-500 group-hover:scale-105" %>
                 <div class="absolute inset-x-3 bottom-3 rounded-full bg-white/90 px-3 py-2 text-center text-xs font-black text-slate-950 backdrop-blur">
                   <%= product.cover_photo_attachment_id == photo.id ? t("products.form.current_cover") : t("products.form.use_as_cover") %>
                 </div>
@@ -189,5 +189,5 @@
     <% end %>
   </div>
 
-  <%= f.submit t("products.form.save"), class: "w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-orange-400 text-white font-black shadow-xl shadow-pink-200 hover:-translate-y-0.5 transition" %>
+  <%= f.submit t("products.form.save"), class: "wearly-btn wearly-btn-primary w-full cursor-pointer" %>
 <% end %>

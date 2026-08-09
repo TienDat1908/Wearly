@@ -6,24 +6,24 @@ module Api
       def index
         bookings = current_api_user
           .rentals
-          .includes(:owner, product: [photos_attachments: :blob])
+          .includes(:owner, :payment, :renter, product: [photos_attachments: :blob])
           .order(created_at: :desc)
 
         bookings.find_each(&:expire_if_acceptance_timed_out!)
 
         render json: {
-          bookings: bookings.reload.map { |booking| BookingSerializer.new(booking, request: request).as_json }
+          bookings: bookings.reload.map { |booking| BookingSerializer.new(booking, request: request, viewer: current_api_user).as_json }
         }
       end
 
       def show
         booking = current_api_user
           .rentals
-          .includes(:owner, product: [photos_attachments: :blob])
+          .includes(:owner, :payment, :renter, product: [photos_attachments: :blob])
           .find(params[:id])
         booking.expire_if_acceptance_timed_out!
 
-        render json: { booking: BookingSerializer.new(booking, request: request).as_json }
+        render json: { booking: BookingSerializer.new(booking, request: request, viewer: current_api_user).as_json }
       end
 
       def price_preview
@@ -88,11 +88,68 @@ module Api
           Conversations::EnsureBooking.call(booking: booking)
         end
 
-        render json: { booking: BookingSerializer.new(booking, request: request).as_json }, status: :created
+        render json: { booking: BookingSerializer.new(booking, request: request, viewer: current_api_user).as_json }, status: :created
       rescue ArgumentError, ActiveRecord::RecordNotFound
         render json: { error: "Please choose a valid product and schedule." }, status: :unprocessable_entity
       rescue ActiveRecord::RecordInvalid => error
         render json: { error: error.record.errors.full_messages.to_sentence }, status: :unprocessable_entity
+      end
+
+      def cancel
+        booking = current_api_user.rentals.find(params[:id])
+
+        unless booking.pending? || booking.accepted?
+          render json: { error: "This booking cannot be cancelled." }, status: :unprocessable_entity
+          return
+        end
+
+        ActiveRecord::Base.transaction do
+          booking.cancel!
+          booking.update!(cancelled_at: Time.current)
+          booking.product_reservation&.update!(status: "cancelled")
+        end
+
+        render json: { booking: BookingSerializer.new(booking, request: request, viewer: current_api_user).as_json }
+      end
+
+      def pay
+        booking = current_api_user.rentals.find(params[:id])
+
+        unless booking.accepted?
+          render json: { error: "This booking cannot be paid yet." }, status: :unprocessable_entity
+          return
+        end
+
+        ActiveRecord::Base.transaction do
+          payment = booking.payment || booking.build_payment
+          payment.update!(
+            payer_id: current_api_user.id,
+            amount: booking.total_amount.to_i,
+            payment_method: "manual",
+            status: "paid",
+            transaction_id: "MANUAL-#{SecureRandom.hex(8).upcase}",
+            paid_at: Time.current
+          )
+          booking.pay!
+        end
+
+        render json: { booking: BookingSerializer.new(booking, request: request, viewer: current_api_user).as_json }
+      end
+
+      def confirm_received
+        booking = current_api_user.rentals.find(params[:id])
+
+        unless booking.paid? && booking.paid_successfully?
+          render json: { error: "Confirm receipt only after payment." }, status: :unprocessable_entity
+          return
+        end
+
+        ActiveRecord::Base.transaction do
+          booking.confirm_pickup!
+          booking.update!(picked_up_at: Time.current)
+        end
+
+        render json: { booking: BookingSerializer.new(booking, request: request, viewer: current_api_user).as_json }
       end
 
       private

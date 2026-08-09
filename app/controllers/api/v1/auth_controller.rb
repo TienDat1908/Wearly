@@ -38,7 +38,9 @@ module Api
       end
 
       def profile
-        if current_api_user.update(profile_params)
+        attrs = profile_params
+
+        if current_api_user.update(attrs)
           render json: { user: UserSerializer.new(current_api_user, request: request).as_json }, status: :ok
         else
           render json: {
@@ -78,7 +80,8 @@ module Api
           :instagram_url,
           :tiktok_url,
           :zalo_url,
-          :website_url
+          :website_url,
+          :avatar
         )
       end
     end
